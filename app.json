@@ -1,0 +1,1 @@
+{"expo":{"name":"Sharp","slug":"sharp","version":"1.0.0","orientation":"portrait","scheme":"sharp","userInterfaceStyle":"automatic","assetBundlePatterns":["**/*"],"ios":{"supportsTablet":true,"bundleIdentifier":"com.wwwd.sharp"},"android":{"package":"com.wwwd.sharp"},"web":{"bundler":"metro"},"extra":{"liveUrl":"https://sharp-jsljmfjqv-jhyunkns-projects.vercel.app"}}}
