@@ -9,6 +9,9 @@
     if (d === 'leadership') return '△';
     if (d === 'psychology') return '◐';
     if (d === 'communication') return '“';
+    if (d === 'strategy') return '◇';
+    if (d === 'attention') return '◎';
+    if (d === 'relationships') return '∿';
     return '✦';
   }
 
@@ -37,7 +40,8 @@
       '/rest/v1/insight_cards' +
       '?select=id,title,lead_sentence,main_quote,quote_author,source_line,historical_context,what_it_teaches,deploy_today,status,score,created_at,concepts(name,domain,source_hint)' +
       '&status=eq.live' +
-      '&order=created_at.desc';
+      '&order=created_at.desc' +
+      '&limit=200';
 
     const response = await fetch(endpoint, {
       headers: { apikey: key }
@@ -57,7 +61,7 @@
     });
 
     if (Array.isArray(plans) && plans.length > 0) {
-      plans[0] = liveCards.slice(0, 4).map((card) => card.id);
+      plans[0] = liveCards.map((card) => card.id);
     }
 
     if (typeof st === 'object') {
