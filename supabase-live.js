@@ -32,6 +32,31 @@
     };
   }
 
+  function resetDetailScrollOnOpen() {
+    if (window.__sharpDetailScrollReset) return;
+    window.__sharpDetailScrollReset = true;
+    const getScreen = () => document.querySelector('.screen');
+    const reset = () => {
+      const screen = getScreen();
+      if (screen && window.st && window.st.detail) {
+        requestAnimationFrame(() => screen.scrollTo(0, 0));
+      }
+    };
+    document.addEventListener('click', (event) => {
+      const target = event.target && event.target.closest && event.target.closest('.quote-card,.card');
+      if (target) setTimeout(reset, 80);
+    }, true);
+    const originalDetail = typeof window.detail === 'function' ? window.detail : null;
+    if (originalDetail) {
+      window.detail = function () {
+        const out = originalDetail.apply(this, arguments);
+        reset();
+        setTimeout(reset, 80);
+        return out;
+      };
+    }
+  }
+
   async function loadSupabaseCards() {
     if (typeof specimens === 'undefined' || typeof plans === 'undefined') return;
 
@@ -69,6 +94,7 @@
       if (typeof save === 'function') save();
     }
 
+    resetDetailScrollOnOpen();
     if (typeof render === 'function') render();
   }
 
