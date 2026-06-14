@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sharp · wisdom cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f0ead8;
+  --cream-deep: #e8e0c8;
+  --black: #1a1714;
+  --gold: #a8831e;
+  --gold-light: #c9a84c;
+  --gold-pale: #e8d9a8;
+  --shadow: #6b5a3e;
+  --warm-grey: #8a7d6a;
+  --card-face: #f5f0e2;
+  --card-back: #1a1714;
+  --red: #7a3030;
+  --green: #2e5c3e;
+  --ink: #2a2318;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--black);
+  font-family: 'Space Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── layout shells ── */
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding: 2rem 1.5rem 4rem;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.screen.active { display: block; }
+
+/* ── type scale ── */
+.t-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+}
+.t-title {
+  font-family: 'IM Fell English', serif;
+  font-size: 2rem;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.t-body {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.t-mono {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+}
+
+/* ── chunky offset button ── */
+.btn {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  padding: 0.7rem 1.4rem;
+  background: var(--black);
+  color: var(--cream);
+  border: 2px solid var(--black);
+  box-shadow: 4px 4px 0 var(--shadow);
+  cursor: pointer;
+  transition: box-shadow 0.1s, transform 0.1s;
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { box-shadow: 6px 6px 0 var(--shadow); transform: translate(-1px,-1px); }
+.btn:active { box-shadow: 2px 2px 0 var(--shadow); transform: translate(1px,1px); }
+.btn.btn-ghost {
+  background: transparent;
+  color: var(--black);
+  box-shadow: 4px 4px 0 var(--black);
+  border-color: var(--black);
+}
+.btn.btn-ghost:hover { box-shadow: 6px 6px 0 var(--black); }
+.btn.btn-gold {
+  background: var(--gold);
+  color: var(--cream);
+  border-color: var(--gold);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+.btn.btn-sm { padding: 0.45rem 0.9rem; font-size: 0.62rem; }
+
+/* ── nav bar ── */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 0 2rem;
+  border-bottom: 1px solid var(--gold-pale);
+  margin-bottom: 2.5rem;
+}
+.nav-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.nav-logo span { color: var(--gold); }
+.nav-actions { display: flex; gap: 0.6rem; }
+
+/* ── ░░ LANDING ░░ ── */
+#screen-landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+}
+.landing-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+}
+.landing-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  line-height: 1;
+  color: var(--gold);
+  font-family: monospace;
+}
+.landing-tagline {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: var(--ink);
+  max-width: 420px;
+}
+.landing-meta {
+  margin-top: 0.5rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  color: var(--warm-grey);
+  text-transform: uppercase;
+}
+.deck-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 2rem 0;
+}
+.deck-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border: 1.5px solid var(--warm-grey);
+  color: var(--warm-grey);
+}
+.landing-footer {
+  margin-top: 3rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--warm-grey);
+  letter-spacing: 0.1em;
+}
+
+/* ── ░░ QUIZ ░░ ── */
+.quiz-progress {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 2.5rem;
+}
+.quiz-pip {
+  height: 3px;
+  flex: 1;
+  background: var(--cream-deep);
+  transition: background 0.3s;
+}
+.quiz-pip.filled { background: var(--black); }
+.quiz-q {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.4rem;
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+.quiz-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--warm-grey);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 0.7rem; }
+.quiz-opt {
+  padding: 1rem 1.2rem;
+  border: 2px solid var(--cream-deep);
+  background: var(--card-face);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: 'IM Fell English', serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  box-shadow: 3px 3px 0 transparent;
+}
+.quiz-opt:hover {
+  border-color: var(--black);
+  box-shadow: 3px 3px 0 var(--black);
+}
+.quiz-opt.selected {
+  border-color: var(--black);
+  background: var(--black);
+  color: var(--cream);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+
+/* ── ░░ ARCHETYPE REVEAL ░░ ── */
+.archetype-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 0;
+  gap: 1.5rem;
+}
+.archetype-glyph {
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: monospace;
+}
+.archetype-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+  background: var(--cream-deep);
+  padding: 0.3rem 0.8rem;
+  display: inline-block;
+}
+.archetype-name {
+  font-family: 'IM Fell English', serif;
+  font-size: 2.2rem;
+  color: var(--ink);
+  margin: 0.2rem 0;
+}
+.archetype-desc {
+  font-family: 'IM Fell English', serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--warm-grey);
+  max-width: 380px;
+  font-style: italic;
+}
+.archetype-traits {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+.trait-chip {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+}
+.archetype-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--gold-pale);
+}
+
+/* ── ░░ DECK SELECTION ░░ ── */
+.section-header {
+  margin-bottom: 1.8rem;
+}
+.section-header h2 {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.6rem;
+  margin-top: 0.3rem;
+}
+.deck-grid { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem; }
+.deck-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border: 2px solid var(--cream-deep);
+  background: var(--card-face);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-shadow: 3px 3px 0 transparent;
+}
+.deck-card:hover {
+  border-color: var(--black);
+  box-shadow: 3px 3px 0 var(--black);
+}
+.deck-card.selected {
+  border-color: var(--black);
+  box-shadow: 4px 4px 0 var(--shadow);
+  background: var(--black);
+  color: var(--cream);
+}
+.deck-card.selected .deck-card-meta { color: var(--warm-grey); }
+.deck-card.selected .deck-card-icon { color: var(--gold-light); }
+.deck-card-icon {
+  font-size: 1.8rem;
+  width: 2.4rem;
+  text-align: center;
+  color: var(--gold);
+  font-family: monospace;
+  flex-shrink: 0;
+}
+.deck-card-info { flex: 1; }
+.deck-card-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+.deck-card-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--warm-grey);
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem;
+}
+.deck-card-check {
+  font-size: 0.9rem;
+  color: var(--gold);
+  font-family: monospace;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.deck-card.selected .deck-card-check { opacity: 1; }
+
+/* ── ░░ DRAW COUNT ░░ ── */
+.draw-count-row {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 2rem;
+}
+.count-btn {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 2px solid var(--cream-deep);
+  background: var(--card-face);
+  font-family: 'Space Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 transparent;
+  transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.count-btn:hover { border-color: var(--black); box-shadow: 3px 3px 0 var(--black); }
+.count-btn.selected {
+  background: var(--black);
+  color: var(--cream);
+  border-color: var(--black);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+.draw-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--warm-grey);
+  letter-spacing: 0.08em;
+  margin-bottom: 2rem;
+}
+
+/* ── ░░ CARD SPREAD ░░ ── */
+.spread-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+  margin-bottom: 1.5rem;
+}
+.card-spread {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0 2rem;
+}
+
+/* ── tarot card ── */
+.tarot-card {
+  width: 180px;
+  height: 300px;
+  perspective: 1000px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tarot-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4,0.2,0.2,1);
+}
+.tarot-card.flipped .tarot-card-inner { transform: rotateY(180deg); }
+.card-face, .card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 2.5px solid var(--black);
+  box-shadow: 5px 5px 0 var(--shadow);
+}
+.card-back {
+  background: var(--card-back);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.card-back-pattern {
+  width: 80%;
+  height: 80%;
+  border: 1px solid #3a3228;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.card-back-glyph {
+  color: var(--gold);
+  font-size: 2rem;
+  font-family: monospace;
+  opacity: 0.7;
+}
+.card-back-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5a4e3c;
+}
+.card-face {
+  background: var(--card-face);
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+.card-face-top {
+  padding: 1rem 1rem 0.6rem;
+  border-bottom: 1px solid var(--cream-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.card-face-deck {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.46rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+}
+.card-face-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--gold);
+  font-family: monospace;
+  margin: 0.4rem 0;
+}
+.card-face-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  text-align: center;
+  color: var(--ink);
+}
+.card-face-body {
+  flex: 1;
+  padding: 0.8rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.card-quote {
+  font-family: 'IM Fell English', serif;
+  font-size: 0.72rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--warm-grey);
+}
+.card-attr {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.44rem;
+  letter-spacing: 0.05em;
+  color: var(--warm-grey);
+  opacity: 0.7;
+}
+.card-divider {
+  width: 24px;
+  height: 1px;
+  background: var(--gold-pale);
+}
+.card-sharper {
+  font-family: 'IM Fell English', serif;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--ink);
+  flex: 1;
+}
+.card-face-footer {
+  padding: 0.5rem 0.8rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--warm-grey);
+  padding: 0.2rem;
+  transition: color 0.15s, transform 0.15s;
+  font-family: monospace;
+}
+.fav-btn:hover { color: var(--gold); transform: scale(1.2); }
+.fav-btn.active { color: var(--gold); }
+
+/* tap hint */
+.card-tap-hint {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.42rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4a3e2e;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+/* ── ░░ READING ░░ ── */
+.reading-panel {
+  background: var(--black);
+  color: var(--cream);
+  padding: 2rem;
+  border: 2px solid var(--black);
+  box-shadow: 6px 6px 0 var(--shadow);
+  margin-top: 2rem;
+}
+.reading-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #3a3228;
+}
+.reading-header-glyph {
+  font-size: 1.5rem;
+  color: var(--gold);
+  font-family: monospace;
+}
+.reading-header-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+}
+.reading-title {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.2rem;
+  color: var(--cream);
+  margin-top: 0.1rem;
+}
+.reading-synthesis {
+  font-family: 'IM Fell English', serif;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #c8beae;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+.reading-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.reading-col-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.reading-col-label.do { color: #7ab88a; }
+.reading-col-label.dont { color: #c27a7a; }
+.reading-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+.reading-list li {
+  font-family: 'IM Fell English', serif;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: #c8beae;
+  padding-left: 1rem;
+  position: relative;
+}
+.reading-list.do li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #7ab88a;
+  font-size: 0.7rem;
+}
+.reading-list.dont li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #c27a7a;
+  font-size: 0.7rem;
+}
+.reading-cards-used {
+  margin-top: 1.2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #3a3228;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4a4030;
+}
+
+/* ── ░░ FAVORITES ░░ ── */
+.favs-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--warm-grey);
+}
+.favs-empty-icon { font-size: 2rem; margin-bottom: 1rem; color: var(--gold-pale); font-family: monospace; }
+.favs-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-top: 1.5rem;
+}
+
+/* ── action row ── */
+.action-row {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+/* ── separator ── */
+.sep {
+  width: 40px;
+  height: 1px;
+  background: var(--gold-pale);
+  margin: 1.5rem 0;
+}
+
+/* ── pill counter ── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  background: var(--cream-deep);
+  color: var(--warm-grey);
+  border: 1px solid var(--cream-deep);
+}
+.pill .pill-count {
+  background: var(--black);
+  color: var(--cream);
+  width: 1.2rem;
+  height: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+}
+
+/* ── big card modal ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,23,20,0.85);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.modal-overlay.open { display: flex; }
+.modal-card {
+  width: 260px;
+  height: 420px;
+  position: relative;
+  flex-shrink: 0;
+}
+.modal-card .tarot-card { width: 100%; height: 100%; pointer-events: none; }
+.modal-card .tarot-card-inner { transform: rotateY(180deg); }
+.modal-card .card-face { font-size: 1.1em; }
+.modal-card .card-face-icon { font-size: 3rem; }
+.modal-card .card-quote { font-size: 0.85rem; }
+.modal-card .card-sharper { font-size: 0.9rem; }
+.modal-close {
+  position: absolute;
+  top: -0.8rem;
+  right: -0.8rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  background: var(--black);
+  color: var(--cream);
+  border: none;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── transitions ── */
+.screen { animation: fadeUp 0.35s ease both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── responsive ── */
+@media (max-width: 420px) {
+  .tarot-card { width: 150px; height: 250px; }
+  .card-face-icon { font-size: 1.8rem; }
+  .card-sharper { font-size: 0.72rem; }
+  .card-quote { font-size: 0.66rem; }
+  .reading-cols { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ░░░ LANDING ░░░ -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-hero">
+    <div class="landing-icon">◈</div>
+    <div class="t-label" style="letter-spacing:0.2em">micro-learning · wisdom cards</div>
+    <div class="landing-tagline">daily draws for sharper minds. one card at a time.</div>
+    <div class="landing-meta">40 cards · 5 decks · ritual practice</div>
+  </div>
+  <div class="deck-tags">
+    <span class="deck-tag">⚔ leadership</span>
+    <span class="deck-tag">◉ critical thinking</span>
+    <span class="deck-tag">≋ communication</span>
+    <span class="deck-tag">◐ psychology</span>
+    <span class="deck-tag">∞ philosophy</span>
+  </div>
+  <div class="sep"></div>
+  <div style="display:flex;flex-direction:column;gap:0.6rem;max-width:320px">
+    <button class="btn" onclick="startQuiz()">begin your reading →</button>
+    <button class="btn btn-ghost btn-sm" onclick="goTo('favs')">★ saved cards</button>
+  </div>
+  <div class="landing-footer" style="margin-top:2rem">
+    sharp · wisdom cards · v0.1
+  </div>
+</div>
+
+<!-- ░░░ QUIZ ░░░ -->
+<div id="screen-quiz" class="screen">
+  <div class="nav">
+    <div class="nav-logo">sh<span>◈</span>rp</div>
+    <button class="btn btn-ghost btn-sm" onclick="goTo('landing')">← back</button>
+  </div>
+  <div class="quiz-progress" id="quiz-progress">
+    <div class="quiz-pip" id="pip-0"></div>
+    <div class="quiz-pip" id="pip-1"></div>
+    <div class="quiz-pip" id="pip-2"></div>
+    <div class="quiz-pip" id="pip-3"></div>
+    <div class="quiz-pip" id="pip-4"></div>
+  </div>
+  <div class="t-label" style="margin-bottom:1rem">archetype quiz · <span id="quiz-counter">1 of 5</span></div>
+  <div class="quiz-q" id="quiz-question"></div>
+  <div class="quiz-sub" id="quiz-sub">choose the one that fits best</div>
+  <div class="quiz-options" id="quiz-options"></div>
+  <div style="margin-top:2rem">
+    <button class="btn btn-ghost btn-sm" onclick="quizBack()" id="quiz-back-btn" style="display:none">← prev</button>
+  </div>
+</div>
+
+<!-- ░░░ ARCHETYPE ░░░ -->
+<div id="screen-archetype" class="screen">
+  <div class="nav">
+    <div class="nav-logo">sh<span>◈</span>rp</div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="goTo('landing')">home</button>
+    </div>
+  </div>
+  <div class="archetype-reveal" id="archetype-content"></div>
+  <div style="text-align:center;margin-top:1.5rem">
+    <button class="btn" onclick="goTo('decks')">choose your decks →</button>
+  </div>
+</div>
+
+<!-- ░░░ DECK SELECT ░░░ -->
+<div id="screen-decks" class="screen">
+  <div class="nav">
+    <div class="nav-logo">sh<span>◈</span>rp</div>
+    <button class="btn btn-ghost btn-sm" onclick="goTo('archetype')">← back</button>
+  </div>
+  <div class="section-header">
+    <div class="t-label">step 2 of 3</div>
+    <h2>choose your wisdom decks</h2>
+    <p class="t-mono" style="color:var(--warm-grey);margin-top:0.5rem">select one or more — your cards will draw from all chosen decks</p>
+  </div>
+  <div class="deck-grid" id="deck-grid"></div>
+  <div class="action-row">
+    <button class="btn" onclick="proceedToCount()" id="decks-next-btn">choose draw count →</button>
+    <span id="deck-selected-count" class="pill"><span class="pill-count" id="deck-count-n">0</span>decks selected</span>
+  </div>
+</div>
+
+<!-- ░░░ DRAW COUNT ░░░ -->
+<div id="screen-count" class="screen">
+  <div class="nav">
+    <div class="nav-logo">sh<span>◈</span>rp</div>
+    <button class="btn btn-ghost btn-sm" onclick="goTo('decks')">← back</button>
+  </div>
+  <div class="section-header">
+    <div class="t-label">step 3 of 3</div>
+    <h2>how many cards will you draw?</h2>
+    <p class="t-mono" style="color:var(--warm-grey);margin-top:0.5rem">each card is a separate thread of wisdom to sit with</p>
+  </div>
+  <div class="draw-count-row" id="draw-count-row">
+    <button class="count-btn" data-n="1" onclick="setCount(1)">1</button>
+    <button class="count-btn" data-n="2" onclick="setCount(2)">2</button>
+    <button class="count-btn selected" data-n="3" onclick="setCount(3)">3</button>
+    <button class="count-btn" data-n="4" onclick="setCount(4)">4</button>
+    <button class="count-btn" data-n="5" onclick="setCount(5)">5</button>
+  </div>
+  <div class="draw-hint" id="draw-hint">3 cards · the triad · past, present, potential</div>
+  <div class="action-row">
+    <button class="btn" onclick="drawCards()">draw cards →</button>
+  </div>
+</div>
+
+<!-- ░░░ SPREAD ░░░ -->
+<div id="screen-spread" class="screen">
+  <div class="nav">
+    <div class="nav-logo">sh<span>◈</span>rp</div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="goTo('favs')">★ saved</button>
+      <button class="btn btn-ghost btn-sm" onclick="goTo('landing')">home</button>
+    </div>
+  </div>
+  <div class="spread-label">tap each card to reveal its wisdom</div>
+  <div class="card-spread" id="card-spread"></div>
+  <div id="reading-section" style="display:none">
+    <div class="sep"></div>
+    <button class="btn btn-gold" onclick="generateReading()">✦ open reading of the day</button>
+    <div id="reading-output"></div>
+  </div>
+  <div id="reading-prompt" style="display:none;margin-top:1.5rem">
+    <div class="t-label" style="font-size:0.58rem;color:var(--warm-grey)">flip all cards to unlock the reading of the day</div>
+  </div>
+  <div class="action-row" style="margin-top:1.5rem">
+    <button class="btn btn-ghost btn-sm" onclick="goTo('count')">← redraw</button>
+    <button class="btn btn-ghost btn-sm" onclick="drawCards()">new draw ↺</button>
+  </div>
+</div>
+
+<!-- ░░░ FAVORITES ░░░ -->
+<div id="screen-favs" class="screen">
+  <div class="nav">
+    <div class="nav-logo">sh<span>◈</span>rp</div>
+    <button class="btn btn-ghost btn-sm" onclick="history.back ? goTo('spread') : goTo('landing')">← back</button>
+  </div>
+  <div class="section-header">
+    <div class="t-label">your collection</div>
+    <h2>saved cards</h2>
+  </div>
+  <div id="favs-content"></div>
+</div>
+
+<!-- ░░░ MODAL ░░░ -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-card" id="modal-card">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-card-inner"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════
+
+const ARCHETYPES = {
+  strategist: {
+    name: 'the strategist',
+    glyph: '⚔',
+    desc: 'you see the field before others enter it. your edge is vision, but your risk is distance.',
+    traits: ['decisive', 'forward-looking', 'pattern-reader', 'chess-minded'],
+    recommended: ['leadership', 'critical-thinking']
+  },
+  seeker: {
+    name: 'the seeker',
+    glyph: '◉',
+    desc: 'you pull at threads until something comes loose. your edge is precision, your risk is perfectionism.',
+    traits: ['analytical', 'questioning', 'rigorous', 'uncomfortable-with-vagueness'],
+    recommended: ['critical-thinking', 'philosophy']
+  },
+  weaver: {
+    name: 'the weaver',
+    glyph: '≋',
+    desc: 'you read rooms the way others read text. your edge is connection, your risk is losing your own thread.',
+    traits: ['empathic', 'communicative', 'relationally-attuned', 'bridger'],
+    recommended: ['communication', 'psychology']
+  },
+  mirror: {
+    name: 'the mirror',
+    glyph: '◐',
+    desc: 'you feel before you think. your edge is depth, your risk is getting lost in it.',
+    traits: ['self-aware', 'pattern-sensitive', 'emotionally-intelligent', 'introspective'],
+    recommended: ['psychology', 'communication']
+  },
+  wanderer: {
+    name: 'the wanderer',
+    glyph: '∞',
+    desc: 'you question what others accept. your edge is perspective, your risk is standing so far back you don\'t act.',
+    traits: ['philosophical', 'systemic', 'meaning-driven', 'long-view'],
+    recommended: ['philosophy', 'leadership']
+  }
+};
+
+const QUIZ = [
+  {
+    q: 'when facing a problem, your first move is...',
+    sub: 'honest instinct, not the "right" answer',
+    opts: [
+      { text: 'map it — who, what, when, what levers exist', arch: 'strategist' },
+      { text: 'question it — what are we assuming here?', arch: 'seeker' },
+      { text: 'talk it through with someone I trust', arch: 'weaver' },
+      { text: 'sit with it — what is it revealing about me?', arch: 'mirror' }
+    ]
+  },
+  {
+    q: 'the skill you secretly wish you had more of...',
+    sub: 'the one that feels just out of reach',
+    opts: [
+      { text: 'decisiveness under uncertainty', arch: 'strategist' },
+      { text: 'clarity of mind, cutting through noise', arch: 'seeker' },
+      { text: 'magnetic presence in a room', arch: 'weaver' },
+      { text: 'understanding why I react the way I do', arch: 'mirror' }
+    ]
+  },
+  {
+    q: 'what unsettles you most in other people?',
+    sub: 'the thing you can\'t stand watching',
+    opts: [
+      { text: 'indecision, hedging, no clear direction', arch: 'strategist' },
+      { text: 'sloppy thinking, accepting anything at face value', arch: 'seeker' },
+      { text: 'not listening, talking past each other', arch: 'weaver' },
+      { text: 'zero self-awareness, no inner life', arch: 'mirror' }
+    ]
+  },
+  {
+    q: 'when you\'re most fully yourself, you\'re...',
+    sub: 'the state that feels like home',
+    opts: [
+      { text: 'directing something — a plan, a team, a project', arch: 'strategist' },
+      { text: 'figuring something difficult out, alone or with one other', arch: 'seeker' },
+      { text: 'deep in conversation, genuinely connecting', arch: 'weaver' },
+      { text: 'processing quietly — reading, writing, walking', arch: 'mirror' }
+    ]
+  },
+  {
+    q: 'the word that secretly pulls at you...',
+    sub: 'the one that makes something shift',
+    opts: [
+      { text: 'momentum', arch: 'strategist' },
+      { text: 'clarity', arch: 'seeker' },
+      { text: 'connection', arch: 'weaver' },
+      { text: 'meaning', arch: 'wanderer' }
+    ]
+  }
+];
+
+const DECKS = [
+  {
+    id: 'leadership',
+    name: 'leadership',
+    icon: '⚔',
+    meta: '8 cards · command · vision · accountability',
+    cards: [
+      {
+        id: 'l1', name: 'the warlord',
+        icon: '⚔',
+        quote: 'The general who wins the battle makes many calculations in his temple before the battle is fought.',
+        attr: 'Sun Tzu · The Art of War · c. 500 BC',
+        sharper: 'your first move is always made in private. before the room fills, you\'ve already mapped it.',
+        dos: ['plan before you speak — arrive prepared, not spontaneous', 'identify leverage points before a confrontation begins', 'treat decision-making as a craft to practise privately'],
+        donts: ['confuse busyness with strategy — motion is not movement', 'enter high-stakes rooms without a pre-game', 'let urgency collapse your planning window']
+      },
+      {
+        id: 'l2', name: 'the quiet flame',
+        icon: '◈',
+        quote: 'He who knows others is wise; he who knows himself is enlightened.',
+        attr: 'Lao Tzu · Tao Te Ching · c. 400 BC',
+        sharper: 'you can read a room or you can read yourself. the second one changes what you see in the first.',
+        dos: ['build a self-knowledge practice — journal, reflect, ask for feedback', 'notice your own emotional weather before reading others\'', 'use self-understanding as a leadership multiplier'],
+        donts: ['mistake reading others for understanding yourself', 'let charisma substitute for inner work', 'ignore what your reactions are telling you about you']
+      },
+      {
+        id: 'l3', name: 'the servant',
+        icon: '↓',
+        quote: 'A leader is best when people barely know he exists. When his work is done, his aim fulfilled, they will say: we did it ourselves.',
+        attr: 'Lao Tzu · Tao Te Ching · c. 400 BC',
+        sharper: 'the best guidance feels like your own instinct. leave people more capable, not more dependent.',
+        dos: ['design situations so your team discovers answers themselves', 'credit the team publicly, hold critique privately', 'measure your success by their growth, not your visibility'],
+        donts: ['make yourself the solution — make them the solution', 'confuse delegation with abdication', 'need to be seen as the source of every win']
+      },
+      {
+        id: 'l4', name: 'the crucible',
+        icon: '⊕',
+        quote: 'Character is what you are in the dark.',
+        attr: 'Dwight L. Moody · c. 1880s',
+        sharper: 'nobody\'s watching. that\'s the test. how you treat what can\'t reward you is the only true signal of who you are.',
+        dos: ['behave identically whether observed or not', 'extend your full effort to small tasks and invisible moments', 'ask: what would I do if no one would ever know?'],
+        donts: ['perform integrity for an audience — that\'s PR, not character', 'reserve your best behaviour for high-stakes visibility', 'let your private habits contradict your public values']
+      },
+      {
+        id: 'l5', name: 'the compass',
+        icon: '✦',
+        quote: 'Men are disturbed not by things, but by the views they take of things.',
+        attr: 'Epictetus · Enchiridion · c. 100 AD',
+        sharper: 'your team inherits your interpretation of reality. if you catastrophise, they catastrophise. what lens are you handing them?',
+        dos: ['name the frame you\'re operating from — make it visible', 'model calm interpretation under pressure', 'choose the most useful reading of a situation, not just the most accurate one'],
+        donts: ['transmit your anxiety as fact', 'let your stress become your team\'s emotional weather', 'mistake your interpretation for the only one']
+      },
+      {
+        id: 'l6', name: 'the mask',
+        icon: '◎',
+        quote: 'We know what we are, but know not what we may be.',
+        attr: 'William Shakespeare · Hamlet · c. 1601',
+        sharper: 'the gap between who you perform and who you are costs energy. close it and you\'ll have more power for everything else.',
+        dos: ['notice when you\'re performing a version of yourself', 'practise being the same person in every context', 'let the mask drop — selectively, with trusted others'],
+        donts: ['confuse the role with the self', 'burn energy maintaining a performance', 'let the gap between public and private self widen']
+      },
+      {
+        id: 'l7', name: 'the storm',
+        icon: '▲',
+        quote: 'It is a rough road that leads to the heights of greatness.',
+        attr: 'Seneca · Letters · c. 65 AD',
+        sharper: 'difficulty isn\'t a detour. it\'s load-bearing. the hardest stretch is usually the curriculum.',
+        dos: ['reframe obstacles as formative, not obstructive', 'stay in uncomfortable situations long enough to learn from them', 'ask what the hard moment is teaching you'],
+        donts: ['escape difficulty prematurely — you\'ll only repeat the lesson', 'interpret resistance as the wrong direction', 'protect others from the struggle that would develop them']
+      },
+      {
+        id: 'l8', name: 'the long game',
+        icon: '∞',
+        quote: 'All human actions have one or more of these seven causes: chance, nature, compulsion, habit, reason, passion, desire.',
+        attr: 'Aristotle · Rhetoric · c. 350 BC',
+        sharper: 'before you react to behaviour, ask which of these seven drove it. the diagnosis changes everything.',
+        dos: ['diagnose before you respond — what\'s actually driving this?', 'distinguish habit from choice, passion from reason', 'take the long view when others are locked in the short one'],
+        donts: ['react to the symptom when you should address the cause', 'assume others are motivated by the same things you are', 'confuse a slow result with no result']
+      }
+    ]
+  },
+  {
+    id: 'critical-thinking',
+    name: 'critical thinking',
+    icon: '◉',
+    meta: '8 cards · logic · bias · precision',
+    cards: [
+      {
+        id: 'ct1', name: 'the knife',
+        icon: '/',
+        quote: 'It is the mark of an educated mind to be able to entertain a thought without accepting it.',
+        attr: 'Aristotle · c. 350 BC',
+        sharper: 'let ideas in without signing a lease. the goal is full contact, not commitment.',
+        dos: ['engage fully with an idea before deciding about it', 'distinguish understanding from agreeing', 'hold contradictory possibilities simultaneously'],
+        donts: ['confuse openness with indecision', 'reject ideas before contact', 'let your current beliefs decide before your thinking does']
+      },
+      {
+        id: 'ct2', name: 'the map',
+        icon: '⬡',
+        quote: 'The human understanding, when it has once adopted an opinion, draws all things else to support and agree with it.',
+        attr: 'Francis Bacon · Novum Organum · 1620',
+        sharper: 'confirmation bias isn\'t a flaw — it\'s the default operating system. the upgrade is noticing when you\'re running it.',
+        dos: ['actively seek disconfirming evidence for your beliefs', 'ask: what would change my mind?', 'treat your strongest convictions with the most suspicion'],
+        donts: ['mistake the feeling of certainty for correctness', 'only consume information that agrees with you', 'dismiss inconvenient data as an exception']
+      },
+      {
+        id: 'ct3', name: 'the advocate',
+        icon: '⊗',
+        quote: 'It is better to debate a question without settling it than to settle a question without debating it.',
+        attr: 'Joseph Joubert · Pensées · c. 1810',
+        sharper: 'the strongest idea is the one that survived the hardest pushback. stress-test your own thesis before someone else does.',
+        dos: ['steelman the opposing position before dismissing it', 'debate the idea — not the person holding it', 'invite challenge as a quality-assurance mechanism'],
+        donts: ['settle into comfort without testing your assumptions', 'mistake social agreement for logical validity', 'confuse the loudest argument with the strongest one']
+      },
+      {
+        id: 'ct4', name: 'the mirror',
+        icon: '◉',
+        quote: 'To know what you know and what you do not know — that is true knowledge.',
+        attr: 'Confucius · Analects · c. 500 BC',
+        sharper: 'your blind spots don\'t feel like blind spots. map the edge of what you actually know. that edge is the interesting part.',
+        dos: ['say "I don\'t know" — and mean it as a start, not an end', 'map your genuine uncertainty explicitly', 'treat the edge of your knowledge as territory to explore'],
+        donts: ['perform certainty to avoid looking uninformed', 'mistake confidence for competence', 'stop asking questions when you feel you understand something']
+      },
+      {
+        id: 'ct5', name: 'the question',
+        icon: '?',
+        quote: 'Judge a man by his questions rather than his answers.',
+        attr: 'attributed to Voltaire · c. 1750s',
+        sharper: 'most bad decisions start as bad questions. reframe the question before you answer it.',
+        dos: ['spend time on the question before rushing to the answer', 'ask: are we solving the right problem?', 'use reframing as a first-line tool — not a last resort'],
+        donts: ['accept the question as given without examining it', 'let urgency collapse your inquiry window', 'reward quick answers over good questions']
+      },
+      {
+        id: 'ct6', name: 'the anchor',
+        icon: '⚓',
+        quote: 'The first step in the acquisition of wisdom is silence, the second listening, the third memory, the fourth practice, the fifth teaching others.',
+        attr: 'Solomon Ibn Gabirol · c. 1050 AD',
+        sharper: 'you can\'t think clearly while talking. the quietest person in the argument usually has the most room to think.',
+        dos: ['build deliberate silence into your thinking process', 'listen to understand — then think — then speak', 'protect your cognitive space from noise'],
+        donts: ['fill silence with noise to seem engaged', 'think out loud when the moment requires thinking in private', 'mistake immediate response for clear thinking']
+      },
+      {
+        id: 'ct7', name: 'the dissenter',
+        icon: 'ψ',
+        quote: 'In questions of science, the authority of a thousand is not worth the humble reasoning of a single individual.',
+        attr: 'Galileo Galilei · c. 1630',
+        sharper: 'consensus is not evidence. large groups can be confidently wrong. check the reasoning, not the headcount.',
+        dos: ['evaluate arguments on their logic, not their popularity', 'be willing to hold a position alone if the reasoning holds', 'treat your dissent as a hypothesis, not a verdict'],
+        donts: ['defer to authority without checking the evidence', 'confuse social proof with logical proof', 'dissent as performance — only do it when you have a case']
+      },
+      {
+        id: 'ct8', name: 'the empty cup',
+        icon: '○',
+        quote: 'The mind is not a vessel to be filled but a fire to be kindled.',
+        attr: 'Plutarch · On Listening to Lectures · c. 100 AD',
+        sharper: 'you can\'t learn what you think you already know. show up as a beginner, even to topics you\'ve studied.',
+        dos: ['approach familiar subjects as if encountering them fresh', 'notice when expertise becomes a barrier to learning', 'keep the gap open — ask the obvious question'],
+        donts: ['let mastery close your mind to new angles', 'confuse knowing the vocabulary with understanding the thing', 'let your identity as an expert prevent genuine inquiry']
+      }
+    ]
+  },
+  {
+    id: 'communication',
+    name: 'communication',
+    icon: '≋',
+    meta: '8 cards · language · listening · presence',
+    cards: [
+      {
+        id: 'cm1', name: 'the pause',
+        icon: '—',
+        quote: 'Silence is the sleep that nourishes wisdom.',
+        attr: 'Francis Bacon · c. 1597',
+        sharper: 'what you don\'t say shapes the room as much as what you do. a deliberate pause is a full sentence.',
+        dos: ['use silence intentionally — it signals confidence, not absence', 'pause before responding in high-stakes conversations', 'let others fill silence rather than doing it for them'],
+        donts: ['rush to fill silence with words that dilute your point', 'mistake quiet for passivity', 'over-explain what a single well-placed pause could communicate']
+      },
+      {
+        id: 'cm2', name: 'the echo',
+        icon: '≋',
+        quote: 'The wise man hears one word and understands two.',
+        attr: 'Yiddish proverb · traditional',
+        sharper: 'half of what someone says lives between the lines. train your ear for the unsaid.',
+        dos: ['listen for what\'s not being said as much as what is', 'reflect back what you\'re hearing to test your understanding', 'notice the emotional register underneath the content'],
+        donts: ['take words at face value in emotionally charged exchanges', 'listen only to respond, not to understand', 'miss the subtext while focusing on the text']
+      },
+      {
+        id: 'cm3', name: 'the bridge',
+        icon: '⌁',
+        quote: 'Speak clearly, if you speak at all; carve every word before you let it fall.',
+        attr: 'Oliver Wendell Holmes Sr. · c. 1858',
+        sharper: 'vagueness is not kindness. clarity is. say the thing clearly so the other person doesn\'t have to decode you.',
+        dos: ['name the thing directly — don\'t orbit it', 'edit your communication before sending, not after', 'choose precision over warmth when they conflict'],
+        donts: ['mistake hedging for politeness', 'let ambiguity protect you from discomfort', 'be kind in tone while being unclear in substance']
+      },
+      {
+        id: 'cm4', name: 'the witness',
+        icon: '◦',
+        quote: 'Speech is silver, silence is golden.',
+        attr: 'Thomas Carlyle · Sartor Resartus · 1831',
+        sharper: 'not every moment calls for your voice. knowing when to hold back is a skill, not a weakness.',
+        dos: ['ask yourself: does this need saying? does it need saying by me?', 'develop the discipline of voluntary silence', 'let others take space — sometimes that\'s the gift'],
+        donts: ['fill every pause with your opinion', 'speak to be seen rather than to contribute', 'mistake contribution with volume']
+      },
+      {
+        id: 'cm5', name: 'the frequency',
+        icon: '~',
+        quote: 'He that talks much errs much.',
+        attr: 'Spanish proverb · traditional',
+        sharper: 'high output isn\'t high communication. every extra word you send costs the listener attention. be worth the spend.',
+        dos: ['ruthlessly edit — remove what\'s redundant before sending', 'respect the other person\'s attention as a finite resource', 'measure communication by impact, not volume'],
+        donts: ['confuse thoroughness with length', 'add words to seem more credible', 'CC everyone — communicate to the person who needs it']
+      },
+      {
+        id: 'cm6', name: 'the reframe',
+        icon: '⟲',
+        quote: 'Language is the dress of thought.',
+        attr: 'Samuel Johnson · c. 1779',
+        sharper: 'how you name a problem shapes how you solve it. rename it and watch different options appear.',
+        dos: ['try at least two framings before committing to one', 'notice when the language you\'re using is limiting the options you see', 'use reframing as a tool — offer it to others when they\'re stuck'],
+        donts: ['let the first label stick — labels carry assumptions', 'mistake the framing for the fact', 'use positive reframing to avoid dealing with a real problem']
+      },
+      {
+        id: 'cm7', name: 'the rain',
+        icon: '▲',
+        quote: 'Raise your words, not your voice. It is rain that grows flowers, not thunder.',
+        attr: 'Rumi · c. 1250 AD',
+        sharper: 'volume is not emphasis. intensity is not weight. the quieter point often lands harder.',
+        dos: ['reduce force to increase precision', 'bring calm to conversations that are heating up', 'let the quality of your words carry the weight, not the delivery'],
+        donts: ['raise your voice when you want to be taken seriously', 'mistake forcefulness for conviction', 'let the room\'s emotional temperature set yours']
+      },
+      {
+        id: 'cm8', name: 'the open door',
+        icon: '⊂',
+        quote: 'Nature gave us one tongue and two ears so we could hear twice as much as we speak.',
+        attr: 'Epictetus · c. 100 AD',
+        sharper: 'your default is to respond. your practice is to receive. there\'s a difference, and it shows.',
+        dos: ['listen to the full thought before forming your response', 'repeat back what you heard before adding your own view', 'notice your body — are you really listening, or just waiting?'],
+        donts: ['plan your response while the other person is still talking', 'treat listening as a passive gap between your turns to speak', 'make people feel heard by performing listening — do the real thing']
+      }
+    ]
+  },
+  {
+    id: 'psychology',
+    name: 'psychology',
+    icon: '◐',
+    meta: '8 cards · self · pattern · motive',
+    cards: [
+      {
+        id: 'ps1', name: 'the shadow',
+        icon: '◐',
+        quote: 'We are not troubled by things, but by the opinions we have about things.',
+        attr: 'Epictetus · Enchiridion · c. 100 AD',
+        sharper: 'the reaction that surprises you most about yourself — that\'s the zip file. unpack it before it unpacks you in public.',
+        dos: ['track your strongest emotional reactions as data points', 'ask: what story am I telling myself here?', 'bring the uncomfortable reaction into the light rather than suppressing it'],
+        donts: ['take your emotional reactions at face value', 'suppress what you don\'t understand about yourself', 'let unexplored reactions run your decisions']
+      },
+      {
+        id: 'ps2', name: 'the wound',
+        icon: '♡',
+        quote: 'The most common form of despair is not being who you are.',
+        attr: 'Søren Kierkegaard · c. 1849',
+        sharper: 'most people-pleasing is a wound wearing a smile. know which of your "nice" behaviours are chosen and which are fear.',
+        dos: ['distinguish between genuine generosity and approval-seeking', 'notice when you\'re agreeing to avoid discomfort', 'ask: who would I be if I wasn\'t afraid of this reaction?'],
+        donts: ['call fear "kindness" — name it accurately', 'sacrifice your position to keep the peace reflexively', 'confuse accommodation with virtue']
+      },
+      {
+        id: 'ps3', name: 'the pattern',
+        icon: '⟡',
+        quote: 'Habit is either the best of servants or the worst of masters.',
+        attr: 'Nathaniel Emmons · c. 1820s',
+        sharper: 'your habits are your autobiography. the story they\'re telling — is it the one you want?',
+        dos: ['audit your daily habits as if reading a biography', 'design your environment to make good habits frictionless', 'treat habits as infrastructure — they\'re running everything'],
+        donts: ['leave habit formation to chance', 'rely on willpower over system design', 'confuse the identity you want with the habits you actually have']
+      },
+      {
+        id: 'ps4', name: 'the projection',
+        icon: '⌂',
+        quote: 'The eye altering alters all.',
+        attr: 'William Blake · The Mental Traveller · c. 1803',
+        sharper: 'when someone irritates you, ask what you recognise. irritation is almost always information about yourself, not them.',
+        dos: ['treat strong reactions to others as mirrors, not verdicts', 'ask: what in me is this triggering?', 'use irritation as a self-diagnosis tool'],
+        donts: ['project your unexplored qualities onto others as flaws', 'assume your reading of someone is accurate without checking', 'treat your perception as the whole story']
+      },
+      {
+        id: 'ps5', name: 'the loop',
+        icon: '↺',
+        quote: 'Know thyself.',
+        attr: 'Inscription at the Temple of Delphi · attributed to Socrates · c. 400 BC',
+        sharper: 'the choices that feel inevitable are usually just unfamiliar. necessity is often a habit that forgot it was optional.',
+        dos: ['question "I have to" and replace it with "I choose to"', 'identify where autopilot is running your life', 'break small patterns to build the muscle for breaking large ones'],
+        donts: ['mistake familiarity for necessity', 'stay in loops because leaving feels too hard', 'let unconscious patterns impersonate fate']
+      },
+      {
+        id: 'ps6', name: 'the need',
+        icon: '●',
+        quote: 'Man is by nature a social animal.',
+        attr: 'Aristotle · Politics · c. 350 BC',
+        sharper: 'belonging is not a weakness — it\'s load-bearing infrastructure. the need for connection doesn\'t diminish you. denying it does.',
+        dos: ['acknowledge your social needs as real, not indulgent', 'invest in connection as a strategic priority, not a luxury', 'reach out before you need to — not only in crisis'],
+        donts: ['perform independence to seem stronger than you feel', 'neglect relationships in service of productivity', 'mistake isolation for strength']
+      },
+      {
+        id: 'ps7', name: 'the trigger',
+        icon: '⚡',
+        quote: 'You have power over your mind — not outside events. Realize this, and you will find strength.',
+        attr: 'Marcus Aurelius · Meditations · c. 170 AD',
+        sharper: 'the trigger isn\'t the problem. the automatic response is. find the gap and you find the leverage.',
+        dos: ['practise the pause between stimulus and response', 'identify your three most consistent triggers', 'design a response you\'d be proud of before you need it'],
+        donts: ['let your triggers make your decisions', 'blame the trigger for the reaction', 'confuse the automatic response with who you actually are']
+      },
+      {
+        id: 'ps8', name: 'the inner child',
+        icon: '★',
+        quote: 'In every real man a child is hidden that wants to play.',
+        attr: 'Friedrich Nietzsche · Thus Spoke Zarathustra · c. 1883',
+        sharper: 'the thing you wanted at seven still lives in what you want at forty. understanding one unlocks the other.',
+        dos: ['take your early longings seriously as clues to present needs', 'notice what "play" looks like for you now — protect it', 'connect your adult ambitions back to their original feeling'],
+        donts: ['dismiss early experiences as irrelevant to your present', 'confuse maturity with the elimination of joy', 'analyse your childhood instead of feeling it']
+      }
+    ]
+  },
+  {
+    id: 'philosophy',
+    name: 'philosophy',
+    icon: '∞',
+    meta: '8 cards · meaning · time · existence',
+    cards: [
+      {
+        id: 'ph1', name: 'the paradox',
+        icon: '∅',
+        quote: 'I know that I know nothing.',
+        attr: 'attributed to Socrates · via Plato · c. 400 BC',
+        sharper: 'the more you learn, the larger the border between you and the unknown. expertise is mostly a map of what you don\'t yet know.',
+        dos: ['treat your growing uncertainty as a sign of genuine learning', 'say "I don\'t know" as a starting position, not a confession', 'build comfort with not-knowing as a long-term practice'],
+        donts: ['confuse the feeling of understanding with actual understanding', 'let expertise close you to new information', 'mistake the map for the territory']
+      },
+      {
+        id: 'ph2', name: 'the moment',
+        icon: '◷',
+        quote: 'It is not that we have so little time but that we lose so much.',
+        attr: 'Seneca · On the Shortness of Life · c. 49 AD',
+        sharper: 'every distraction is a vote against your own life. the hours you protect are the ones that define you.',
+        dos: ['protect time for what matters before it gets filled with what doesn\'t', 'treat attention as your most non-renewable resource', 'ask: am I spending or investing this hour?'],
+        donts: ['let busyness substitute for purpose', 'defer the things that matter to a future that may not arrive', 'confuse activity with aliveness']
+      },
+      {
+        id: 'ph3', name: 'the examined life',
+        icon: '△',
+        quote: 'The unexamined life is not worth living.',
+        attr: 'Socrates · as reported by Plato · Apology · c. 399 BC',
+        sharper: 'most people are too busy to check whether they\'re living what they actually value. schedule the reckoning before the reckoning schedules you.',
+        dos: ['create a regular audit of what you\'re actually living vs. what you say you value', 'ask the uncomfortable questions while there\'s still time to change course', 'make self-examination a habit, not a crisis response'],
+        donts: ['stay busy to avoid looking', 'let comfort be the only criterion for your life choices', 'defer the hard inventory to some quieter future']
+      },
+      {
+        id: 'ph4', name: 'the river',
+        icon: '≈',
+        quote: 'You cannot step into the same river twice.',
+        attr: 'Heraclitus · c. 500 BC',
+        sharper: 'the version of you that was right last year might be wrong this year. stay current with yourself.',
+        dos: ['update your beliefs when the evidence changes', 'allow yourself to contradict who you were', 'treat change as data — not as a threat to consistency'],
+        donts: ['hold positions past their usefulness to seem consistent', 'expect your old solutions to solve your new problems', 'confuse identity with fixed positions']
+      },
+      {
+        id: 'ph5', name: 'the dice',
+        icon: '⎈',
+        quote: 'Fortune favors the prepared mind.',
+        attr: 'Louis Pasteur · address at the University of Lille · 1854',
+        sharper: 'luck is a function of exposure. the more attempts you make, the more "accidental" your success appears.',
+        dos: ['show up consistently — that\'s most of the game', 'prepare in depth so you can act in the moment', 'increase the surface area of your luck through volume and readiness'],
+        donts: ['wait to be discovered — go where the opportunities are', 'attribute success entirely to skill or entirely to luck — it\'s both', 'mistake preparation for prediction']
+      },
+      {
+        id: 'ph6', name: 'the cave',
+        icon: '◧',
+        quote: 'We can easily forgive a child who is afraid of the dark; the real tragedy is when men are afraid of the light.',
+        attr: 'attributed to Plato · c. 380 BC',
+        sharper: 'the comfortable story is rarely the accurate one. the truth that makes you uncomfortable is usually the one worth sitting with.',
+        dos: ['pursue the uncomfortable truth over the comfortable explanation', 'ask: what am I not letting myself see here?', 'build a tolerance for cognitive discomfort — it\'s the signal of real learning'],
+        donts: ['choose the explanation that protects your current worldview', 'mistake comfort for correctness', 'avoid the question that might require you to change']
+      },
+      {
+        id: 'ph7', name: 'the stage',
+        icon: '□',
+        quote: 'Act well your part; there all the honor lies.',
+        attr: 'Alexander Pope · An Essay on Man · c. 1733',
+        sharper: 'your role doesn\'t diminish you. how you show up within it does. bring full presence to the smaller stages — that\'s where character is built.',
+        dos: ['bring your full self to small moments as well as large ones', 'find meaning in the role you\'re in now, not the one you want', 'let how you do anything speak for how you do everything'],
+        donts: ['save your best for an audience', 'treat mundane responsibilities as beneath your real potential', 'defer presence to the important-seeming moments']
+      },
+      {
+        id: 'ph8', name: 'the whole',
+        icon: '⊙',
+        quote: 'The whole is more than the sum of its parts.',
+        attr: 'Aristotle · Metaphysics · c. 350 BC',
+        sharper: 'you are not your function. you are not your title. what persists across all your roles is the self worth knowing.',
+        dos: ['tend to the self that exists across all contexts', 'notice what doesn\'t change about you regardless of role', 'invest in who you are, not just what you do'],
+        donts: ['let a title or role become your whole identity', 'reduce yourself to your usefulness', 'neglect the integrated self in favour of the performing self']
+      }
+    ]
+  }
+];
+
+const COUNT_HINTS = {
+  1: '1 card · the oracle · one pure signal',
+  2: '2 cards · the binary · tension and resolution',
+  3: '3 cards · the triad · past, present, potential',
+  4: '4 cards · the compass · north, south, east, west',
+  5: '5 cards · the full hand · complete the picture'
+};
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+
+const state = {
+  archetype: null,
+  quizAnswers: {},
+  currentQ: 0,
+  selectedDecks: new Set(),
+  drawCount: 3,
+  drawnCards: [],
+  flippedCards: new Set(),
+  favorites: new Set(JSON.parse(localStorage.getItem('sharp_favs') || '[]')),
+  readingGenerated: false
+};
+
+function saveFavs() {
+  localStorage.setItem('sharp_favs', JSON.stringify([...state.favorites]));
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + screenId);
+  if (el) {
+    el.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  if (screenId === 'favs') renderFavs();
+}
+
+// ═══════════════════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════════════════
+
+function startQuiz() {
+  state.quizAnswers = {};
+  state.currentQ = 0;
+  goTo('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUIZ[state.currentQ];
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-sub').textContent = q.sub;
+  document.getElementById('quiz-counter').textContent = `${state.currentQ + 1} of ${QUIZ.length}`;
+  document.getElementById('quiz-back-btn').style.display = state.currentQ > 0 ? 'inline-block' : 'none';
+  for (let i = 0; i < 5; i++) {
+    document.getElementById('pip-' + i).className = 'quiz-pip' + (i < state.currentQ ? ' filled' : '');
+  }
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, idx) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-opt' + (state.quizAnswers[state.currentQ] === opt.arch ? ' selected' : '');
+    div.textContent = opt.text;
+    div.onclick = () => selectAnswer(opt.arch, idx);
+    opts.appendChild(div);
+  });
+}
+
+function selectAnswer(arch, idx) {
+  state.quizAnswers[state.currentQ] = arch;
+  document.querySelectorAll('.quiz-opt').forEach((o, i) => {
+    o.classList.toggle('selected', i === idx);
+  });
+  setTimeout(() => {
+    if (state.currentQ < QUIZ.length - 1) {
+      state.currentQ++;
+      renderQuestion();
+    } else {
+      resolveArchetype();
+    }
+  }, 280);
+}
+
+function quizBack() {
+  if (state.currentQ > 0) { state.currentQ--; renderQuestion(); }
+}
+
+function resolveArchetype() {
+  const scores = {};
+  Object.values(state.quizAnswers).forEach(a => { scores[a] = (scores[a] || 0) + 1; });
+  const top = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  state.archetype = ARCHETYPES[top] || ARCHETYPES.wanderer;
+  renderArchetype();
+  goTo('archetype');
+}
+
+function renderArchetype() {
+  const a = state.archetype;
+  document.getElementById('archetype-content').innerHTML = `
+    <div class="archetype-glyph">${a.glyph}</div>
+    <div class="archetype-badge">your archetype</div>
+    <div class="archetype-name">${a.name}</div>
+    <div class="archetype-divider"></div>
+    <div class="archetype-desc">${a.desc}</div>
+    <div class="archetype-traits">${a.traits.map(t => `<span class="trait-chip">${t}</span>`).join('')}</div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════
+//  DECKS
+// ═══════════════════════════════════════════════════════
+
+function initDecks() {
+  const grid = document.getElementById('deck-grid');
+  grid.innerHTML = '';
+  const recommended = state.archetype ? state.archetype.recommended : [];
+  DECKS.forEach(deck => {
+    const isRec = recommended.includes(deck.id);
+    const div = document.createElement('div');
+    div.className = 'deck-card' + (state.selectedDecks.has(deck.id) ? ' selected' : '');
+    div.id = 'deck-card-' + deck.id;
+    div.innerHTML = `
+      <div class="deck-card-icon">${deck.icon}</div>
+      <div class="deck-card-info">
+        <div class="deck-card-name">${deck.name}${isRec ? ' ·  ✦ suggested' : ''}</div>
+        <div class="deck-card-meta">${deck.meta}</div>
+      </div>
+      <div class="deck-card-check">◈</div>
+    `;
+    div.onclick = () => toggleDeck(deck.id);
+    grid.appendChild(div);
+  });
+  updateDeckCount();
+}
+
+function toggleDeck(id) {
+  if (state.selectedDecks.has(id)) {
+    state.selectedDecks.delete(id);
+    document.getElementById('deck-card-' + id).classList.remove('selected');
+  } else {
+    state.selectedDecks.add(id);
+    document.getElementById('deck-card-' + id).classList.add('selected');
+  }
+  updateDeckCount();
+}
+
+function updateDeckCount() {
+  document.getElementById('deck-count-n').textContent = state.selectedDecks.size;
+}
+
+function proceedToCount() {
+  if (state.selectedDecks.size === 0) {
+    alert('select at least one deck first');
+    return;
+  }
+  goTo('count');
+}
+
+// ═══════════════════════════════════════════════════════
+//  DRAW COUNT
+// ═══════════════════════════════════════════════════════
+
+function setCount(n) {
+  state.drawCount = n;
+  document.querySelectorAll('.count-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.n) === n);
+  });
+  document.getElementById('draw-hint').textContent = COUNT_HINTS[n] || '';
+}
+
+// ═══════════════════════════════════════════════════════
+//  CARD DRAW
+// ═══════════════════════════════════════════════════════
+
+function getAllCards() {
+  return DECKS.filter(d => state.selectedDecks.has(d.id)).flatMap(d => d.cards);
+}
+
+function drawCards() {
+  const pool = getAllCards();
+  if (pool.length === 0) return;
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  state.drawnCards = shuffled.slice(0, Math.min(state.drawCount, shuffled.length));
+  state.flippedCards = new Set();
+  state.readingGenerated = false;
+  renderSpread();
+  goTo('spread');
+}
+
+function renderSpread() {
+  const spread = document.getElementById('card-spread');
+  spread.innerHTML = '';
+  state.drawnCards.forEach((card, i) => {
+    spread.appendChild(buildCard(card, i));
+  });
+  document.getElementById('reading-section').style.display = 'none';
+  document.getElementById('reading-output').innerHTML = '';
+  document.getElementById('reading-prompt').style.display = 'block';
+  checkAllFlipped();
+}
+
+function buildCard(card, idx) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'tarot-card';
+  wrapper.id = 'card-wrapper-' + card.id;
+  wrapper.innerHTML = `
+    <div class="tarot-card-inner">
+      <div class="card-back">
+        <div class="card-back-pattern">
+          <div class="card-back-glyph">◈</div>
+          <div class="card-back-text">sharp · wisdom</div>
+        </div>
+        <div class="card-tap-hint">tap to reveal</div>
+      </div>
+      <div class="card-face">
+        <div class="card-face-top">
+          <div class="card-face-deck">${getDeckName(card.id)}</div>
+          <div class="card-face-icon">${card.icon}</div>
+          <div class="card-face-name">${card.name}</div>
+        </div>
+        <div class="card-face-body">
+          <div class="card-quote">"${card.quote}"</div>
+          <div class="card-attr">${card.attr}</div>
+          <div class="card-divider"></div>
+          <div class="card-sharper">${card.sharper}</div>
+        </div>
+        <div class="card-face-footer">
+          <button class="fav-btn${state.favorites.has(card.id) ? ' active' : ''}"
+            onclick="toggleFav('${card.id}', event)" title="save card">
+            ${state.favorites.has(card.id) ? '★' : '☆'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  wrapper.querySelector('.tarot-card-inner').addEventListener('click', (e) => {
+    if (!e.target.closest('.fav-btn')) flipCard(card.id, wrapper);
+  });
+  return wrapper;
+}
+
+function getDeckName(cardId) {
+  const deck = DECKS.find(d => d.cards.some(c => c.id === cardId));
+  return deck ? deck.name : '';
+}
+
+function flipCard(cardId, wrapper) {
+  if (state.flippedCards.has(cardId)) return;
+  state.flippedCards.add(cardId);
+  wrapper.classList.add('flipped');
+  checkAllFlipped();
+}
+
+function checkAllFlipped() {
+  const allFlipped = state.drawnCards.every(c => state.flippedCards.has(c.id));
+  document.getElementById('reading-section').style.display = allFlipped ? 'block' : 'none';
+  document.getElementById('reading-prompt').style.display = allFlipped ? 'none' : 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+//  FAVORITES
+// ═══════════════════════════════════════════════════════
+
+function toggleFav(cardId, event) {
+  event.stopPropagation();
+  const btn = event.currentTarget;
+  if (state.favorites.has(cardId)) {
+    state.favorites.delete(cardId);
+    btn.textContent = '☆';
+    btn.classList.remove('active');
+  } else {
+    state.favorites.add(cardId);
+    btn.textContent = '★';
+    btn.classList.add('active');
+  }
+  saveFavs();
+}
+
+function renderFavs() {
+  const content = document.getElementById('favs-content');
+  if (state.favorites.size === 0) {
+    content.innerHTML = `
+      <div class="favs-empty">
+        <div class="favs-empty-icon">☆</div>
+        <div class="t-mono" style="color:var(--warm-grey)">no saved cards yet</div>
+        <div style="margin-top:0.5rem;font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--warm-grey)">draw cards and tap ☆ to save them here</div>
+      </div>`;
+    return;
+  }
+  const allCards = DECKS.flatMap(d => d.cards);
+  const favCards = allCards.filter(c => state.favorites.has(c.id));
+  content.innerHTML = `<div class="t-label" style="margin-bottom:1rem">${favCards.length} card${favCards.length !== 1 ? 's' : ''} saved</div>`;
+  const grid = document.createElement('div');
+  grid.className = 'favs-grid';
+  favCards.forEach(card => {
+    const w = buildCard(card, 0);
+    w.classList.add('flipped');
+    grid.appendChild(w);
+  });
+  content.appendChild(grid);
+}
+
+// ═══════════════════════════════════════════════════════
+//  READING OF THE DAY
+// ═══════════════════════════════════════════════════════
+
+function generateReading() {
+  if (state.readingGenerated) return;
+  state.readingGenerated = true;
+
+  const cards = state.drawnCards;
+  const archName = state.archetype ? state.archetype.name : 'the seeker';
+  const cardNames = cards.map(c => c.name).join(', ');
+
+  const allDos = cards.flatMap(c => c.dos);
+  const allDonts = cards.flatMap(c => c.donts);
+  const shufflePick = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n);
+  const dos = shufflePick(allDos, 3);
+  const donts = shufflePick(allDonts, 3);
+
+  const synthesis = buildSynthesis(cards, archName);
+
+  const html = `
+    <div class="reading-panel">
+      <div class="reading-header">
+        <div class="reading-header-glyph">✦</div>
+        <div>
+          <div class="reading-header-text">reading of the day · ${archName}</div>
+          <div class="reading-title">what this draw is pointing at</div>
+        </div>
+      </div>
+      <div class="reading-synthesis">${synthesis}</div>
+      <div class="reading-cols">
+        <div>
+          <div class="reading-col-label do">three do's</div>
+          <ul class="reading-list do">
+            ${dos.map(d => `<li>${d}</li>`).join('')}
+          </ul>
+        </div>
+        <div>
+          <div class="reading-col-label dont">three don'ts</div>
+          <ul class="reading-list dont">
+            ${donts.map(d => `<li>${d}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      <div class="reading-cards-used">cards drawn · ${cardNames}</div>
+    </div>`;
+
+  document.getElementById('reading-output').innerHTML = html;
+  document.getElementById('reading-output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildSynthesis(cards, archName) {
+  const themes = cards.map(c => c.sharper.split('.')[0].trim());
+  const openers = [
+    `today's draw gathers around a single thread:`,
+    `three cards, one underlying current:`,
+    `what these cards share is more than coincidence:`,
+    `read together, these cards point somewhere specific:`
+  ];
+  const middles = [
+    `${themes[0]}. and beneath that,`,
+    `on one side, ${themes[0]}; on the other,`
+  ];
+
+  if (cards.length === 1) {
+    return `one card today — and it's enough. ${themes[0]}. sit with that.`;
+  }
+  if (cards.length === 2) {
+    return `${openers[1]} ${themes[0]}. and on the other hand, ${themes[1] || themes[0]}. these two are in conversation — notice where they touch.`;
+  }
+  return `${openers[Math.floor(Math.random() * openers.length)]} ${themes[0]}. ${themes[1] ? 'and then: ' + themes[1] + '.' : ''} the third card adds texture: ${themes[2] || 'the rest is yours to interpret'}. your reading today is an invitation, not a verdict.`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════════
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+
+// Wire up deck grid when deck screen becomes visible
+const deckScreen = document.getElementById('screen-decks');
+const originalGoTo = goTo;
+window.goTo = function(id) {
+  originalGoTo(id);
+  if (id === 'decks') initDecks();
+};
+
+// Set initial count selection
+setCount(3);
+</script>
+</body>
+</html>
