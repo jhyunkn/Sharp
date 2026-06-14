@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>sharp · wisdom cards</title>
+<title>sharper · wisdom cards</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -78,6 +78,97 @@ body {
   color: var(--warm-grey);
 }
 .sep { width: 36px; height: 1px; background: var(--gold-pale); margin: 1.2rem 0; }
+
+/* ════════════════════════════════════
+   LANDING SCREEN
+════════════════════════════════════ */
+#screen-landing {
+  display: none;
+  min-height: 100vh;
+  padding: 0;
+  animation: fadeUp 0.4s ease both;
+}
+#screen-landing.active { display: flex; flex-direction: column; justify-content: center; }
+
+.landing-inner {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 4rem 2rem 5rem;
+  width: 100%;
+}
+
+.landing-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.landing-logo span { color: var(--gold); }
+
+.landing-tagline {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--warm-grey);
+  margin-bottom: 2.2rem;
+}
+
+.landing-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 2.5rem;
+}
+.landing-pill {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  padding: 0.3rem 0.7rem;
+  border: 1.5px solid var(--cream-deep);
+  color: var(--warm-grey);
+  background: var(--card-face);
+}
+.landing-pill .pi { color: var(--gold-light); margin-right: 0.25rem; }
+
+.landing-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--gold-pale);
+  margin-bottom: 2.5rem;
+}
+
+.landing-welcome {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.2rem;
+  border: 1.5px solid var(--cream-deep);
+  background: var(--card-face);
+}
+.landing-welcome-glyph {
+  font-size: 2rem;
+  color: var(--gold);
+  font-family: monospace;
+  flex-shrink: 0;
+}
+.landing-welcome-text {}
+.landing-welcome-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+  margin-bottom: 0.25rem;
+}
+.landing-welcome-name {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
 
 /* ════════════════════════════════════
    QUIZ + ARCHETYPE SCREENS
@@ -214,7 +305,10 @@ body {
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--ink);
+  cursor: pointer;
+  transition: opacity 0.12s;
 }
+.topbar-logo:hover { opacity: 0.7; }
 .topbar-logo span { color: var(--gold); }
 .arch-pill {
   display: flex;
@@ -262,6 +356,18 @@ body {
 }
 .tab-btn:hover { color: var(--ink); }
 .tab-btn.active { color: var(--ink); border-bottom-color: var(--black); }
+
+/* focus banner */
+.focus-banner {
+  padding: 0.4rem 1.5rem;
+  background: var(--cream-deep);
+  border-bottom: 1px solid var(--gold-pale);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  color: var(--warm-grey);
+  letter-spacing: 0.08em;
+}
+.focus-banner span { color: var(--gold); }
 
 /* ── tab panels ── */
 .tab-panel { display: none; padding: 1.5rem 1.5rem 2rem; animation: fadeUp 0.25s ease both; }
@@ -323,7 +429,7 @@ body {
   position: relative;
   padding: 1.2rem 0.5rem 1.5rem;
   margin: 0 -0.5rem;
-  cursor: none; /* hide default cursor in grid */
+  cursor: none;
 }
 
 /* custom cursor dot */
@@ -423,8 +529,8 @@ body {
 
 /* ── tarot card (full size) ── */
 .tarot-card {
-  width: 170px;
-  height: 280px;
+  width: 178px;
+  height: 305px;
   perspective: 900px;
   flex-shrink: 0;
 }
@@ -471,85 +577,102 @@ body {
   color: #4a4030;
 }
 
-/* card face */
+/* ── NEW card face layout ── */
 .card-face {
   background: var(--card-face);
   transform: rotateY(180deg);
   display: flex;
   flex-direction: column;
+  padding: 0.65rem 0.7rem 0.5rem;
   overflow: hidden;
+  gap: 0;
 }
-.cf-top {
-  padding: 0.8rem 0.8rem 0.5rem;
-  border-bottom: 1px solid var(--cream-deep);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-}
+
+/* deck label row */
 .cf-deck {
   font-family: 'Space Mono', monospace;
-  font-size: 0.42rem;
+  font-size: 0.4rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--warm-grey);
+  margin-bottom: 0.5rem;
+}
+
+/* quote — visually dominant */
+.cf-quote {
+  font-family: 'IM Fell English', serif;
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.42;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+/* attribution */
+.cf-attr {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.38rem;
+  color: var(--warm-grey);
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.45rem;
+}
+
+/* gold divider */
+.cf-div {
+  width: 100%;
+  height: 1px;
+  background: var(--gold-pale);
+  margin-bottom: 0.45rem;
+}
+
+/* icon + name row */
+.cf-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  margin-bottom: 0.45rem;
 }
 .cf-icon {
-  font-size: 2rem;
+  font-size: 1.3rem;
   line-height: 1;
   color: var(--gold);
   font-family: monospace;
-  margin: 0.3rem 0;
 }
 .cf-name {
   font-family: 'Space Mono', monospace;
-  font-size: 0.54rem;
+  font-size: 0.52rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: lowercase;
   text-align: center;
   color: var(--ink);
 }
-.cf-body {
-  flex: 1;
-  padding: 0.7rem 0.7rem 0;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  scrollbar-width: none;
-}
-.cf-body::-webkit-scrollbar { display: none; }
-.cf-quote {
-  font-family: 'IM Fell English', serif;
-  font-size: 0.68rem;
-  font-style: italic;
-  line-height: 1.45;
-  color: var(--warm-grey);
-}
-.cf-attr {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.4rem;
-  color: var(--warm-grey);
-  opacity: 0.65;
-  letter-spacing: 0.04em;
-}
-.cf-div { width: 20px; height: 1px; background: var(--gold-pale); }
+
+/* sharper interpretation — secondary */
 .cf-sharper {
   font-family: 'IM Fell English', serif;
-  font-size: 0.75rem;
-  line-height: 1.5;
+  font-size: 0.63rem;
+  line-height: 1.45;
   color: var(--ink);
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
-.cf-after { height: 1.8rem; flex-shrink: 0; }
+
+/* fav button at bottom right */
 .cf-footer {
-  padding: 0.3rem 0.6rem 0.5rem;
   display: flex;
   justify-content: flex-end;
-  background: linear-gradient(to bottom, transparent 0%, var(--card-face) 60%);
-  margin-top: -1.4rem;
-  position: relative;
-  z-index: 1;
+  padding-top: 0.3rem;
+  flex-shrink: 0;
 }
 .fav-btn {
   background: none;
@@ -635,9 +758,20 @@ body {
   color: #c8beae;
   padding-left: 0.9rem;
   position: relative;
+  cursor: pointer;
+  transition: color 0.12s;
 }
 .rp-list.do li::before { content: '▸'; position: absolute; left: 0; color: #7ab88a; font-size: 0.65rem; top: 0.1rem; }
 .rp-list.dont li::before { content: '▸'; position: absolute; left: 0; color: #c27a7a; font-size: 0.65rem; top: 0.1rem; }
+.rp-list.do li.focus-selected {
+  color: var(--gold-light);
+  background: rgba(168,131,30,0.12);
+  padding: 0.3rem 0.9rem;
+  border-left: 2px solid var(--gold);
+  margin-left: -2px;
+}
+.rp-list.do li:hover { color: #e8d9a8; }
+
 .rp-cards-used {
   margin-top: 1rem;
   padding-top: 0.7rem;
@@ -648,9 +782,93 @@ body {
   text-transform: uppercase;
   color: #3a3228;
 }
+
+/* ── reading end state extras ── */
+.rp-extras {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #3a3228;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.rp-extra-btn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  color: var(--warm-grey);
+  border: 1.5px solid #3a3228;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.12s, border-color 0.12s;
+}
+.rp-extra-btn:hover { color: var(--cream); border-color: var(--warm-grey); }
+.rp-extra-btn.success { color: #7ab88a; border-color: #7ab88a; }
+
+.focus-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+  margin-top: 0.3rem;
+  display: none;
+}
+.focus-label.visible { display: block; }
+.focus-label span { color: var(--gold-light); }
+
+/* reflect section */
+.reflect-section {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1.5px solid #3a3228;
+  background: rgba(255,255,255,0.03);
+}
+.reflect-section.open { display: block; }
+.reflect-prompt {
+  font-family: 'IM Fell English', serif;
+  font-size: 0.76rem;
+  font-style: italic;
+  color: #c8beae;
+  line-height: 1.5;
+  margin-bottom: 0.7rem;
+}
+.reflect-textarea {
+  width: 100%;
+  min-height: 100px;
+  background: transparent;
+  border: 1px solid #3a3228;
+  color: var(--cream);
+  font-family: 'IM Fell English', serif;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  padding: 0.6rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.12s;
+}
+.reflect-textarea:focus { border-color: var(--warm-grey); }
+.reflect-textarea::placeholder { color: #3a3228; }
+.reflect-saved {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.46rem;
+  letter-spacing: 0.1em;
+  color: var(--warm-grey);
+  margin-top: 0.4rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.reflect-saved.show { opacity: 1; }
+
 .new-draw-btn {
   width: 100%;
-  margin-top: 0.8rem;
+  margin-top: 0.4rem;
   padding: 0.7rem;
   background: transparent;
   color: var(--warm-grey);
@@ -676,7 +894,7 @@ body {
 ════════════════════════════════════ */
 @media (max-width: 400px) {
   .mini-card { width: 44px; height: 70px; }
-  .tarot-card { width: 148px; height: 248px; }
+  .tarot-card { width: 152px; height: 260px; }
   .rp-cols { grid-template-columns: 1fr; }
 }
 </style>
@@ -684,11 +902,44 @@ body {
 <body>
 
 <!-- ════════════════════════════════════
+     LANDING SCREEN
+════════════════════════════════════ -->
+<div id="screen-landing">
+  <div class="landing-inner">
+    <div class="landing-logo">sharp<span>◈</span>r</div>
+    <div class="landing-tagline">daily wisdom, drawn by hand</div>
+
+    <div class="landing-pills">
+      <div class="landing-pill"><span class="pi">⚔</span>leadership</div>
+      <div class="landing-pill"><span class="pi">◉</span>critical thinking</div>
+      <div class="landing-pill"><span class="pi">≋</span>communication</div>
+      <div class="landing-pill"><span class="pi">◐</span>psychology</div>
+      <div class="landing-pill"><span class="pi">∞</span>philosophy</div>
+    </div>
+
+    <div class="landing-rule"></div>
+
+    <div id="landing-welcome" class="landing-welcome" style="display:none">
+      <div class="landing-welcome-glyph" id="lw-glyph">◈</div>
+      <div class="landing-welcome-text">
+        <div class="landing-welcome-label">welcome back</div>
+        <div class="landing-welcome-name" id="lw-name">—</div>
+      </div>
+    </div>
+
+    <div id="landing-cta" style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center">
+      <button class="btn" id="landing-btn">begin →</button>
+      <div class="t-label" id="landing-sub-label" style="font-size:0.52rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
      QUIZ SCREEN
 ════════════════════════════════════ -->
-<div id="screen-quiz" class="solo-screen active">
+<div id="screen-quiz" class="solo-screen">
   <div style="padding: 1.5rem 0 2.5rem; display:flex; justify-content:space-between; align-items:center;">
-    <div style="font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--ink)">sh<span style="color:var(--gold)">◈</span>rp</div>
+    <div style="font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--ink)">sharp<span style="color:var(--gold)">◈</span>r</div>
     <div class="t-label">archetype quiz</div>
   </div>
   <div class="quiz-progress" id="quiz-progress">
@@ -724,12 +975,17 @@ body {
 
   <!-- top bar -->
   <div class="topbar">
-    <div class="topbar-logo">sh<span>◈</span>rp</div>
+    <div class="topbar-logo" onclick="showScreen('landing')">sharp<span>◈</span>r</div>
     <div class="arch-pill" id="arch-pill" onclick="reassessPrompt()">
       <span class="arch-pill-glyph" id="ap-glyph">◈</span>
       <span id="ap-name">—</span>
       <span class="arch-pill-reassess">reassess ↻</span>
     </div>
+  </div>
+
+  <!-- focus banner -->
+  <div class="focus-banner hidden" id="focus-banner">
+    today's focus: <span id="focus-banner-text"></span>
   </div>
 
   <!-- tabs -->
@@ -917,7 +1173,7 @@ const DECKS = [
         dos:['reframe obstacles as formative, not obstructive','stay in uncomfortable situations long enough to learn from them','ask what the hard moment is teaching you'],
         donts:['escape difficulty prematurely — you\'ll only repeat the lesson','interpret resistance as the wrong direction','protect others from the struggle that would develop them'] },
       { id:'l8', name:'the long game', icon:'∞',
-        quote:'All human actions have one or more of these seven causes: chance, nature, compulsion, habit, reason, passion, desire.',
+        quote:'All human actions spring from seven causes: chance, nature, compulsion, habit, reason, passion, desire.',
         attr:'Aristotle · Rhetoric · c. 350 BC',
         sharper:'before you react to behaviour, ask which of these seven drove it. the diagnosis changes everything.',
         dos:['diagnose before you respond — what\'s actually driving this?','distinguish habit from choice, passion from reason','take the long view when others are locked in the short one'],
@@ -958,7 +1214,7 @@ const DECKS = [
         dos:['spend time on the question before rushing to the answer','ask: are we solving the right problem?','use reframing as a first-line tool — not a last resort'],
         donts:['accept the question as given without examining it','let urgency collapse your inquiry window','reward quick answers over good questions'] },
       { id:'ct6', name:'the anchor', icon:'⚓',
-        quote:'The first step in the acquisition of wisdom is silence, the second listening, the third memory, the fourth practice, the fifth teaching others.',
+        quote:'The first step in wisdom is silence; the second, listening.',
         attr:'Solomon Ibn Gabirol · c. 1050 AD',
         sharper:'you can\'t think clearly while talking. the quietest person in the argument usually has the most room to think.',
         dos:['build deliberate silence into your thinking process','listen to understand — then think — then speak','protect your cognitive space from noise'],
@@ -1147,18 +1403,18 @@ const state = {
   quizAnswers: {},
   currentQ: 0,
   selectedDecks: new Set(),
-  tableCards: [],      // 25-card pool currently on the table
-  pickedCards: [],     // up to 3 chosen cards
-  favorites: new Set(JSON.parse(localStorage.getItem('sharp_favs') || '[]')),
+  tableCards: [],
+  pickedCards: [],
+  favorites: new Set(JSON.parse(localStorage.getItem('sharper_favs') || '[]')),
   readingDone: false
 };
 
 function saveFavs() {
-  localStorage.setItem('sharp_favs', JSON.stringify([...state.favorites]));
+  localStorage.setItem('sharper_favs', JSON.stringify([...state.favorites]));
 }
 
 function loadArchetype() {
-  const saved = localStorage.getItem('sharp_archetype');
+  const saved = localStorage.getItem('sharper_archetype');
   if (saved) {
     try { return JSON.parse(saved); } catch(e) { return null; }
   }
@@ -1166,7 +1422,11 @@ function loadArchetype() {
 }
 
 function saveArchetype(a) {
-  localStorage.setItem('sharp_archetype', JSON.stringify(a));
+  localStorage.setItem('sharper_archetype', JSON.stringify(a));
+}
+
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 // ════════════════════════════════════
@@ -1177,18 +1437,43 @@ function saveArchetype(a) {
   const saved = loadArchetype();
   if (saved) {
     state.archetype = saved;
-    enterApp();
-  } else {
-    showScreen('quiz');
-    renderQuestion();
   }
+  showLanding();
 })();
+
+function showLanding() {
+  const saved = state.archetype;
+  const welcomeEl = document.getElementById('landing-welcome');
+  const btnEl = document.getElementById('landing-btn');
+  const subLabel = document.getElementById('landing-sub-label');
+
+  if (saved) {
+    welcomeEl.style.display = 'flex';
+    document.getElementById('lw-glyph').textContent = saved.glyph;
+    document.getElementById('lw-name').textContent = saved.name;
+    btnEl.textContent = 'continue →';
+    subLabel.textContent = '40 cards across 5 decks';
+    btnEl.onclick = () => enterApp();
+  } else {
+    welcomeEl.style.display = 'none';
+    btnEl.textContent = 'begin →';
+    subLabel.textContent = 'takes 2 minutes · no account needed';
+    btnEl.onclick = () => { showScreen('quiz'); renderQuestion(); };
+  }
+
+  showScreen('landing');
+}
 
 function showScreen(id) {
   document.querySelectorAll('.solo-screen').forEach(s => s.classList.remove('active'));
   document.getElementById('app').classList.remove('active');
+  const landing = document.getElementById('screen-landing');
+  landing.classList.remove('active');
+
   if (id === 'app') {
     document.getElementById('app').classList.add('active');
+  } else if (id === 'landing') {
+    landing.classList.add('active');
   } else {
     const el = document.getElementById('screen-' + id);
     if (el) el.classList.add('active');
@@ -1199,6 +1484,7 @@ function showScreen(id) {
 function enterApp() {
   updateArchPill();
   initDeckPills();
+  updateFocusBanner();
   showScreen('app');
 }
 
@@ -1264,7 +1550,7 @@ function resolveArchetype() {
 
 function reassessPrompt() {
   if (confirm('retake the archetype quiz? your current archetype will be replaced.')) {
-    localStorage.removeItem('sharp_archetype');
+    localStorage.removeItem('sharper_archetype');
     state.archetype = null;
     state.quizAnswers = {};
     state.currentQ = 0;
@@ -1281,6 +1567,17 @@ function updateArchPill() {
   if (!state.archetype) return;
   document.getElementById('ap-glyph').textContent = state.archetype.glyph;
   document.getElementById('ap-name').textContent = state.archetype.name;
+}
+
+function updateFocusBanner() {
+  const focus = localStorage.getItem('sharper_focus');
+  const banner = document.getElementById('focus-banner');
+  if (focus) {
+    document.getElementById('focus-banner-text').textContent = focus;
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
 }
 
 function switchTab(id, btn) {
@@ -1334,7 +1631,6 @@ function rebuildTable() {
     return;
   }
 
-  // shuffle and take up to 25
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   state.tableCards = shuffled.slice(0, 25);
   state.pickedCards = [];
@@ -1393,7 +1689,7 @@ function setupProximityEffect() {
       const cy = cr.top - rect.top + cr.height / 2;
       const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
       const prox = Math.max(0, 1 - dist / RADIUS);
-      const eased = prox * prox; // ease-in for more natural falloff
+      const eased = prox * prox;
       card.style.setProperty('--glow', eased.toFixed(3));
     });
   });
@@ -1417,13 +1713,11 @@ function pickCard(card, miniEl) {
   state.pickedCards.push(card);
   miniEl.classList.add('taken');
 
-  // show pulled section
   const pulled = document.getElementById('pulled-section');
   pulled.classList.remove('hidden');
   document.getElementById('pulled-label').textContent =
     `${state.pickedCards.length} card${state.pickedCards.length !== 1 ? 's' : ''} drawn · ${3 - state.pickedCards.length} remaining`;
 
-  // append full card (face down first, then flip)
   const spread = document.getElementById('pulled-spread');
   const cardEl = buildFullCard(card);
   cardEl.style.opacity = '0';
@@ -1439,7 +1733,6 @@ function pickCard(card, miniEl) {
     }, 350);
   });
 
-  // exhaust remaining cards if 3 picked
   if (state.pickedCards.length >= 3) {
     document.querySelectorAll('.mini-card:not(.taken)').forEach(m => m.classList.add('exhausted'));
     document.getElementById('pulled-label').textContent = '3 cards drawn · spread complete';
@@ -1451,7 +1744,7 @@ function pickCard(card, miniEl) {
 }
 
 // ════════════════════════════════════
-//  FULL CARD
+//  FULL CARD (new layout)
 // ════════════════════════════════════
 
 function getDeckName(cardId) {
@@ -1467,22 +1760,19 @@ function buildFullCard(card) {
       <div class="card-back-face">
         <div class="cb-inner">
           <div class="cb-glyph">◈</div>
-          <div class="cb-text">sharp · wisdom</div>
+          <div class="cb-text">sharper · wisdom</div>
         </div>
       </div>
       <div class="card-face">
-        <div class="cf-top">
-          <div class="cf-deck">${getDeckName(card.id)}</div>
+        <div class="cf-deck">${getDeckName(card.id)}</div>
+        <div class="cf-quote">"${card.quote}"</div>
+        <div class="cf-attr">${card.attr}</div>
+        <div class="cf-div"></div>
+        <div class="cf-identity">
           <div class="cf-icon">${card.icon}</div>
           <div class="cf-name">${card.name}</div>
         </div>
-        <div class="cf-body">
-          <div class="cf-quote">"${card.quote}"</div>
-          <div class="cf-attr">${card.attr}</div>
-          <div class="cf-div"></div>
-          <div class="cf-sharper">${card.sharper}</div>
-          <div class="cf-after"></div>
-        </div>
+        <div class="cf-sharper">${card.sharper}</div>
         <div class="cf-footer">
           <button class="fav-btn ${state.favorites.has(card.id) ? 'on' : ''}"
             onclick="toggleFav('${card.id}', event)">
@@ -1565,6 +1855,13 @@ function generateReading() {
   else if (cards.length === 2) synth = `two cards, one thread: ${themes[0]}. and underneath that — ${themes[1]}. they're in conversation.`;
   else synth = `three cards, one undercurrent: ${themes[0]}. then: ${themes[1]}. the third adds texture — ${themes[2]}. your reading is an invitation, not a verdict.`;
 
+  // reflection prompt
+  const reflectPrompt = cards.length >= 1
+    ? `what does "${cards[0].sharper.split('.')[0].trim()}" bring up for you right now? write without editing.`
+    : 'what is this draw pointing at for you today? write without editing.';
+
+  const dosHtml = dos.map((d, i) => `<li data-focus="${d.replace(/"/g,'&quot;')}" onclick="setFocus(this)">${d}</li>`).join('');
+
   document.getElementById('reading-output').innerHTML = `
     <div class="reading-panel">
       <div class="rp-header">
@@ -1577,8 +1874,9 @@ function generateReading() {
       <div class="rp-synth">${synth}</div>
       <div class="rp-cols">
         <div>
-          <div class="rp-col-label do">three do's</div>
-          <ul class="rp-list do">${dos.map(d=>`<li>${d}</li>`).join('')}</ul>
+          <div class="rp-col-label do">three do's <span style="font-size:0.44rem;opacity:0.5;font-weight:400">tap to set focus</span></div>
+          <ul class="rp-list do" id="dos-list">${dosHtml}</ul>
+          <div class="focus-label" id="focus-label">your focus for today: <span id="focus-label-text"></span></div>
         </div>
         <div>
           <div class="rp-col-label dont">three don'ts</div>
@@ -1586,12 +1884,108 @@ function generateReading() {
         </div>
       </div>
       <div class="rp-cards-used">cards drawn · ${cards.map(c=>c.name).join(' · ')}</div>
-      <button class="new-draw-btn" onclick="resetDraw()">↺ draw again from the same decks</button>
+
+      <div class="rp-extras">
+        <button class="rp-extra-btn" id="save-all-btn" onclick="saveAllCards(this)">★ save all cards</button>
+
+        <button class="rp-extra-btn" onclick="toggleReflect(this)">✎ reflect</button>
+        <div class="reflect-section" id="reflect-section">
+          <div class="reflect-prompt">${reflectPrompt}</div>
+          <textarea class="reflect-textarea" id="reflect-textarea"
+            placeholder="start writing..."
+            oninput="saveReflection(this.value)"></textarea>
+          <div class="reflect-saved" id="reflect-saved">saved ✓</div>
+        </div>
+
+        <button class="new-draw-btn" onclick="resetDraw()">↺ draw again from the same decks</button>
+      </div>
     </div>`;
+
+  // restore focus if set
+  const savedFocus = localStorage.getItem('sharper_focus');
+  if (savedFocus) {
+    document.querySelectorAll('#dos-list li').forEach(li => {
+      if (li.dataset.focus === savedFocus) {
+        li.classList.add('focus-selected');
+        document.getElementById('focus-label').classList.add('visible');
+        document.getElementById('focus-label-text').textContent = savedFocus;
+      }
+    });
+  }
+
+  // restore journal
+  const savedJournal = localStorage.getItem('sharper_journal_' + getTodayKey());
+  if (savedJournal) {
+    const ta = document.getElementById('reflect-textarea');
+    if (ta) ta.value = savedJournal;
+  }
 
   setTimeout(() => {
     document.getElementById('reading-output').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
+}
+
+function setFocus(liEl) {
+  const text = liEl.dataset.focus;
+  // deselect all
+  document.querySelectorAll('#dos-list li').forEach(l => l.classList.remove('focus-selected'));
+  liEl.classList.add('focus-selected');
+  localStorage.setItem('sharper_focus', text);
+  document.getElementById('focus-label').classList.add('visible');
+  document.getElementById('focus-label-text').textContent = text;
+  updateFocusBanner();
+}
+
+function saveAllCards(btn) {
+  state.pickedCards.forEach(card => {
+    state.favorites.add(card.id);
+  });
+  saveFavs();
+  btn.textContent = 'cards saved ★';
+  btn.classList.add('success');
+  // update fav buttons on cards
+  state.pickedCards.forEach(card => {
+    document.querySelectorAll('.fav-btn').forEach(fb => {
+      // find by parent card
+    });
+  });
+  // update all visible fav buttons
+  document.querySelectorAll('.fav-btn').forEach(fb => {
+    const cardId = fb.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+    if (cardId && state.favorites.has(cardId)) {
+      fb.textContent = '★';
+      fb.classList.add('on');
+    }
+  });
+}
+
+let reflectDebounce;
+function saveReflection(text) {
+  clearTimeout(reflectDebounce);
+  reflectDebounce = setTimeout(() => {
+    localStorage.setItem('sharper_journal_' + getTodayKey(), text);
+    const savedEl = document.getElementById('reflect-saved');
+    if (savedEl) {
+      savedEl.classList.add('show');
+      setTimeout(() => savedEl.classList.remove('show'), 1800);
+    }
+  }, 600);
+}
+
+function toggleReflect(btn) {
+  const section = document.getElementById('reflect-section');
+  const isOpen = section.classList.contains('open');
+  if (isOpen) {
+    section.classList.remove('open');
+    btn.textContent = '✎ reflect';
+  } else {
+    section.classList.add('open');
+    btn.textContent = '✎ close reflection';
+    setTimeout(() => {
+      const ta = document.getElementById('reflect-textarea');
+      if (ta) ta.focus();
+    }, 100);
+  }
 }
 </script>
 </body>
