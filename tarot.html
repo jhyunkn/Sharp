@@ -8,1985 +8,997 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream: #f0ead8;
-  --cream-deep: #e8e0c8;
-  --black: #1a1714;
-  --gold: #a8831e;
-  --gold-light: #c9a84c;
-  --gold-pale: #e8d9a8;
-  --shadow: #6b5a3e;
-  --warm-grey: #8a7d6a;
-  --card-face: #f5f0e2;
-  --card-back: #1c1814;
-  --ink: #2a2318;
-  --glow-color: 168, 131, 30;
+  --cream: #f2ece0;
+  --cream-deep: #e8dfc8;
+  --black: #18150f;
+  --gold: #9a7818;
+  --shadow: #6a5538;
+  --border: 1.5px solid var(--shadow);
+  --radius: 4px;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
 body {
-  background: var(--cream);
+  background-color: var(--cream);
+  background-image: radial-gradient(var(--cream-deep) 1px, transparent 1px);
+  background-size: 24px 24px;
   color: var(--black);
   font-family: 'Space Mono', monospace;
   min-height: 100vh;
-  overflow-x: hidden;
 }
-
-/* ════════════════════════════════════
-   SHARED
-════════════════════════════════════ */
-.hidden { display: none !important; }
-
-.btn {
-  display: inline-block;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: lowercase;
-  padding: 0.65rem 1.3rem;
-  background: var(--black);
-  color: var(--cream);
-  border: 2px solid var(--black);
-  box-shadow: 4px 4px 0 var(--shadow);
-  cursor: pointer;
-  transition: box-shadow 0.1s, transform 0.1s;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  background: rgba(242,236,224,0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: var(--border);
 }
-.btn:hover  { box-shadow: 6px 6px 0 var(--shadow); transform: translate(-1px,-1px); }
-.btn:active { box-shadow: 2px 2px 0 var(--shadow); transform: translate(1px,1px); }
-.btn-ghost {
-  background: transparent;
-  color: var(--black);
-  box-shadow: 3px 3px 0 var(--black);
-  border-color: var(--black);
-}
-.btn-ghost:hover { box-shadow: 5px 5px 0 var(--black); }
-.btn-gold {
-  background: var(--gold);
-  color: var(--cream);
-  border-color: var(--gold);
-}
-.btn-sm { padding: 0.4rem 0.85rem; font-size: 0.6rem; }
-
-.t-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-}
-.sep { width: 36px; height: 1px; background: var(--gold-pale); margin: 1.2rem 0; }
-
-/* ════════════════════════════════════
-   LANDING SCREEN
-════════════════════════════════════ */
-#screen-landing {
-  display: none;
-  min-height: 100vh;
-  padding: 0;
-  animation: fadeUp 0.4s ease both;
-}
-#screen-landing.active { display: flex; flex-direction: column; justify-content: center; }
-
-.landing-inner {
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 4rem 2rem 5rem;
-  width: 100%;
-}
-
-.landing-logo {
-  font-family: 'Space Mono', monospace;
-  font-size: 2.4rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  margin-bottom: 0.5rem;
-}
-.landing-logo span { color: var(--gold); }
-
-.landing-tagline {
-  font-family: 'IM Fell English', serif;
-  font-size: 1.05rem;
-  font-style: italic;
-  color: var(--warm-grey);
-  margin-bottom: 2.2rem;
-}
-
-.landing-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 2.5rem;
-}
-.landing-pill {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
-  text-transform: lowercase;
-  padding: 0.3rem 0.7rem;
-  border: 1.5px solid var(--cream-deep);
-  color: var(--warm-grey);
-  background: var(--card-face);
-}
-.landing-pill .pi { color: var(--gold-light); margin-right: 0.25rem; }
-
-.landing-rule {
-  width: 100%;
-  height: 1px;
-  background: var(--gold-pale);
-  margin-bottom: 2.5rem;
-}
-
-.landing-welcome {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 1.2rem;
-  border: 1.5px solid var(--cream-deep);
-  background: var(--card-face);
-}
-.landing-welcome-glyph {
-  font-size: 2rem;
-  color: var(--gold);
-  font-family: monospace;
-  flex-shrink: 0;
-}
-.landing-welcome-text {}
-.landing-welcome-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.52rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-  margin-bottom: 0.25rem;
-}
-.landing-welcome-name {
+.logo {
   font-family: 'IM Fell English', serif;
   font-size: 1.1rem;
-  color: var(--ink);
-}
-
-/* ════════════════════════════════════
-   QUIZ + ARCHETYPE SCREENS
-════════════════════════════════════ */
-.solo-screen {
-  display: none;
-  min-height: 100vh;
-  padding: 2.5rem 1.5rem 4rem;
-  max-width: 580px;
-  margin: 0 auto;
-  animation: fadeUp 0.3s ease both;
-}
-.solo-screen.active { display: block; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* quiz */
-.quiz-progress { display: flex; gap: 0.3rem; margin-bottom: 2rem; }
-.quiz-pip { height: 3px; flex: 1; background: var(--cream-deep); transition: background 0.25s; }
-.quiz-pip.filled { background: var(--black); }
-.quiz-q {
-  font-family: 'IM Fell English', serif;
-  font-size: 1.35rem;
-  line-height: 1.35;
-  color: var(--ink);
-  margin-bottom: 0.4rem;
-}
-.quiz-sub {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  color: var(--warm-grey);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 1.8rem;
-}
-.quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
-.quiz-opt {
-  padding: 0.9rem 1.1rem;
-  border: 2px solid var(--cream-deep);
-  background: var(--card-face);
   cursor: pointer;
-  font-family: 'IM Fell English', serif;
-  font-size: 1rem;
-  line-height: 1.4;
-  box-shadow: 3px 3px 0 transparent;
-  transition: border-color 0.12s, box-shadow 0.12s, background 0.12s;
+  letter-spacing: 0.02em;
+  color: var(--black);
+  text-decoration: none;
 }
-.quiz-opt:hover { border-color: var(--black); box-shadow: 3px 3px 0 var(--black); }
-.quiz-opt.selected { border-color: var(--black); background: var(--black); color: var(--cream); box-shadow: 3px 3px 0 var(--shadow); }
+.nav { display: flex; gap: 4px; }
+.nav-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Space Mono', monospace; font-size: 0.7rem;
+  color: var(--shadow); padding: 6px 12px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  border-radius: var(--radius);
+  transition: color 0.2s, background 0.2s;
+}
+.nav-btn:hover { color: var(--black); background: var(--cream-deep); }
+.nav-btn.on { color: var(--black); border-bottom: 2px solid var(--gold); }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.lang-btn {
+  background: none; border: var(--border); cursor: pointer;
+  font-family: 'Space Mono', monospace; font-size: 0.65rem;
+  color: var(--shadow); padding: 4px 10px;
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.lang-btn:hover { color: var(--gold); border-color: var(--gold); }
+.reassess-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  color: var(--shadow); padding: 4px 8px;
+  text-decoration: underline;
+}
+.screen { display: none; }
+.screen.on { display: block; }
+main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
 
-/* archetype */
-.arch-reveal {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2.5rem 0;
-  gap: 1rem;
+/* LANDING */
+.landing-hero {
+  text-align: center; padding: 80px 0 60px;
 }
-.arch-glyph {
-  font-size: 4rem;
-  color: var(--gold);
-  font-family: monospace;
-  line-height: 1;
-  margin-bottom: 0.3rem;
+.landing-title {
+  font-family: 'IM Fell English', serif;
+  font-size: 3.2rem; font-weight: 400;
+  letter-spacing: -0.01em; margin-bottom: 16px;
 }
-.arch-badge {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-  background: var(--cream-deep);
-  padding: 0.25rem 0.7rem;
+.landing-sub {
+  font-size: 0.72rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--shadow);
+  margin-bottom: 48px;
 }
+.archetype-preview {
+  display: inline-block;
+  border: var(--border); padding: 24px 40px;
+  margin-bottom: 32px; text-align: center;
+  background: rgba(255,255,255,0.4);
+}
+.arch-glyph { font-size: 2rem; margin-bottom: 8px; }
 .arch-name {
   font-family: 'IM Fell English', serif;
-  font-size: 2.1rem;
-  color: var(--ink);
+  font-size: 1.1rem; color: var(--gold);
+  margin-bottom: 6px;
 }
-.arch-desc {
+.arch-traits { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--shadow); text-transform: uppercase; }
+.cta-btn {
+  display: inline-block;
+  border: var(--border); background: var(--black);
+  color: var(--cream); cursor: pointer;
+  font-family: 'Space Mono', monospace; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 14px 36px; border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.cta-btn:hover { background: var(--shadow); }
+.cta-btn.secondary {
+  background: none; color: var(--black);
+  margin-left: 12px;
+}
+.cta-btn.secondary:hover { background: var(--cream-deep); }
+
+/* QUIZ */
+.quiz-wrap { max-width: 540px; margin: 0 auto; padding: 48px 0; }
+.quiz-title {
   font-family: 'IM Fell English', serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--warm-grey);
-  max-width: 360px;
-  font-style: italic;
+  font-size: 1.5rem; margin-bottom: 8px;
 }
-.arch-traits {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  justify-content: center;
+.quiz-progress { font-size: 0.65rem; color: var(--shadow); letter-spacing: 0.1em; margin-bottom: 40px; }
+.quiz-q {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.1rem; font-style: italic;
+  margin-bottom: 28px; line-height: 1.6;
 }
-.trait-chip {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.55rem;
-  border: 1.5px solid var(--gold);
-  color: var(--gold);
+.quiz-opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.quiz-opt {
+  border: var(--border); padding: 14px 20px;
+  cursor: pointer; font-size: 0.8rem;
+  background: rgba(255,255,255,0.4);
+  border-radius: var(--radius); transition: all 0.15s;
+  text-align: left;
 }
+.quiz-opt:hover { background: var(--cream-deep); border-color: var(--gold); }
+.quiz-opt.sel { background: var(--black); color: var(--cream); border-color: var(--black); }
+.quiz-nav { display: flex; gap: 12px; }
+.quiz-nav-btn {
+  border: var(--border); padding: 10px 24px;
+  cursor: pointer; font-family: 'Space Mono', monospace;
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+  background: none; border-radius: var(--radius); transition: all 0.15s;
+}
+.quiz-nav-btn:hover { background: var(--cream-deep); }
+.quiz-nav-btn.primary { background: var(--black); color: var(--cream); border-color: var(--black); }
+.quiz-nav-btn.primary:hover { background: var(--shadow); }
 
-/* ════════════════════════════════════
-   MAIN APP SHELL
-════════════════════════════════════ */
-#app {
-  display: none;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 0 5rem;
-}
-#app.active { display: block; }
+/* ARCHETYPE RESULT */
+.arch-result { text-align: center; padding: 60px 0; max-width: 480px; margin: 0 auto; }
+.arch-result-glyph { font-size: 3rem; margin-bottom: 16px; }
+.arch-result-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--shadow); margin-bottom: 8px; }
+.arch-result-name { font-family: 'IM Fell English', serif; font-size: 2rem; color: var(--gold); margin-bottom: 20px; }
+.arch-result-desc { font-family: 'IM Fell English', serif; font-style: italic; font-size: 1rem; line-height: 1.7; color: var(--black); margin-bottom: 20px; }
+.arch-result-traits { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+.arch-trait { border: var(--border); padding: 4px 12px; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--shadow); }
 
-/* ── top bar ── */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--gold-pale);
-  position: sticky;
-  top: 0;
-  background: var(--cream);
-  z-index: 50;
-}
-.topbar-logo {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--ink);
-  cursor: pointer;
-  transition: opacity 0.12s;
-}
-.topbar-logo:hover { opacity: 0.7; }
-.topbar-logo span { color: var(--gold); }
-.arch-pill {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.08em;
-  text-transform: lowercase;
-  color: var(--warm-grey);
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--cream-deep);
-  transition: border-color 0.12s;
-}
-.arch-pill:hover { border-color: var(--warm-grey); }
-.arch-pill-glyph { color: var(--gold); font-size: 0.9rem; font-family: monospace; }
-.arch-pill-reassess {
-  font-size: 0.48rem;
-  opacity: 0.5;
-  margin-left: 0.2rem;
-}
-
-/* ── tabs ── */
-.tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 2px solid var(--cream-deep);
-  padding: 0 1.5rem;
-}
-.tab-btn {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: lowercase;
-  padding: 0.8rem 1.2rem 0.7rem;
-  background: none;
-  border: none;
-  border-bottom: 2.5px solid transparent;
-  margin-bottom: -2px;
-  cursor: pointer;
-  color: var(--warm-grey);
-  transition: color 0.12s, border-color 0.12s;
-}
-.tab-btn:hover { color: var(--ink); }
-.tab-btn.active { color: var(--ink); border-bottom-color: var(--black); }
-
-/* focus banner */
-.focus-banner {
-  padding: 0.4rem 1.5rem;
-  background: var(--cream-deep);
-  border-bottom: 1px solid var(--gold-pale);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.5rem;
-  color: var(--warm-grey);
-  letter-spacing: 0.08em;
-}
-.focus-banner span { color: var(--gold); }
-
-/* ── tab panels ── */
-.tab-panel { display: none; padding: 1.5rem 1.5rem 2rem; animation: fadeUp 0.25s ease both; }
-.tab-panel.active { display: block; }
-
-/* ════════════════════════════════════
-   DRAW TAB
-════════════════════════════════════ */
-
-/* deck pills */
-.deck-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.2rem;
-}
+/* DECK SCREEN */
+.deck-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
 .deck-pill {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: lowercase;
-  padding: 0.35rem 0.7rem;
-  border: 2px solid var(--cream-deep);
-  background: var(--card-face);
-  cursor: pointer;
-  transition: all 0.12s;
-  box-shadow: 2px 2px 0 transparent;
+  border: var(--border); padding: 8px 18px;
+  cursor: pointer; font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(255,255,255,0.4); border-radius: 20px;
+  transition: all 0.15s;
 }
-.deck-pill:hover { border-color: var(--black); box-shadow: 2px 2px 0 var(--black); }
-.deck-pill.on {
+.deck-pill:hover { border-color: var(--gold); color: var(--gold); }
+.deck-pill.sel { background: var(--black); color: var(--cream); border-color: var(--black); }
+.deck-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.deck-prompt { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--shadow); }
+.shuffle-btn {
+  border: var(--border); padding: 6px 16px;
+  cursor: pointer; font-family: 'Space Mono', monospace;
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em;
+  background: none; border-radius: var(--radius); transition: all 0.15s;
+}
+.shuffle-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* CARD TABLE */
+.card-table {
+  position: relative; min-height: 200px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+  align-items: center; justify-content: center;
+  padding: 24px 8px;
+}
+@media(max-width:560px) {
+  .card-table { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding: 24px 0; }
+}
+.mc {
+  --rot: 0deg; --dy: 0px; --glow: 0;
+  width: 50px; height: 80px;
   background: var(--black);
-  color: var(--cream);
-  border-color: var(--black);
-  box-shadow: 2px 2px 0 var(--shadow);
-}
-.deck-pill .di { color: var(--gold-light); margin-right: 0.2rem; }
-.deck-pill.on .di { color: var(--gold-light); }
-
-.draw-hint-text {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  color: var(--warm-grey);
-  letter-spacing: 0.06em;
-  margin-bottom: 1.8rem;
-}
-
-/* ── card grid ── */
-.grid-section { position: relative; }
-.grid-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-  margin-bottom: 1rem;
-}
-.card-grid-wrap {
-  position: relative;
-  padding: 1.2rem 0.5rem 1.5rem;
-  margin: 0 -0.5rem;
-  cursor: none;
-}
-
-/* custom cursor dot */
-.grid-cursor {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--gold);
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.2s;
-  opacity: 0;
-  z-index: 10;
-  box-shadow: 0 0 12px 4px rgba(var(--glow-color), 0.4);
-}
-
-.card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0.5rem 0.8rem;
-  justify-content: center;
-}
-
-/* mini card */
-.mini-card {
-  --rot: 0deg;
-  --dy: 0px;
-  --glow: 0;
-  width: 52px;
-  height: 82px;
-  background: var(--card-back);
-  border: 1.5px solid #3a3028;
+  border: 1.5px solid var(--shadow);
+  border-radius: 3px;
   cursor: pointer;
-  position: relative;
   flex-shrink: 0;
   transform: rotate(var(--rot)) translateY(var(--dy));
-  box-shadow:
-    2px 2px 0 #0a0806,
-    0 0 calc(var(--glow) * 22px) calc(var(--glow) * 3px)
-      rgba(var(--glow-color), calc(var(--glow) * 0.85));
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.06s ease,
-    opacity 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 2px 3px 0 #080602, 0 0 calc(var(--glow)*18px) calc(var(--glow)*2px) rgba(154,120,24,calc(var(--glow)*0.7));
+  transition: box-shadow 0.1s, transform 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem; color: var(--gold);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.05em;
+  position: relative;
   overflow: hidden;
 }
-.mini-card::before {
-  content: '';
+.mc::after {
+  content: 'S';
+  font-family: 'IM Fell English', serif;
+  font-size: 1.1rem; color: rgba(154,120,24,0.25);
   position: absolute;
-  inset: 3px;
-  border: 1px solid #3a3028;
-  opacity: 0.4;
 }
-.mini-card-inner-glyph {
-  font-size: 1.1rem;
-  color: var(--gold);
-  opacity: calc(0.18 + var(--glow) * 0.5);
-  font-family: monospace;
-  pointer-events: none;
-  transition: opacity 0.08s;
-}
-.mini-card.taken {
-  opacity: 0.18;
-  pointer-events: none;
-  transform: rotate(var(--rot)) translateY(var(--dy)) scale(0.92);
-}
-.mini-card.exhausted {
-  opacity: 0.12;
-  pointer-events: none;
-}
+.mc.picked { border-color: var(--gold); box-shadow: 2px 3px 0 #080602, 0 0 12px 2px rgba(154,120,24,0.5); }
+.mc:hover { transform: rotate(var(--rot)) translateY(calc(var(--dy) - 4px)) scale(1.08); }
+.mc.picked:hover { transform: rotate(var(--rot)) translateY(calc(var(--dy) - 4px)) scale(1.08); }
 
-/* ── pulled cards ── */
-.pulled-section {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--gold-pale);
-}
-.pulled-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-  margin-bottom: 1.2rem;
-}
-.pulled-spread {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
-
-/* ── tarot card (full size) ── */
-.tarot-card {
-  width: 178px;
-  height: 305px;
-  perspective: 900px;
+/* FULL CARDS */
+.picked-area { margin-top: 32px; }
+.picked-row { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px; }
+.wcard-wrap {
+  perspective: 800px;
+  width: 210px; height: 348px;
   flex-shrink: 0;
 }
-.tarot-card-inner {
-  width: 100%;
-  height: 100%;
+.wcard {
+  width: 210px; height: 348px;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1);
+  transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  cursor: default;
 }
-.tarot-card.flipped .tarot-card-inner { transform: rotateY(180deg); }
-.card-face, .card-back-face {
-  position: absolute;
-  inset: 0;
+.wcard.flipped { transform: rotateY(180deg); }
+.wcard-face, .wcard-back {
+  position: absolute; inset: 0;
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border: 2.5px solid var(--black);
-  box-shadow: 5px 5px 0 var(--shadow);
+  border: var(--border);
+  border-radius: 6px;
+  overflow: hidden;
 }
-
-/* card back */
-.card-back-face {
-  background: var(--card-back);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.wcard-back {
+  background: var(--black);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 3px 3px 0 var(--shadow);
 }
-.cb-inner {
-  width: 80%;
-  height: 82%;
-  border: 1px solid #3a3228;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-.cb-glyph { color: var(--gold); font-size: 1.6rem; font-family: monospace; opacity: 0.6; }
-.cb-text {
+.wcard-back-text {
   font-family: 'Space Mono', monospace;
-  font-size: 0.44rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #4a4030;
+  font-size: 0.6rem; color: var(--gold);
+  letter-spacing: 0.15em; text-transform: uppercase;
+  writing-mode: horizontal-tb;
 }
-
-/* ── NEW card face layout ── */
-.card-face {
-  background: var(--card-face);
+.wcard-face {
+  background: var(--cream);
   transform: rotateY(180deg);
-  display: flex;
-  flex-direction: column;
-  padding: 0.65rem 0.7rem 0.5rem;
-  overflow: hidden;
-  gap: 0;
+  display: flex; flex-direction: column;
+  padding: 16px;
+  box-shadow: 3px 3px 0 var(--shadow);
 }
-
-/* deck label row */
-.cf-deck {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.4rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-  margin-bottom: 0.5rem;
+.wcard-deck-label {
+  font-size: 0.55rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--shadow);
+  margin-bottom: 2px;
 }
-
-/* quote — visually dominant */
-.cf-quote {
+.wcard-icon { font-size: 1rem; margin-bottom: 6px; }
+.wcard-name {
   font-family: 'IM Fell English', serif;
-  font-size: 0.78rem;
-  font-style: italic;
-  line-height: 1.42;
-  color: var(--ink);
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  margin-bottom: 0.3rem;
+  font-style: italic; font-size: 0.95rem;
+  color: var(--gold); margin-bottom: 10px;
+  border-bottom: 1px solid var(--cream-deep);
+  padding-bottom: 8px;
 }
-
-/* attribution */
-.cf-attr {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.38rem;
-  color: var(--warm-grey);
-  opacity: 0.7;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.45rem;
-}
-
-/* gold divider */
-.cf-div {
-  width: 100%;
-  height: 1px;
-  background: var(--gold-pale);
-  margin-bottom: 0.45rem;
-}
-
-/* icon + name row */
-.cf-identity {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  margin-bottom: 0.45rem;
-}
-.cf-icon {
-  font-size: 1.3rem;
-  line-height: 1;
-  color: var(--gold);
-  font-family: monospace;
-}
-.cf-name {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.52rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: lowercase;
-  text-align: center;
-  color: var(--ink);
-}
-
-/* sharper interpretation — secondary */
-.cf-sharper {
+.wcard-quote {
   font-family: 'IM Fell English', serif;
-  font-size: 0.63rem;
-  line-height: 1.45;
-  color: var(--ink);
-  flex: 1;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
+  font-size: 0.95rem; line-height: 1.55;
+  flex: 1; color: var(--black);
+  overflow-y: auto; scrollbar-width: none;
+}
+.wcard-quote::-webkit-scrollbar { display: none; }
+.wcard-attr {
+  margin-top: 10px; font-size: 0.58rem;
+  color: var(--shadow); letter-spacing: 0.06em;
+  border-top: 1px solid var(--cream-deep);
+  padding-top: 8px;
 }
 
-/* fav button at bottom right */
-.cf-footer {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 0.3rem;
-  flex-shrink: 0;
-}
-.fav-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.8rem;
-  color: var(--warm-grey);
-  padding: 0.15rem;
-  transition: color 0.12s, transform 0.12s;
-  font-family: monospace;
-  pointer-events: all;
-}
-.fav-btn:hover { color: var(--gold); transform: scale(1.2); }
-.fav-btn.on { color: var(--gold); }
-
-/* ── reading panel ── */
-.reading-wrap { margin-top: 2rem; }
-.reading-unlock-btn {
-  width: 100%;
-  text-align: center;
-  padding: 0.9rem;
-  background: var(--black);
-  color: var(--cream);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: lowercase;
-  border: 2px solid var(--black);
-  box-shadow: 4px 4px 0 var(--shadow);
-  cursor: pointer;
-  transition: box-shadow 0.1s, transform 0.1s;
-}
-.reading-unlock-btn:hover { box-shadow: 6px 6px 0 var(--shadow); transform: translate(-1px,-1px); }
+/* READING */
 .reading-panel {
-  background: var(--black);
-  color: var(--cream);
-  padding: 1.8rem;
-  border: 2px solid var(--black);
-  box-shadow: 6px 6px 0 var(--shadow);
-  margin-top: 0.8rem;
+  border: var(--border); padding: 32px;
+  background: rgba(255,255,255,0.5);
+  border-radius: var(--radius);
+  margin-top: 8px;
 }
-.rp-header {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #3a3228;
-  margin-bottom: 1.2rem;
+.reading-section { margin-bottom: 32px; }
+.reading-section:last-of-type { margin-bottom: 24px; }
+.reading-label {
+  font-size: 0.6rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 12px;
 }
-.rp-glyph { font-size: 1.3rem; color: var(--gold); font-family: monospace; }
-.rp-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-}
-.rp-title { font-family: 'IM Fell English', serif; font-size: 1.1rem; color: var(--cream); margin-top: 0.1rem; }
-.rp-synth {
+.reading-text {
   font-family: 'IM Fell English', serif;
-  font-size: 0.9rem;
-  line-height: 1.65;
-  color: #c8beae;
-  font-style: italic;
-  margin-bottom: 1.3rem;
+  font-size: 1rem; line-height: 1.75;
+  color: var(--black);
 }
-.rp-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-.rp-col-label {
+.reading-action {
   font-family: 'Space Mono', monospace;
-  font-size: 0.52rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 0.7rem;
-}
-.rp-col-label.do { color: #7ab88a; }
-.rp-col-label.dont { color: #c27a7a; }
-.rp-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
-.rp-list li {
-  font-family: 'IM Fell English', serif;
-  font-size: 0.84rem;
-  line-height: 1.4;
-  color: #c8beae;
-  padding-left: 0.9rem;
-  position: relative;
-  cursor: pointer;
-  transition: color 0.12s;
-}
-.rp-list.do li::before { content: '▸'; position: absolute; left: 0; color: #7ab88a; font-size: 0.65rem; top: 0.1rem; }
-.rp-list.dont li::before { content: '▸'; position: absolute; left: 0; color: #c27a7a; font-size: 0.65rem; top: 0.1rem; }
-.rp-list.do li.focus-selected {
-  color: var(--gold-light);
-  background: rgba(168,131,30,0.12);
-  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem; line-height: 1.7;
+  color: var(--black);
   border-left: 2px solid var(--gold);
-  margin-left: -2px;
+  padding-left: 16px;
 }
-.rp-list.do li:hover { color: #e8d9a8; }
+.reading-divider { border: none; border-top: 1px solid var(--cream-deep); margin: 0 0 32px; }
+.save-all-btn {
+  border: var(--border); padding: 10px 24px;
+  cursor: pointer; font-family: 'Space Mono', monospace;
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+  background: none; border-radius: var(--radius); transition: all 0.15s;
+}
+.save-all-btn:hover { background: var(--black); color: var(--cream); }
+.reveal-btn {
+  display: block; width: 100%;
+  border: var(--border); padding: 14px;
+  cursor: pointer; font-family: 'Space Mono', monospace;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em;
+  background: var(--black); color: var(--cream);
+  border-radius: var(--radius); transition: all 0.2s;
+  margin-top: 8px;
+}
+.reveal-btn:hover { background: var(--shadow); }
 
-.rp-cards-used {
-  margin-top: 1rem;
-  padding-top: 0.7rem;
-  border-top: 1px solid #3a3228;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.46rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #3a3228;
+/* ARCHIVE */
+.archive-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.archive-title { font-family: 'IM Fell English', serif; font-size: 1.3rem; }
+.clear-btn {
+  border: var(--border); padding: 6px 14px;
+  cursor: pointer; font-family: 'Space Mono', monospace;
+  font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em;
+  background: none; border-radius: var(--radius);
 }
+.clear-btn:hover { background: var(--cream-deep); }
+.archive-grid { display: flex; flex-wrap: wrap; gap: 20px; }
+.archive-empty { font-size: 0.8rem; color: var(--shadow); font-style: italic; padding: 40px 0; }
 
-/* ── reading end state extras ── */
-.rp-extras {
-  margin-top: 1.2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #3a3228;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.rp-extra-btn {
-  width: 100%;
-  padding: 0.7rem 1rem;
-  background: transparent;
-  color: var(--warm-grey);
-  border: 1.5px solid #3a3228;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: lowercase;
-  cursor: pointer;
-  text-align: left;
-  transition: color 0.12s, border-color 0.12s;
-}
-.rp-extra-btn:hover { color: var(--cream); border-color: var(--warm-grey); }
-.rp-extra-btn.success { color: #7ab88a; border-color: #7ab88a; }
-
-.focus-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.48rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--warm-grey);
-  margin-top: 0.3rem;
-  display: none;
-}
-.focus-label.visible { display: block; }
-.focus-label span { color: var(--gold-light); }
-
-/* reflect section */
-.reflect-section {
-  display: none;
-  margin-top: 0.5rem;
-  padding: 1rem;
-  border: 1.5px solid #3a3228;
-  background: rgba(255,255,255,0.03);
-}
-.reflect-section.open { display: block; }
-.reflect-prompt {
-  font-family: 'IM Fell English', serif;
-  font-size: 0.76rem;
-  font-style: italic;
-  color: #c8beae;
-  line-height: 1.5;
-  margin-bottom: 0.7rem;
-}
-.reflect-textarea {
-  width: 100%;
-  min-height: 100px;
-  background: transparent;
-  border: 1px solid #3a3228;
-  color: var(--cream);
-  font-family: 'IM Fell English', serif;
-  font-size: 0.82rem;
-  line-height: 1.55;
-  padding: 0.6rem;
-  resize: vertical;
-  outline: none;
-  transition: border-color 0.12s;
-}
-.reflect-textarea:focus { border-color: var(--warm-grey); }
-.reflect-textarea::placeholder { color: #3a3228; }
-.reflect-saved {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.46rem;
-  letter-spacing: 0.1em;
-  color: var(--warm-grey);
-  margin-top: 0.4rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.reflect-saved.show { opacity: 1; }
-
-.new-draw-btn {
-  width: 100%;
-  margin-top: 0.4rem;
-  padding: 0.7rem;
-  background: transparent;
-  color: var(--warm-grey);
-  border: 1.5px solid #3a3228;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: lowercase;
-  cursor: pointer;
-  transition: color 0.12s, border-color 0.12s;
-}
-.new-draw-btn:hover { color: var(--cream); border-color: var(--warm-grey); }
-
-/* ════════════════════════════════════
-   SAVED TAB
-════════════════════════════════════ */
-.favs-empty { text-align: center; padding: 4rem 2rem; color: var(--warm-grey); }
-.favs-empty-icon { font-size: 2rem; color: var(--gold-pale); font-family: monospace; margin-bottom: 0.8rem; }
-.favs-grid { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: flex-start; margin-top: 1.2rem; }
-
-/* ════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════ */
-@media (max-width: 400px) {
-  .mini-card { width: 44px; height: 70px; }
-  .tarot-card { width: 152px; height: 260px; }
-  .rp-cols { grid-template-columns: 1fr; }
-}
+/* UTILITY */
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════════
-     LANDING SCREEN
-════════════════════════════════════ -->
-<div id="screen-landing">
-  <div class="landing-inner">
-    <div class="landing-logo">sharp<span>◈</span>r</div>
-    <div class="landing-tagline">daily wisdom, drawn by hand</div>
+<div class="topbar">
+  <span class="logo" id="logo-btn">Sharper.</span>
+  <nav class="nav">
+    <button class="nav-btn on" data-tab="home" id="nav-home">home</button>
+    <button class="nav-btn" data-tab="deck" id="nav-deck">deck</button>
+    <button class="nav-btn" data-tab="archive" id="nav-archive">archive</button>
+  </nav>
+  <div class="topbar-right">
+    <button class="reassess-btn hidden" id="reassess-btn">reassess</button>
+    <button class="lang-btn" id="lang-btn">中文</button>
+  </div>
+</div>
 
-    <div class="landing-pills">
-      <div class="landing-pill"><span class="pi">⚔</span>leadership</div>
-      <div class="landing-pill"><span class="pi">◉</span>critical thinking</div>
-      <div class="landing-pill"><span class="pi">≋</span>communication</div>
-      <div class="landing-pill"><span class="pi">◐</span>psychology</div>
-      <div class="landing-pill"><span class="pi">∞</span>philosophy</div>
-    </div>
-
-    <div class="landing-rule"></div>
-
-    <div id="landing-welcome" class="landing-welcome" style="display:none">
-      <div class="landing-welcome-glyph" id="lw-glyph">◈</div>
-      <div class="landing-welcome-text">
-        <div class="landing-welcome-label">welcome back</div>
-        <div class="landing-welcome-name" id="lw-name">—</div>
+<main>
+  <!-- HOME SCREEN -->
+  <div class="screen on" id="screen-home">
+    <!-- Landing -->
+    <div id="view-landing">
+      <div class="landing-hero">
+        <div class="landing-title" id="landing-title">Sharper.</div>
+        <div class="landing-sub" id="landing-sub">every day, a card. every card, a move.</div>
+        <div id="arch-preview-wrap" class="hidden">
+          <div class="archetype-preview" id="arch-preview"></div>
+          <br>
+        </div>
+        <button class="cta-btn" id="cta-main"></button>
+        <button class="cta-btn secondary hidden" id="cta-secondary"></button>
       </div>
     </div>
-
-    <div id="landing-cta" style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center">
-      <button class="btn" id="landing-btn">begin →</button>
-      <div class="t-label" id="landing-sub-label" style="font-size:0.52rem"></div>
+    <!-- Quiz -->
+    <div id="view-quiz" class="hidden">
+      <div class="quiz-wrap">
+        <div class="quiz-title" id="quiz-title">your archetype awaits</div>
+        <div class="quiz-progress" id="quiz-progress">question 1 of 5</div>
+        <div class="quiz-q" id="quiz-q"></div>
+        <div class="quiz-opts" id="quiz-opts"></div>
+        <div class="quiz-nav">
+          <button class="quiz-nav-btn" id="quiz-back-btn"></button>
+          <button class="quiz-nav-btn primary" id="quiz-next-btn"></button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════
-     QUIZ SCREEN
-════════════════════════════════════ -->
-<div id="screen-quiz" class="solo-screen">
-  <div style="padding: 1.5rem 0 2.5rem; display:flex; justify-content:space-between; align-items:center;">
-    <div style="font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--ink)">sharp<span style="color:var(--gold)">◈</span>r</div>
-    <div class="t-label">archetype quiz</div>
-  </div>
-  <div class="quiz-progress" id="quiz-progress">
-    <div class="quiz-pip" id="pip-0"></div>
-    <div class="quiz-pip" id="pip-1"></div>
-    <div class="quiz-pip" id="pip-2"></div>
-    <div class="quiz-pip" id="pip-3"></div>
-    <div class="quiz-pip" id="pip-4"></div>
-  </div>
-  <div class="t-label" style="margin-bottom:0.8rem">question <span id="quiz-counter">1</span> of 5</div>
-  <div class="quiz-q" id="quiz-question"></div>
-  <div class="quiz-sub" id="quiz-sub"></div>
-  <div class="quiz-options" id="quiz-options"></div>
-  <div style="margin-top:1.5rem">
-    <button class="btn btn-ghost btn-sm" onclick="quizBack()" id="quiz-back-btn" style="display:none">← prev</button>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════
-     ARCHETYPE REVEAL
-════════════════════════════════════ -->
-<div id="screen-archetype" class="solo-screen">
-  <div id="arch-content" class="arch-reveal"></div>
-  <div style="text-align:center; margin-top:1.5rem">
-    <button class="btn" onclick="enterApp()">enter the deck →</button>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════
-     MAIN APP
-════════════════════════════════════ -->
-<div id="app">
-
-  <!-- top bar -->
-  <div class="topbar">
-    <div class="topbar-logo" onclick="showScreen('landing')">sharp<span>◈</span>r</div>
-    <div class="arch-pill" id="arch-pill" onclick="reassessPrompt()">
-      <span class="arch-pill-glyph" id="ap-glyph">◈</span>
-      <span id="ap-name">—</span>
-      <span class="arch-pill-reassess">reassess ↻</span>
+    <!-- Archetype Result -->
+    <div id="view-arch-result" class="hidden">
+      <div class="arch-result" id="arch-result-content"></div>
     </div>
   </div>
 
-  <!-- focus banner -->
-  <div class="focus-banner hidden" id="focus-banner">
-    today's focus: <span id="focus-banner-text"></span>
-  </div>
-
-  <!-- tabs -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('draw', this)">◈ draw</button>
-    <button class="tab-btn" onclick="switchTab('saved', this)">★ saved</button>
-  </div>
-
-  <!-- TAB: draw -->
-  <div id="tab-draw" class="tab-panel active">
-
-    <!-- deck selector -->
-    <div class="t-label" style="margin-bottom:0.6rem">your decks</div>
+  <!-- DECK SCREEN -->
+  <div class="screen" id="screen-deck">
     <div class="deck-pills" id="deck-pills"></div>
-    <div class="draw-hint-text" id="draw-hint-text">pick one or more decks, then choose your cards below</div>
-
-    <!-- card grid -->
-    <div class="grid-section" id="grid-section" style="display:none">
-      <div class="grid-label">
-        <span id="grid-pool-label">25 cards on the table</span>
-        · pick up to 3
+    <div id="deck-table-wrap" class="hidden">
+      <div class="deck-header">
+        <div class="deck-prompt" id="deck-prompt">pick up to 3 cards</div>
+        <button class="shuffle-btn" id="shuffle-btn">shuffle</button>
       </div>
-      <div class="card-grid-wrap" id="card-grid-wrap">
-        <div class="grid-cursor" id="grid-cursor"></div>
-        <div class="card-grid" id="card-grid"></div>
-      </div>
-    </div>
-
-    <!-- pulled cards -->
-    <div class="pulled-section hidden" id="pulled-section">
-      <div class="pulled-label" id="pulled-label">cards drawn</div>
-      <div class="pulled-spread" id="pulled-spread"></div>
-      <div class="reading-wrap" id="reading-wrap" style="display:none">
-        <button class="reading-unlock-btn" onclick="generateReading()">✦ open reading of the day</button>
-        <div id="reading-output"></div>
+      <div class="card-table" id="card-table"></div>
+      <div class="picked-area" id="picked-area">
+        <div class="picked-row" id="picked-row"></div>
+        <button class="reveal-btn hidden" id="reveal-btn"></button>
+        <div id="reading-wrap" class="hidden"></div>
       </div>
     </div>
-
-  </div><!-- /tab-draw -->
-
-  <!-- TAB: saved -->
-  <div id="tab-saved" class="tab-panel">
-    <div class="t-label" style="margin-bottom:0.4rem">your collection</div>
-    <div style="font-family:'IM Fell English',serif;font-size:1.4rem;color:var(--ink);margin-bottom:1.2rem">saved cards</div>
-    <div id="favs-content"></div>
   </div>
 
-</div><!-- /app -->
+  <!-- ARCHIVE SCREEN -->
+  <div class="screen" id="screen-archive">
+    <div class="archive-header">
+      <div class="archive-title" id="arch-tab-title">archive</div>
+      <button class="clear-btn" id="clear-btn"></button>
+    </div>
+    <div id="archive-grid"></div>
+  </div>
+</main>
 
 <script>
-// ════════════════════════════════════
-//  DATA
-// ════════════════════════════════════
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const T = {
+  en: {
+    appName:'Sharper.', appSub:'every day, a card. every card, a move.',
+    beginQuiz:'begin your reading', enterDeck:'enter the deck',
+    shuffle:'shuffle', pickPrompt:'pick up to 3 cards',
+    revealReading:'reveal reading', saveAll:'save all cards',
+    conclusionLabel:'conclusion of the draw', makeThisMove:'make this move',
+    doNotFeed:'do not feed this', eveningQ:'evening question',
+    archive:'archive', deck:'deck', home:'home',
+    emptyArchive:'no saved cards yet.',
+    clearArchive:'clear archive', reassess:'reassess archetype',
+    quizTitle:'your archetype awaits', quizNext:'next', quizBack:'back',
+    archRecommends:'recommended decks', youAre:'you are',
+    enterDeckNow:'enter the deck', saveAllDone:'saved.',
+    deckNames:{ leadership:'Leadership', 'critical-thinking':'Critical Thinking', communication:'Communication', psychology:'Psychology', philosophy:'Philosophy' }
+  },
+  zh: {
+    appName:'锐者。', appSub:'每日，一牌。每牌，一动。',
+    beginQuiz:'开始你的阅读', enterDeck:'进入牌组',
+    shuffle:'洗牌', pickPrompt:'最多选取3张牌',
+    revealReading:'揭示阅读', saveAll:'保存所有牌',
+    conclusionLabel:'抽牌结论', makeThisMove:'今日行动',
+    doNotFeed:'今日禁忌', eveningQ:'夜间问题',
+    archive:'典藏', deck:'牌组', home:'主页',
+    emptyArchive:'尚无保存的牌。',
+    clearArchive:'清除典藏', reassess:'重新评估原型',
+    quizTitle:'你的原型在等待', quizNext:'下一个', quizBack:'返回',
+    archRecommends:'推荐牌组', youAre:'你是',
+    enterDeckNow:'进入牌组', saveAllDone:'已保存。',
+    deckNames:{ leadership:'领导力', 'critical-thinking':'批判思维', communication:'沟通', psychology:'心理学', philosophy:'哲学' }
+  }
+};
 
 const ARCHETYPES = {
-  strategist: {
-    name: 'the strategist', glyph: '⚔',
-    desc: 'you see the field before others enter it. your edge is vision, but your risk is distance.',
-    traits: ['decisive', 'forward-looking', 'pattern-reader', 'chess-minded'],
-    recommended: ['leadership', 'critical-thinking']
-  },
-  seeker: {
-    name: 'the seeker', glyph: '◉',
-    desc: 'you pull at threads until something comes loose. your edge is precision, your risk is perfectionism.',
-    traits: ['analytical', 'questioning', 'rigorous', 'uncomfortable-with-vagueness'],
-    recommended: ['critical-thinking', 'philosophy']
-  },
-  weaver: {
-    name: 'the weaver', glyph: '≋',
-    desc: 'you read rooms the way others read text. your edge is connection, your risk is losing your own thread.',
-    traits: ['empathic', 'communicative', 'relationally-attuned', 'bridger'],
-    recommended: ['communication', 'psychology']
-  },
-  mirror: {
-    name: 'the mirror', glyph: '◐',
-    desc: 'you feel before you think. your edge is depth, your risk is getting lost in it.',
-    traits: ['self-aware', 'pattern-sensitive', 'emotionally-intelligent', 'introspective'],
-    recommended: ['psychology', 'communication']
-  },
-  wanderer: {
-    name: 'the wanderer', glyph: '∞',
-    desc: 'you question what others accept. your edge is perspective, your risk is standing so far back you don\'t act.',
-    traits: ['philosophical', 'systemic', 'meaning-driven', 'long-view'],
-    recommended: ['philosophy', 'leadership']
-  }
+  strategist: { glyph:'⚔', en:{name:'the strategist', desc:'You see the full board before others enter the game. You turn complexity into clarity, and silence into leverage.', traits:['decisive','far-sighted','analytical','composed']}, zh:{name:'谋者', desc:'你在他人入场之前已看见全局。你将复杂化为清晰，将沉默化为筹码。', traits:['果断','前瞻','识势','运筹']}, recommended:['leadership','critical-thinking'] },
+  seeker: { glyph:'◎', en:{name:'the seeker', desc:'You move toward the unknown with curiosity rather than fear. You find meaning in motion and wisdom through direct experience.', traits:['curious','energetic','open','pioneering']}, zh:{name:'寻者', desc:'你以好奇而非恐惧迈向未知。你在运动中寻找意义，在直接体验中获取智慧。', traits:['好奇','活跃','开放','先驱']}, recommended:['philosophy','critical-thinking'] },
+  weaver: { glyph:'⟡', en:{name:'the weaver', desc:'You read between the lines of human interaction. You hold space, connect dots others miss, and move through conflict with grace.', traits:['empathic','perceptive','connective','diplomatic']}, zh:{name:'织者', desc:'你读懂人际互动的字里行间。你创造空间，连接他人忽视的节点，以优雅穿越冲突。', traits:['共情','洞察','连接','圆融']}, recommended:['communication','psychology'] },
+  mirror: { glyph:'◐', en:{name:'the mirror', desc:'You turn the lens inward first. Your depth of self-knowledge becomes a gift to those around you — you reflect what others cannot yet see in themselves.', traits:['introspective','honest','deep','still']}, zh:{name:'镜者', desc:'你首先将镜头对准内心。你的自我认知深度成为周围人的馈赠——你映照出他人尚未看见的自己。', traits:['内省','诚实','深刻','静定']}, recommended:['psychology','philosophy'] },
+  wanderer: { glyph:'∿', en:{name:'the wanderer', desc:'You hold many things at once. You are drawn to edges, to in-between spaces, to questions more than answers. That is your gift.', traits:['fluid','questioning','multi-faceted','independent']}, zh:{name:'游者', desc:'你同时持守众多。你被边缘吸引，被间隙吸引，被问题而非答案吸引。这是你的天赋。', traits:['流动','善问','多面','独立']}, recommended:['philosophy','communication'] }
 };
 
 const QUIZ = [
-  {
-    q: 'when facing a problem, your first move is...',
-    sub: 'honest instinct, not the "right" answer',
-    opts: [
-      { text: 'map it — who, what, when, what levers exist', arch: 'strategist' },
-      { text: 'question it — what are we assuming here?', arch: 'seeker' },
-      { text: 'talk it through with someone I trust', arch: 'weaver' },
-      { text: 'sit with it — what is it revealing about me?', arch: 'mirror' }
-    ]
-  },
-  {
-    q: 'the skill you secretly wish you had more of...',
-    sub: 'the one that feels just out of reach',
-    opts: [
-      { text: 'decisiveness under uncertainty', arch: 'strategist' },
-      { text: 'clarity of mind, cutting through noise', arch: 'seeker' },
-      { text: 'magnetic presence in a room', arch: 'weaver' },
-      { text: 'understanding why I react the way I do', arch: 'mirror' }
-    ]
-  },
-  {
-    q: 'what unsettles you most in other people?',
-    sub: 'the thing you can\'t stand watching',
-    opts: [
-      { text: 'indecision, hedging, no clear direction', arch: 'strategist' },
-      { text: 'sloppy thinking, accepting anything at face value', arch: 'seeker' },
-      { text: 'not listening, talking past each other', arch: 'weaver' },
-      { text: 'zero self-awareness, no inner life', arch: 'mirror' }
-    ]
-  },
-  {
-    q: 'when you\'re most fully yourself, you\'re...',
-    sub: 'the state that feels like home',
-    opts: [
-      { text: 'directing something — a plan, a team, a project', arch: 'strategist' },
-      { text: 'figuring something difficult out, alone or with one other', arch: 'seeker' },
-      { text: 'deep in conversation, genuinely connecting', arch: 'weaver' },
-      { text: 'processing quietly — reading, writing, walking', arch: 'mirror' }
-    ]
-  },
-  {
-    q: 'the word that secretly pulls at you...',
-    sub: 'the one that makes something shift',
-    opts: [
-      { text: 'momentum', arch: 'strategist' },
-      { text: 'clarity', arch: 'seeker' },
-      { text: 'connection', arch: 'weaver' },
-      { text: 'meaning', arch: 'wanderer' }
-    ]
-  }
+  { en:'When facing a complex problem, you first...', zh:'面对复杂问题时，你首先……',
+    opts:[{en:'map all angles before acting',zh:'在行动前梳理所有角度',v:'strategist'},{en:'dive in and learn as you go',zh:'立即投入，边做边学',v:'seeker'},{en:'talk it through with others',zh:'与他人交流讨论',v:'weaver'},{en:'sit with it until it feels right',zh:'静候，直到感觉对了',v:'mirror'}]},
+  { en:'Others come to you for...', zh:'他人来找你是因为……',
+    opts:[{en:'clear direction and strategy',zh:'清晰的方向和策略',v:'strategist'},{en:'fresh ideas and energy',zh:'新鲜的想法和能量',v:'seeker'},{en:'connection and understanding',zh:'连接与理解',v:'weaver'},{en:'honest reflection',zh:'诚实的反思',v:'mirror'}]},
+  { en:'Your relationship with uncertainty...', zh:'你与不确定性的关系……',
+    opts:[{en:'convert it into a plan',zh:'将它转化为计划',v:'strategist'},{en:'embrace it as adventure',zh:'将它视为冒险接受',v:'seeker'},{en:'navigate it with others',zh:'与他人一起导航',v:'weaver'},{en:'accept it as truth',zh:'将其作为真相接受',v:'mirror'}]},
+  { en:"You're at your best when...", zh:'你最佳状态是在……',
+    opts:[{en:'executing a well-laid plan',zh:'执行一个精心制定的计划',v:'strategist'},{en:'exploring new territory',zh:'探索新领域',v:'seeker'},{en:'holding space for others',zh:'为他人创造空间',v:'weaver'},{en:'going deep on one thing',zh:'深入钻研一件事',v:'mirror'}]},
+  { en:'Your blind spot is often...', zh:'你的盲点通常是……',
+    opts:[{en:'missing the human element',zh:'忽略人文因素',v:'strategist'},{en:'not finishing what you start',zh:'有始无终',v:'seeker'},{en:'losing yourself in others',zh:'在他人中迷失自己',v:'weaver'},{en:'over-thinking before acting',zh:'行动前过度思考',v:'mirror'}]}
 ];
 
-const DECKS = [
-  {
-    id: 'leadership', name: 'leadership', icon: '⚔',
-    cards: [
-      { id:'l1', name:'the warlord', icon:'⚔',
-        quote:'The general who wins the battle makes many calculations in his temple before the battle is fought.',
-        attr:'Sun Tzu · The Art of War · c. 500 BC',
-        sharper:'your first move is always made in private. before the room fills, you\'ve already mapped it.',
-        dos:['plan before you speak — arrive prepared, not spontaneous','identify leverage points before a confrontation begins','treat decision-making as a craft to practise privately'],
-        donts:['confuse busyness with strategy — motion is not movement','enter high-stakes rooms without a pre-game','let urgency collapse your planning window'] },
-      { id:'l2', name:'the quiet flame', icon:'◈',
-        quote:'He who knows others is wise; he who knows himself is enlightened.',
-        attr:'Lao Tzu · Tao Te Ching · c. 400 BC',
-        sharper:'you can read a room or you can read yourself. the second one changes what you see in the first.',
-        dos:['build a self-knowledge practice — journal, reflect, ask for feedback','notice your own emotional weather before reading others\'','use self-understanding as a leadership multiplier'],
-        donts:['mistake reading others for understanding yourself','let charisma substitute for inner work','ignore what your reactions are telling you about you'] },
-      { id:'l3', name:'the servant', icon:'↓',
-        quote:'A leader is best when people barely know he exists. When his work is done, they will say: we did it ourselves.',
-        attr:'Lao Tzu · Tao Te Ching · c. 400 BC',
-        sharper:'the best guidance feels like your own instinct. leave people more capable, not more dependent.',
-        dos:['design situations so your team discovers answers themselves','credit the team publicly, hold critique privately','measure your success by their growth, not your visibility'],
-        donts:['make yourself the solution — make them the solution','confuse delegation with abdication','need to be seen as the source of every win'] },
-      { id:'l4', name:'the crucible', icon:'⊕',
-        quote:'Character is what you are in the dark.',
-        attr:'Dwight L. Moody · c. 1880s',
-        sharper:'nobody\'s watching. that\'s the test. how you treat what can\'t reward you is the only true signal of who you are.',
-        dos:['behave identically whether observed or not','extend your full effort to small tasks and invisible moments','ask: what would I do if no one would ever know?'],
-        donts:['perform integrity for an audience — that\'s PR, not character','reserve your best behaviour for high-stakes visibility','let your private habits contradict your public values'] },
-      { id:'l5', name:'the compass', icon:'✦',
-        quote:'Men are disturbed not by things, but by the views they take of things.',
-        attr:'Epictetus · Enchiridion · c. 100 AD',
-        sharper:'your team inherits your interpretation of reality. if you catastrophise, they catastrophise. what lens are you handing them?',
-        dos:['name the frame you\'re operating from — make it visible','model calm interpretation under pressure','choose the most useful reading of a situation'],
-        donts:['transmit your anxiety as fact','let your stress become your team\'s emotional weather','mistake your interpretation for the only one'] },
-      { id:'l6', name:'the mask', icon:'◎',
-        quote:'We know what we are, but know not what we may be.',
-        attr:'William Shakespeare · Hamlet · c. 1601',
-        sharper:'the gap between who you perform and who you are costs energy. close it and you\'ll have more power for everything else.',
-        dos:['notice when you\'re performing a version of yourself','practise being the same person in every context','let the mask drop — selectively, with trusted others'],
-        donts:['confuse the role with the self','burn energy maintaining a performance','let the gap between public and private self widen'] },
-      { id:'l7', name:'the storm', icon:'▲',
-        quote:'It is a rough road that leads to the heights of greatness.',
-        attr:'Seneca · Letters · c. 65 AD',
-        sharper:'difficulty isn\'t a detour. it\'s load-bearing. the hardest stretch is usually the curriculum.',
-        dos:['reframe obstacles as formative, not obstructive','stay in uncomfortable situations long enough to learn from them','ask what the hard moment is teaching you'],
-        donts:['escape difficulty prematurely — you\'ll only repeat the lesson','interpret resistance as the wrong direction','protect others from the struggle that would develop them'] },
-      { id:'l8', name:'the long game', icon:'∞',
-        quote:'All human actions spring from seven causes: chance, nature, compulsion, habit, reason, passion, desire.',
-        attr:'Aristotle · Rhetoric · c. 350 BC',
-        sharper:'before you react to behaviour, ask which of these seven drove it. the diagnosis changes everything.',
-        dos:['diagnose before you respond — what\'s actually driving this?','distinguish habit from choice, passion from reason','take the long view when others are locked in the short one'],
-        donts:['react to the symptom when you should address the cause','assume others are motivated by the same things you are','confuse a slow result with no result'] }
-    ]
-  },
-  {
-    id: 'critical-thinking', name: 'critical thinking', icon: '◉',
-    cards: [
-      { id:'ct1', name:'the knife', icon:'/',
-        quote:'It is the mark of an educated mind to be able to entertain a thought without accepting it.',
-        attr:'Aristotle · c. 350 BC',
-        sharper:'let ideas in without signing a lease. the goal is full contact, not commitment.',
-        dos:['engage fully with an idea before deciding about it','distinguish understanding from agreeing','hold contradictory possibilities simultaneously'],
-        donts:['confuse openness with indecision','reject ideas before contact','let your current beliefs decide before your thinking does'] },
-      { id:'ct2', name:'the map', icon:'⬡',
-        quote:'The human understanding, when it has once adopted an opinion, draws all things else to support and agree with it.',
-        attr:'Francis Bacon · Novum Organum · 1620',
-        sharper:'confirmation bias isn\'t a flaw — it\'s the default operating system. the upgrade is noticing when you\'re running it.',
-        dos:['actively seek disconfirming evidence for your beliefs','ask: what would change my mind?','treat your strongest convictions with the most suspicion'],
-        donts:['mistake the feeling of certainty for correctness','only consume information that agrees with you','dismiss inconvenient data as an exception'] },
-      { id:'ct3', name:'the advocate', icon:'⊗',
-        quote:'It is better to debate a question without settling it than to settle a question without debating it.',
-        attr:'Joseph Joubert · Pensées · c. 1810',
-        sharper:'the strongest idea is the one that survived the hardest pushback. stress-test your own thesis before someone else does.',
-        dos:['steelman the opposing position before dismissing it','debate the idea — not the person holding it','invite challenge as a quality-assurance mechanism'],
-        donts:['settle into comfort without testing your assumptions','mistake social agreement for logical validity','confuse the loudest argument with the strongest one'] },
-      { id:'ct4', name:'the mirror', icon:'◉',
-        quote:'To know what you know and what you do not know — that is true knowledge.',
-        attr:'Confucius · Analects · c. 500 BC',
-        sharper:'your blind spots don\'t feel like blind spots. map the edge of what you actually know. that edge is the interesting part.',
-        dos:['say "I don\'t know" — and mean it as a start, not an end','map your genuine uncertainty explicitly','treat the edge of your knowledge as territory to explore'],
-        donts:['perform certainty to avoid looking uninformed','mistake confidence for competence','stop asking questions when you feel you understand something'] },
-      { id:'ct5', name:'the question', icon:'?',
-        quote:'Judge a man by his questions rather than his answers.',
-        attr:'attributed to Voltaire · c. 1750s',
-        sharper:'most bad decisions start as bad questions. reframe the question before you answer it.',
-        dos:['spend time on the question before rushing to the answer','ask: are we solving the right problem?','use reframing as a first-line tool — not a last resort'],
-        donts:['accept the question as given without examining it','let urgency collapse your inquiry window','reward quick answers over good questions'] },
-      { id:'ct6', name:'the anchor', icon:'⚓',
-        quote:'The first step in wisdom is silence; the second, listening.',
-        attr:'Solomon Ibn Gabirol · c. 1050 AD',
-        sharper:'you can\'t think clearly while talking. the quietest person in the argument usually has the most room to think.',
-        dos:['build deliberate silence into your thinking process','listen to understand — then think — then speak','protect your cognitive space from noise'],
-        donts:['fill silence with noise to seem engaged','think out loud when the moment requires thinking in private','mistake immediate response for clear thinking'] },
-      { id:'ct7', name:'the dissenter', icon:'ψ',
-        quote:'In questions of science, the authority of a thousand is not worth the humble reasoning of a single individual.',
-        attr:'Galileo Galilei · c. 1630',
-        sharper:'consensus is not evidence. large groups can be confidently wrong. check the reasoning, not the headcount.',
-        dos:['evaluate arguments on their logic, not their popularity','be willing to hold a position alone if the reasoning holds','treat your dissent as a hypothesis, not a verdict'],
-        donts:['defer to authority without checking the evidence','confuse social proof with logical proof','dissent as performance — only do it when you have a case'] },
-      { id:'ct8', name:'the empty cup', icon:'○',
-        quote:'The mind is not a vessel to be filled but a fire to be kindled.',
-        attr:'Plutarch · On Listening to Lectures · c. 100 AD',
-        sharper:'you can\'t learn what you think you already know. show up as a beginner, even to topics you\'ve studied.',
-        dos:['approach familiar subjects as if encountering them fresh','notice when expertise becomes a barrier to learning','keep the gap open — ask the obvious question'],
-        donts:['let mastery close your mind to new angles','confuse knowing the vocabulary with understanding the thing','let your identity as an expert prevent genuine inquiry'] }
-    ]
-  },
-  {
-    id: 'communication', name: 'communication', icon: '≋',
-    cards: [
-      { id:'cm1', name:'the pause', icon:'—',
-        quote:'Silence is the sleep that nourishes wisdom.',
-        attr:'Francis Bacon · c. 1597',
-        sharper:'what you don\'t say shapes the room as much as what you do. a deliberate pause is a full sentence.',
-        dos:['use silence intentionally — it signals confidence, not absence','pause before responding in high-stakes conversations','let others fill silence rather than doing it for them'],
-        donts:['rush to fill silence with words that dilute your point','mistake quiet for passivity','over-explain what a single well-placed pause could communicate'] },
-      { id:'cm2', name:'the echo', icon:'≋',
-        quote:'The wise man hears one word and understands two.',
-        attr:'Yiddish proverb · traditional',
-        sharper:'half of what someone says lives between the lines. train your ear for the unsaid.',
-        dos:['listen for what\'s not being said as much as what is','reflect back what you\'re hearing to test your understanding','notice the emotional register underneath the content'],
-        donts:['take words at face value in emotionally charged exchanges','listen only to respond, not to understand','miss the subtext while focusing on the text'] },
-      { id:'cm3', name:'the bridge', icon:'⌁',
-        quote:'Speak clearly, if you speak at all; carve every word before you let it fall.',
-        attr:'Oliver Wendell Holmes Sr. · c. 1858',
-        sharper:'vagueness is not kindness. clarity is. say the thing clearly so the other person doesn\'t have to decode you.',
-        dos:['name the thing directly — don\'t orbit it','edit your communication before sending, not after','choose precision over warmth when they conflict'],
-        donts:['mistake hedging for politeness','let ambiguity protect you from discomfort','be kind in tone while being unclear in substance'] },
-      { id:'cm4', name:'the witness', icon:'◦',
-        quote:'Speech is silver, silence is golden.',
-        attr:'Thomas Carlyle · Sartor Resartus · 1831',
-        sharper:'not every moment calls for your voice. knowing when to hold back is a skill, not a weakness.',
-        dos:['ask yourself: does this need saying? does it need saying by me?','develop the discipline of voluntary silence','let others take space — sometimes that\'s the gift'],
-        donts:['fill every pause with your opinion','speak to be seen rather than to contribute','mistake contribution with volume'] },
-      { id:'cm5', name:'the frequency', icon:'~',
-        quote:'He that talks much errs much.',
-        attr:'Spanish proverb · traditional',
-        sharper:'high output isn\'t high communication. every extra word you send costs the listener attention. be worth the spend.',
-        dos:['ruthlessly edit — remove what\'s redundant before sending','respect the other person\'s attention as a finite resource','measure communication by impact, not volume'],
-        donts:['confuse thoroughness with length','add words to seem more credible','CC everyone — communicate to the person who needs it'] },
-      { id:'cm6', name:'the reframe', icon:'⟲',
-        quote:'Language is the dress of thought.',
-        attr:'Samuel Johnson · c. 1779',
-        sharper:'how you name a problem shapes how you solve it. rename it and watch different options appear.',
-        dos:['try at least two framings before committing to one','notice when the language you\'re using is limiting the options you see','use reframing as a tool — offer it to others when they\'re stuck'],
-        donts:['let the first label stick — labels carry assumptions','mistake the framing for the fact','use positive reframing to avoid dealing with a real problem'] },
-      { id:'cm7', name:'the rain', icon:'▲',
-        quote:'Raise your words, not your voice. It is rain that grows flowers, not thunder.',
-        attr:'Rumi · c. 1250 AD',
-        sharper:'volume is not emphasis. intensity is not weight. the quieter point often lands harder.',
-        dos:['reduce force to increase precision','bring calm to conversations that are heating up','let the quality of your words carry the weight, not the delivery'],
-        donts:['raise your voice when you want to be taken seriously','mistake forcefulness for conviction','let the room\'s emotional temperature set yours'] },
-      { id:'cm8', name:'the open door', icon:'⊂',
-        quote:'Nature gave us one tongue and two ears so we could hear twice as much as we speak.',
-        attr:'Epictetus · c. 100 AD',
-        sharper:'your default is to respond. your practice is to receive. there\'s a difference, and it shows.',
-        dos:['listen to the full thought before forming your response','repeat back what you heard before adding your own view','notice your body — are you really listening, or just waiting?'],
-        donts:['plan your response while the other person is still talking','treat listening as a passive gap between your turns to speak','make people feel heard by performing listening — do the real thing'] }
-    ]
-  },
-  {
-    id: 'psychology', name: 'psychology', icon: '◐',
-    cards: [
-      { id:'ps1', name:'the shadow', icon:'◐',
-        quote:'We are not troubled by things, but by the opinions we have about things.',
-        attr:'Epictetus · Enchiridion · c. 100 AD',
-        sharper:'the reaction that surprises you most about yourself — that\'s the zip file. unpack it before it unpacks you in public.',
-        dos:['track your strongest emotional reactions as data points','ask: what story am I telling myself here?','bring the uncomfortable reaction into the light rather than suppressing it'],
-        donts:['take your emotional reactions at face value','suppress what you don\'t understand about yourself','let unexplored reactions run your decisions'] },
-      { id:'ps2', name:'the wound', icon:'♡',
-        quote:'The most common form of despair is not being who you are.',
-        attr:'Søren Kierkegaard · c. 1849',
-        sharper:'most people-pleasing is a wound wearing a smile. know which of your "nice" behaviours are chosen and which are fear.',
-        dos:['distinguish between genuine generosity and approval-seeking','notice when you\'re agreeing to avoid discomfort','ask: who would I be if I wasn\'t afraid of this reaction?'],
-        donts:['call fear "kindness" — name it accurately','sacrifice your position to keep the peace reflexively','confuse accommodation with virtue'] },
-      { id:'ps3', name:'the pattern', icon:'⟡',
-        quote:'Habit is either the best of servants or the worst of masters.',
-        attr:'Nathaniel Emmons · c. 1820s',
-        sharper:'your habits are your autobiography. the story they\'re telling — is it the one you want?',
-        dos:['audit your daily habits as if reading a biography','design your environment to make good habits frictionless','treat habits as infrastructure — they\'re running everything'],
-        donts:['leave habit formation to chance','rely on willpower over system design','confuse the identity you want with the habits you actually have'] },
-      { id:'ps4', name:'the projection', icon:'⌂',
-        quote:'The eye altering alters all.',
-        attr:'William Blake · The Mental Traveller · c. 1803',
-        sharper:'when someone irritates you, ask what you recognise. irritation is almost always information about yourself, not them.',
-        dos:['treat strong reactions to others as mirrors, not verdicts','ask: what in me is this triggering?','use irritation as a self-diagnosis tool'],
-        donts:['project your unexplored qualities onto others as flaws','assume your reading of someone is accurate without checking','treat your perception as the whole story'] },
-      { id:'ps5', name:'the loop', icon:'↺',
-        quote:'Know thyself.',
-        attr:'Inscription at the Temple of Delphi · c. 400 BC',
-        sharper:'the choices that feel inevitable are usually just unfamiliar. necessity is often a habit that forgot it was optional.',
-        dos:['question "I have to" and replace it with "I choose to"','identify where autopilot is running your life','break small patterns to build the muscle for breaking large ones'],
-        donts:['mistake familiarity for necessity','stay in loops because leaving feels too hard','let unconscious patterns impersonate fate'] },
-      { id:'ps6', name:'the need', icon:'●',
-        quote:'Man is by nature a social animal.',
-        attr:'Aristotle · Politics · c. 350 BC',
-        sharper:'belonging is not a weakness — it\'s load-bearing infrastructure. the need for connection doesn\'t diminish you. denying it does.',
-        dos:['acknowledge your social needs as real, not indulgent','invest in connection as a strategic priority, not a luxury','reach out before you need to — not only in crisis'],
-        donts:['perform independence to seem stronger than you feel','neglect relationships in service of productivity','mistake isolation for strength'] },
-      { id:'ps7', name:'the trigger', icon:'⚡',
-        quote:'You have power over your mind — not outside events. Realize this, and you will find strength.',
-        attr:'Marcus Aurelius · Meditations · c. 170 AD',
-        sharper:'the trigger isn\'t the problem. the automatic response is. find the gap and you find the leverage.',
-        dos:['practise the pause between stimulus and response','identify your three most consistent triggers','design a response you\'d be proud of before you need it'],
-        donts:['let your triggers make your decisions','blame the trigger for the reaction','confuse the automatic response with who you actually are'] },
-      { id:'ps8', name:'the inner child', icon:'★',
-        quote:'In every real man a child is hidden that wants to play.',
-        attr:'Friedrich Nietzsche · Thus Spoke Zarathustra · c. 1883',
-        sharper:'the thing you wanted at seven still lives in what you want at forty. understanding one unlocks the other.',
-        dos:['take your early longings seriously as clues to present needs','notice what "play" looks like for you now — protect it','connect your adult ambitions back to their original feeling'],
-        donts:['dismiss early experiences as irrelevant to your present','confuse maturity with the elimination of joy','analyse your childhood instead of feeling it'] }
-    ]
-  },
-  {
-    id: 'philosophy', name: 'philosophy', icon: '∞',
-    cards: [
-      { id:'ph1', name:'the paradox', icon:'∅',
-        quote:'I know that I know nothing.',
-        attr:'attributed to Socrates · via Plato · c. 400 BC',
-        sharper:'the more you learn, the larger the border between you and the unknown. expertise is mostly a map of what you don\'t yet know.',
-        dos:['treat your growing uncertainty as a sign of genuine learning','say "I don\'t know" as a starting position, not a confession','build comfort with not-knowing as a long-term practice'],
-        donts:['confuse the feeling of understanding with actual understanding','let expertise close you to new information','mistake the map for the territory'] },
-      { id:'ph2', name:'the moment', icon:'◷',
-        quote:'It is not that we have so little time but that we lose so much.',
-        attr:'Seneca · On the Shortness of Life · c. 49 AD',
-        sharper:'every distraction is a vote against your own life. the hours you protect are the ones that define you.',
-        dos:['protect time for what matters before it gets filled with what doesn\'t','treat attention as your most non-renewable resource','ask: am I spending or investing this hour?'],
-        donts:['let busyness substitute for purpose','defer the things that matter to a future that may not arrive','confuse activity with aliveness'] },
-      { id:'ph3', name:'the examined life', icon:'△',
-        quote:'The unexamined life is not worth living.',
-        attr:'Socrates · as reported by Plato · Apology · c. 399 BC',
-        sharper:'most people are too busy to check whether they\'re living what they actually value. schedule the reckoning before the reckoning schedules you.',
-        dos:['create a regular audit of what you\'re actually living vs. what you say you value','ask the uncomfortable questions while there\'s still time to change course','make self-examination a habit, not a crisis response'],
-        donts:['stay busy to avoid looking','let comfort be the only criterion for your life choices','defer the hard inventory to some quieter future'] },
-      { id:'ph4', name:'the river', icon:'≈',
-        quote:'You cannot step into the same river twice.',
-        attr:'Heraclitus · c. 500 BC',
-        sharper:'the version of you that was right last year might be wrong this year. stay current with yourself.',
-        dos:['update your beliefs when the evidence changes','allow yourself to contradict who you were','treat change as data — not as a threat to consistency'],
-        donts:['hold positions past their usefulness to seem consistent','expect your old solutions to solve your new problems','confuse identity with fixed positions'] },
-      { id:'ph5', name:'the dice', icon:'⎈',
-        quote:'Fortune favors the prepared mind.',
-        attr:'Louis Pasteur · address at the University of Lille · 1854',
-        sharper:'luck is a function of exposure. the more attempts you make, the more "accidental" your success appears.',
-        dos:['show up consistently — that\'s most of the game','prepare in depth so you can act in the moment','increase the surface area of your luck through volume and readiness'],
-        donts:['wait to be discovered — go where the opportunities are','attribute success entirely to skill or entirely to luck — it\'s both','mistake preparation for prediction'] },
-      { id:'ph6', name:'the cave', icon:'◧',
-        quote:'We can easily forgive a child who is afraid of the dark; the real tragedy is when men are afraid of the light.',
-        attr:'attributed to Plato · c. 380 BC',
-        sharper:'the comfortable story is rarely the accurate one. the truth that makes you uncomfortable is usually the one worth sitting with.',
-        dos:['pursue the uncomfortable truth over the comfortable explanation','ask: what am I not letting myself see here?','build a tolerance for cognitive discomfort — it\'s the signal of real learning'],
-        donts:['choose the explanation that protects your current worldview','mistake comfort for correctness','avoid the question that might require you to change'] },
-      { id:'ph7', name:'the stage', icon:'□',
-        quote:'Act well your part; there all the honor lies.',
-        attr:'Alexander Pope · An Essay on Man · c. 1733',
-        sharper:'your role doesn\'t diminish you. how you show up within it does. bring full presence to the smaller stages — that\'s where character is built.',
-        dos:['bring your full self to small moments as well as large ones','find meaning in the role you\'re in now, not the one you want','let how you do anything speak for how you do everything'],
-        donts:['save your best for an audience','treat mundane responsibilities as beneath your real potential','defer presence to the important-seeming moments'] },
-      { id:'ph8', name:'the whole', icon:'⊙',
-        quote:'The whole is more than the sum of its parts.',
-        attr:'Aristotle · Metaphysics · c. 350 BC',
-        sharper:'you are not your function. you are not your title. what persists across all your roles is the self worth knowing.',
-        dos:['tend to the self that exists across all contexts','notice what doesn\'t change about you regardless of role','invest in who you are, not just what you do'],
-        donts:['let a title or role become your whole identity','reduce yourself to your usefulness','neglect the integrated self in favour of the performing self'] }
-    ]
-  }
-];
-
-// ════════════════════════════════════
-//  STATE
-// ════════════════════════════════════
-
-const state = {
-  archetype: null,
-  quizAnswers: {},
-  currentQ: 0,
-  selectedDecks: new Set(),
-  tableCards: [],
-  pickedCards: [],
-  favorites: new Set(JSON.parse(localStorage.getItem('sharper_favs') || '[]')),
-  readingDone: false
+const CARDS = {
+  leadership: [
+    { id:'l1', icon:'⚔', en:{name:'the warlord',quote:'The general who wins the battle makes many calculations in his temple before the battle is fought.',attr:'Sun Tzu · The Art of War · c. 500 BC',sharper:'your first move is always made in private. before the room fills, before the voices compete — you have already mapped the terrain.',do:'before your next high-stakes conversation, spend 10 minutes alone mapping what you want, what they want, and where the leverage is.',dont:"don't walk into your next important conversation without having mapped it privately first.",evening:'where did you make your move before you had all the information — and what did that cost you?'}, zh:{name:'兵圣',quote:'未战而庙算胜者，得算多也。',attr:'孙子 · 《孙子兵法》· 约公元前500年',sharper:'你的第一步永远在私下完成。在人群涌入、声音交织之前——你已绘制出地形。',do:'在下一次高风险对话之前，独自花10分钟梳理你想要什么、他们想要什么，以及筹码在哪里。',dont:'不要在未经私下勘测的情况下走进你的下一场重要对话。',evening:'你在哪里于信息尚未齐备时已出手——那让你付出了什么代价？'}},
+    { id:'l2', icon:'⚔', en:{name:'the inner lamp',quote:'Knowing others is intelligence; knowing yourself is true wisdom.',attr:'Lao Tzu · Tao Te Ching · c. 400 BC',sharper:'the leader others trust is the one who has already interrogated their own motives. self-knowledge is not navel-gazing — it is the foundation of credibility.',do:'write down one decision you made this week. then write down the real reason you made it — not the reason you told others.',dont:"don't lead others into territory you haven't first explored in yourself.",evening:'what did you perform today that you did not actually feel?'}, zh:{name:'内照',quote:'知人者智，自知者明。',attr:'老子 · 《道德经》· 约公元前400年',sharper:'他人所信赖的领导者，是那位已审问过自身动机的人。自知并非自怜——它是可信度的基石。',do:'写下你本周做出的一个决定，然后写下你真正做出它的原因——而非你告诉他人的那个原因。',dont:'不要将他人引入你自己尚未勘探的领域。',evening:'你今天表演了什么，而你实际并未感受到？'}},
+    { id:'l3', icon:'⚔', en:{name:'the empty throne',quote:'To lead people, walk behind them.',attr:'Lao Tzu · Tao Te Ching · c. 400 BC',sharper:'the loudest voice in the room is rarely the most powerful. the leader who steps back creates space for others to step forward — and reveals who they really are.',do:'in your next meeting, speak last. let everyone else go first. notice what changes.',dont:"don't fill every silence. some of the most powerful moves are made in stillness.",evening:'where did you speak when you should have listened?'}, zh:{name:'无为',quote:'圣人不积，既以为人己愈有。',attr:'老子 · 《道德经》· 约公元前400年',sharper:'房间里声音最响的，鲜少是力量最强的。退后一步的领导者为他人开辟了前进的空间——并揭示出他们真实的样子。',do:'在下一次会议中，最后发言。让所有人先说。观察有何改变。',dont:'不要填满每一段沉默。最有力的棋，有时走于静止之中。',evening:'你在哪里本该倾听却开口说话了？'}},
+    { id:'l4', icon:'⚔', en:{name:'the sovereign',quote:'He who controls others may be powerful, but he who has mastered himself is mightier still.',attr:'Lao Tzu · Tao Te Ching · c. 400 BC',sharper:'authority that depends on controlling others is fragile. the leader who has mastered their own reactions commands a room without raising their voice.',do:'identify one trigger that reliably pulls you off-center. before your next exposure to it, decide in advance how you will respond.',dont:"don't mistake reactivity for strength. composure is the harder discipline.",evening:'where did your emotions lead, and your judgment follow?'}, zh:{name:'慎独',quote:'胜人者有力，自胜者强。',attr:'老子 · 《道德经》· 约公元前400年',sharper:'依赖掌控他人的权威是脆弱的。掌控自身反应的领导者，无需提高声音便能掌控全场。',do:'找出一个惯常让你失中的触发点。在下次接触它之前，预先决定你将如何应对。',dont:'不要将冲动误认为力量。沉着是更难的修炼。',evening:'你的情绪在哪里领先，而判断在后追随？'}},
+    { id:'l5', icon:'⚔', en:{name:'the still water',quote:'The best leaders are those the people hardly know exist.',attr:'Lao Tzu · Tao Te Ching · c. 400 BC',sharper:"true influence leaves no fingerprints. when the team succeeds, they say 'we did it.' the leader knows this is the goal, not the exception.",do:"this week, redirect one piece of credit to someone on your team. say 'they made this happen' and mean it.",dont:"don't let your need to be seen undermine what you're building.",evening:"where did your ego walk into the room before you did?"}, zh:{name:'心镜',quote:'太上，不知有之。',attr:'老子 · 《道德经》· 约公元前400年',sharper:'真正的影响力不留指纹。当团队成功时，他们说"是我们做到的"。领导者知道，这才是目标，而非例外。',do:'本周，将一份功劳转让给团队中的某人。说"是他们做成了这件事"——并且真心如此。',dont:'不要让你被看见的需求破坏你正在建造的东西。',evening:'你的自我在哪里先于你本人走进了房间？'}},
+    { id:'l6', icon:'⚔', en:{name:'the face and the mask',quote:'All the world is a stage, and all the men and women merely players.',attr:'William Shakespeare · As You Like It · 1599',sharper:"you play many roles. the question isn't which role is real — it's whether you remember who's doing the playing.",do:'list three roles you played today. for each one, write who you were playing for — and who you actually are beneath it.',dont:"don't lose the actor in the performance.",evening:'where did the role you were playing start to feel more real than you?'}, zh:{name:'表里',quote:'世界是一个舞台，所有男男女女不过是演员。',attr:'威廉·莎士比亚 · 《皆大欢喜》· 1599年',sharper:'你扮演着许多角色。问题不在于哪个角色是真实的——而在于你是否记得谁在扮演。',do:'列出你今天扮演的三个角色。对每一个，写下你在为谁表演——以及你在其下究竟是谁。',dont:'不要在表演中迷失那个演员。',evening:'你扮演的角色在哪里开始比你本人更真实？'}},
+    { id:'l7', icon:'⚔', en:{name:'the grindstone',quote:'I am not afraid of the man who has practiced 10,000 kicks once, but I am afraid of the man who has practiced one kick 10,000 times.',attr:'Bruce Lee · c. 1970',sharper:"mastery isn't a destination — it's a practice. the leader who keeps sharpening becomes a different kind of force: one that doesn't need to announce itself.",do:'identify the one skill that would compound the most in your current role. commit to 15 minutes of deliberate practice on it today.',dont:"don't confuse exposure for mastery. doing something often isn't the same as doing it deeply.",evening:"where did you go through the motions instead of going through the work?"}, zh:{name:'磨砺',quote:'我不惧怕练过一万种踢法的人，但我惧怕将一种踢法练过一万次的人。',attr:'李小龙 · 约1970年',sharper:'精通不是终点——它是修炼。持续磨砺的领导者成为另一种力量：不需要自我宣告的那种。',do:'找出在你当前角色中复利最大的那项技能。今天承诺对它进行15分钟的刻意练习。',dont:'不要将接触误认为精通。频繁做某事并不等同于深入做某事。',evening:'你在哪里只是走过动作，而非真正走过工作？'}},
+    { id:'l8', icon:'⚔', en:{name:'the long view',quote:'Vision without action is merely a dream. Action without vision just passes the time.',attr:'Joel A. Barker · c. 1990',sharper:'the leader with the longest time horizon wins most games. not because the future is certain — but because thinking long creates moves short-sighted players never see.',do:'take one decision you are making this week and ask: how does this look in 5 years? does that change your move?',dont:"don't sacrifice next year's position for this week's comfort.",evening:'where did you think short when the situation called for long?'}, zh:{name:'远见',quote:'没有行动的愿景只是梦想。没有愿景的行动只是消磨时间。',attr:'乔尔·巴克 · 约1990年',sharper:'拥有最长时间视野的领导者赢得大多数博弈。不是因为未来确定——而是因为长远思考创造出短视者永远看不见的棋路。',do:'取你本周正在做出的一个决定，问：五年后这看起来如何？这是否改变了你的棋路？',dont:'不要为了本周的舒适而牺牲明年的位置。',evening:'你在哪里思考得太短，而局势需要更长？'}}
+  ],
+  'critical-thinking': [
+    { id:'c1', icon:'🔬', en:{name:'the open question',quote:'The important thing is not to stop questioning.',attr:'Albert Einstein · Life Magazine · 1955',sharper:'certainty closes doors. the question holds the door open. the thinker who never stops asking is the one who keeps finding what others already concluded was settled.',do:'take one belief you hold firmly about your current situation. write down three reasons it might be wrong.',dont:"don't let the comfort of a conclusion stop you from questioning it.",evening:'what did you stop questioning today that deserves a second look?'}, zh:{name:'持疑',quote:'重要的是不要停止追问。',attr:'阿尔伯特·爱因斯坦 · 《生活》杂志 · 1955年',sharper:'确信关上了门。问题让门保持开启。永不停止追问的思考者，是那个持续发现他人早已认定已定之事的人。',do:'取你对当前处境持有的一个坚定信念。写下三个它可能是错的理由。',dont:'不要让结论的舒适阻止你质疑它。',evening:'你今天停止质疑了什么——而它值得再看一眼？'}},
+    { id:'c2', icon:'🔬', en:{name:'the invisible lens',quote:"It is not what we do not know that gets us into trouble. It is what we know for sure that just ain't so.",attr:'Mark Twain · c. 1890s',sharper:"your assumptions are invisible to you. they don't feel like assumptions — they feel like facts. the crack in your thinking lives exactly there.",do:'identify one assumption you made in a recent decision. ask: how did I come to believe this — and what if it is not true?',dont:"don't confuse familiarity with accuracy.",evening:"where did what you 'knew' lead you away from what was actually true?"}, zh:{name:'成见',quote:'让我们陷入麻烦的，不是我们不知道的事，而是我们确信无疑却并非如此的事。',attr:'马克·吐温 · 约1890年代',sharper:'你的假设对你自己是隐形的。它们感觉不像假设——感觉像事实。你思维中的裂缝，恰好藏在那里。',do:'找出你在最近某个决定中做出的一个假设。问：我是怎么相信这个的——如果它不是真的呢？',dont:'不要将熟悉感与准确性混淆。',evening:'你"知道"的事在哪里将你引离了实际为真的事？'}},
+    { id:'c3', icon:'🔬', en:{name:'the dialectic',quote:'The test of a first-rate intelligence is the ability to hold two opposed ideas in mind at the same time and still retain the ability to function.',attr:'F. Scott Fitzgerald · The Crack-Up · 1936',sharper:'the trap is picking a side too quickly. the sophisticated move is to hold the tension — to let both things be true until the third option emerges.',do:'take a conflict or dilemma you are facing. write the strongest case for each side — without immediately resolving it.',dont:"don't rush to resolution. sometimes the most generative thing is to stay in the question.",evening:'where did you collapse a complexity into a binary when the truth was more nuanced?'}, zh:{name:'辩证',quote:'一流智识的检验，在于能否同时持守两种对立的观念，同时仍保有正常运作的能力。',attr:'菲茨杰拉德 · 《崩溃》· 1936年',sharper:'陷阱在于过快选边。老练的棋路是保持张力——让两件事同时为真，直到第三种选项浮现。',do:'取你正面临的一个冲突或困境。写出双方最有力的论据——不要急于解决。',dont:'不要急于决断。有时最富生产力的事是停留在问题之中。',evening:'你在哪里将一个复杂性压缩成了二元，而真相更为细腻？'}},
+    { id:'c4', icon:'🔬', en:{name:'the examined self',quote:'An unexamined life is not worth living.',attr:'Socrates · via Plato · Apology · 399 BC',sharper:'the hardest object to see clearly is yourself. most people see what they want to see. the thinker who can look at themselves with cold accuracy gains a rare kind of freedom.',do:'pick one story you tell about yourself. ask: what evidence supports this — and what evidence contradicts it?',dont:"don't protect your self-image at the expense of your self-knowledge.",evening:'what truth about yourself did you avoid today?'}, zh:{name:'自知',quote:'未经省察的人生不值得过。',attr:'苏格拉底 · 经柏拉图记录 · 《申辩》· 公元前399年',sharper:'最难清晰看见的对象是你自己。大多数人只看见他们想看见的。能以冷静准确审视自身的思考者，获得了一种罕见的自由。',do:'选取一个你关于自己讲述的故事。问：有什么证据支持它——又有什么证据与之矛盾？',dont:'不要以损害自我认知的代价来保护自我形象。',evening:'你今天回避了什么关于自己的真相？'}},
+    { id:'c5', icon:'🔬', en:{name:'the useful question',quote:'Judge a man by his questions rather than by his answers.',attr:'Voltaire · c. 1760',sharper:'the quality of your thinking is the quality of your questions. a sharp question opens more doors than a confident answer closes. ask better to think better.',do:'before your next important meeting, write down three questions you genuinely do not know the answer to. lead with one of them.',dont:"don't perform understanding you don't have.",evening:"what question did you not ask today — because you were afraid of what the answer might reveal?"}, zh:{name:'善问',quote:'以问题而非答案来判断一个人。',attr:'伏尔泰 · 约1760年',sharper:'你思维的质量就是你问题的质量。一个尖锐的问题打开的门，比一个自信的答案关上的更多。更好地问，才能更好地想。',do:'在下一次重要会议之前，写下三个你真正不知道答案的问题。以其中一个开场。',dont:'不要表演你并不具备的理解。',evening:'你今天没有问什么问题——因为你害怕答案可能揭示什么？'}},
+    { id:'c6', icon:'🔬', en:{name:'the quiet mind',quote:"All of humanity's problems stem from man's inability to sit quietly in a room alone.",attr:'Blaise Pascal · Pensées · 1670',sharper:'the mind that cannot be still cannot think clearly. noise — inner or outer — distorts perception. stillness is not emptiness; it is the condition for precision.',do:'take 10 minutes today with no input. no phone, no music, no podcast. just sit with the problem you are currently avoiding.',dont:"don't fill every quiet moment with noise. you are avoiding something in there.",evening:'what came up in the silence today that you immediately reached for your phone to escape?'}, zh:{name:'静思',quote:'人类所有的问题都源于人无法独自安静地坐在房间里。',attr:'布莱兹·帕斯卡 · 《思想录》· 1670年',sharper:'无法静止的心灵无法清晰思考。噪音——内在的或外在的——扭曲感知。静止不是空无；它是精确的条件。',do:'今天花10分钟不接受任何输入。没有手机、没有音乐、没有播客。只是与你当前正在回避的问题坐在一起。',dont:'不要用噪音填满每一个安静的时刻。你在那里回避着什么。',evening:'今天的沉默中浮现了什么，让你立刻伸手拿起手机逃离？'}},
+    { id:'c7', icon:'🔬', en:{name:'the minority report',quote:'Whenever you find yourself on the side of the majority, it is time to pause and reflect.',attr:'Mark Twain · c. 1904',sharper:'consensus is comfortable. it is also often wrong. the thinker who can hold a position others have not yet reached — and hold it calmly — is the one who creates new ground.',do:'identify one view you hold that most people around you do not share. write down why you still hold it — and whether you should.',dont:"don't update your view because the room did. update it when the evidence does.",evening:"where did you adjust your position to fit the room rather than your own analysis?"}, zh:{name:'独见',quote:'每当你发现自己站在多数人一边时，是时候停下来反思了。',attr:'马克·吐温 · 约1904年',sharper:'共识是舒适的。它也常常是错的。能够持守他人尚未抵达的立场——并平静地持守——的思考者，是那个开辟新地的人。',do:'找出一个你持有而周围大多数人不认同的观点。写下你仍然持守它的原因——以及你是否应该。',dont:'不要因为房间更新了就更新你的观点。当证据更新时再更新它。',evening:'你在哪里调整了自己的立场以适应房间，而非你自己的分析？'}},
+    { id:'c8', icon:'🔬', en:{name:'the beginner',quote:"In the beginner's mind there are many possibilities, but in the expert's mind there are few.",attr:"Shunryu Suzuki · Zen Mind, Beginner's Mind · 1970",sharper:"expertise is also a trap. the more you know, the more you filter out. the beginner sees everything. sometimes the most sophisticated move is to unknow what you know.",do:"approach one task today as if you have never done it before. ask: if I were new to this, what would I notice that I have stopped noticing?",dont:"don't let mastery become blindness.",evening:"what did you stop seeing today because you already 'knew' how it works?"}, zh:{name:'虚怀',quote:'初学者的心中有许多可能，但专家的心中却少有。',attr:'铃木俊隆 · 《禅者的初心》· 1970年',sharper:'专业知识也是一个陷阱。你知道得越多，你过滤掉的也越多。初学者看见一切。有时最老练的棋路是去"不知道"你已知道的。',do:'今天以从未做过的方式处理一项任务。问：如果我是新手，我会注意到什么是我已经停止注意的？',dont:'不要让精通变成盲目。',evening:'你今天停止看见了什么——因为你已经"知道"它如何运作？'}}
+  ],
+  communication: [
+    { id:'co1', icon:'🌊', en:{name:'the pause',quote:'Silence is a source of great strength.',attr:'Lao Tzu · Tao Te Ching · c. 400 BC',sharper:'the communicator who owns the pause owns the room. silence is not weakness — it is pressure. it creates space for the other person to fill, and what they fill it with tells you everything.',do:'in your next conversation, let there be one silence after you speak. count to three before filling it. watch what happens.',dont:"don't fill every silence. the one who speaks first in an empty space often reveals more than they intended.",evening:'where did you speak to avoid the discomfort of not speaking?'}, zh:{name:'沉默',quote:'沉默是力量的巨大源泉。',attr:'老子 · 《道德经》· 约公元前400年',sharper:'掌控停顿的沟通者掌控全场。沉默不是软弱——它是压力。它为对方创造了填充的空间，而他们用什么填充，告诉你一切。',do:'在下一次对话中，在你说话后留下一个沉默。在填补它之前数到三。观察发生了什么。',dont:'不要填满每一个沉默。在空旷中第一个开口的人，往往比他们打算的透露了更多。',evening:'你在哪里开口说话，是为了回避不说话的不适？'}},
+    { id:'co2', icon:'🌊', en:{name:'the unspoken',quote:'The most important thing in communication is hearing what is not said.',attr:'Peter Drucker · c. 1970',sharper:'beneath every spoken message is an unspoken one. the master communicator reads both channels simultaneously. what someone chooses not to say is often the signal.',do:'in your next significant conversation, listen for what is not being said. what topic is being avoided? what emotion is present but unnamed?',dont:"don't take words at face value. meaning lives in the gap between the said and the unsaid.",evening:'what did someone try to tell you today without saying it directly?'}, zh:{name:'弦外',quote:'沟通中最重要的事，是听见未被说出的。',attr:'彼得·德鲁克 · 约1970年',sharper:'每一句说出口的话之下，都有一句未说出的。大师级沟通者同时读取两个频道。一个人选择不说的，往往才是信号。',do:'在下一次重要对话中，倾听未被说出的内容。什么话题正在被回避？什么情绪在场却未被命名？',dont:'不要按字面意思理解话语。意义住在说出的与未说出的之间。',evening:'今天有人试图告诉你什么，却没有直接说出来？'}},
+    { id:'co3', icon:'🌊', en:{name:'the clean line',quote:'If you cannot explain it simply, you do not understand it well enough.',attr:'Albert Einstein · c. 1930',sharper:'complexity is often a hiding place. the one who truly understands can strip away everything non-essential and leave only the core. clarity is a form of power.',do:'take the most complex idea you are currently working with. explain it in three sentences to someone who has no background in it. see where you stumble.',dont:"don't use complexity to perform intelligence. it usually reveals the opposite.",evening:'where did you use language to obscure rather than to clarify?'}, zh:{name:'清言',quote:'如果你无法简单解释它，你对它的理解还不够深。',attr:'阿尔伯特·爱因斯坦 · 约1930年',sharper:'复杂性常常是一个藏身之处。真正理解的人能剥去所有非必要的，只留下核心。清晰是一种力量。',do:'取你当前正在处理的最复杂的想法。用三句话向一个对此毫无背景的人解释它。看看你在哪里绊倒。',dont:'不要用复杂性来表演智识。它通常揭示的是相反的东西。',evening:'你在哪里用语言遮掩而非澄清？'}},
+    { id:'co4', icon:'🌊', en:{name:'the controlled burn',quote:'Speak when you are angry and you will make the best speech you will ever regret.',attr:'Ambrose Bierce · c. 1900',sharper:'the emotion that wants to speak now is rarely the one that should. the communicator who can hold a charged feeling long enough for clarity to arrive says the right thing — not just the urgent thing.',do:'identify a message you have been wanting to send from a charged emotional state. write it. then wait 24 hours before deciding whether to send it.',dont:"don't let urgency borrow your voice. most things that feel urgent are not.",evening:'what did you say today that would have landed differently if you had waited?'}, zh:{name:'自持',quote:'在愤怒时开口，你将发表你一生中最令自己后悔的演讲。',attr:'安布罗斯·比尔斯 · 约1900年',sharper:'想要立刻说话的情绪，很少是应该说话的那个。能将一种激烈的感受持守足够长时间让清晰浮现的沟通者，说的是正确的事——而非仅仅是紧迫的事。',do:'找出一条你一直想从激动情绪中发送的信息。把它写下来。然后等待24小时再决定是否发送。',dont:'不要让紧迫感借用你的声音。大多数感觉紧迫的事情并不紧迫。',evening:'你今天说了什么，如果等一等，落地方式会有所不同？'}},
+    { id:'co5', icon:'🌊', en:{name:'the short blade',quote:'I have made this letter longer than usual, only because I have not had the time to make it shorter.',attr:'Blaise Pascal · Lettres provinciales · 1656',sharper:"brevity is not the absence of thought — it is its distillation. the communicator who can say it in fewer words has done more work, not less.",do:'find a message or document you recently sent. cut it by 30%. see if anything essential is lost.',dont:"don't use length to signal effort. use precision.",evening:'where did you take more words than the thought required?'}, zh:{name:'简言',quote:'这封信比平常更长，只因为我没有时间把它写短。',attr:'布莱兹·帕斯卡 · 《致外省人书》· 1656年',sharper:'简洁不是思想的缺席——它是思想的提炼。能用更少词语说清楚的沟通者，付出的是更多而非更少的努力。',do:'找一条你最近发送的消息或文件。将它削减30%。看看是否有任何本质的东西丢失了。',dont:'不要用长度来标榜努力。用精确来标榜。',evening:'你在哪里用了比思想所需更多的词语？'}},
+    { id:'co6', icon:'🌊', en:{name:'the reframe',quote:'If you change the way you look at things, the things you look at change.',attr:'Wayne Dyer · c. 1990',sharper:"the frame is not the content — but it determines how the content is received. the communicator who controls the frame controls the conversation. reframing isn't spin — it's precision.",do:"take a message you need to deliver that will be hard to receive. find a frame that makes it easier to hear without changing the truth.",dont:"don't let the default framing stand if a better one is available.",evening:'where did you give someone a hard truth in a way that made it harder to receive than it needed to be?'}, zh:{name:'换框',quote:'如果你改变看待事物的方式，你所看待的事物也会改变。',attr:'韦恩·戴尔 · 约1990年',sharper:'框架不是内容——但它决定内容如何被接收。掌控框架的沟通者掌控对话。重新框架不是操纵——它是精确。',do:'取一条你需要传达的、难以被接受的信息。找到一个让它更容易被听见的框架——不要改变真相。',dont:'如果有更好的框架可用，不要让默认框架停留在那里。',evening:'你在哪里以一种比必要更难被接收的方式给了某人一个艰难的真相？'}},
+    { id:'co7', icon:'🌊', en:{name:'the soft blade',quote:'A soft answer turneth away wrath, but grievous words stir up anger.',attr:'Proverbs 15:1 · c. 950 BC',sharper:'the gentlest tone can carry the sharpest point. force often generates resistance. the communicator who delivers difficulty with warmth moves more than the one who delivers it with edge.',do:'identify a difficult message you need to deliver. practice saying it in the most direct AND warm way possible. find the tone that does both.',dont:"don't confuse bluntness with honesty. you can be precise and kind at the same time.",evening:'where did your tone undermine your message?'}, zh:{name:'柔言',quote:'温和的回答能消除愤怒，但伤人的话语会激起怒火。',attr:'《箴言》15:1 · 约公元前950年',sharper:'最温柔的语气能承载最尖锐的观点。力量常常产生抵抗。以温情传递困难的沟通者，比以锋芒传递的人移动得更多。',do:'找出一条你需要传达的困难信息。练习以最直接且温暖的方式说它。找到两者兼顾的语气。',dont:'不要将直白与诚实混淆。你可以同时精确而善意。',evening:'你的语气在哪里破坏了你的信息？'}},
+    { id:'co8', icon:'🌊', en:{name:'the full presence',quote:'Most people do not listen with the intent to understand; they listen with the intent to reply.',attr:'Stephen Covey · The 7 Habits of Highly Effective People · 1989',sharper:"listening is not waiting to speak. the communicator who can be fully present — without preparing their next move — receives information most people miss. presence is the rarest skill in a room.",do:'in your next conversation, set a private intention to listen only to understand — not to respond. notice how different the conversation feels.',dont:"don't perform listening while planning your reply. the other person can feel the difference.",evening:'who tried to be heard today, and did you actually hear them?'}, zh:{name:'善听',quote:'大多数人听话不是为了理解，而是为了回应。',attr:'史蒂芬·柯维 · 《高效能人士的七个习惯》· 1989年',sharper:'倾听不是等待说话。能够完全在场——不预备下一步棋——的沟通者，接收到大多数人错过的信息。在场是一个房间里最稀缺的技能。',do:'在下一次对话中，私下设定意图：只为理解而倾听——不为回应。注意对话感觉有多不同。',dont:'不要在计划回应的同时表演倾听。对方能感受到区别。',evening:'今天谁试图被倾听，而你真正听见了他们吗？'}}
+  ],
+  psychology: [
+    { id:'ps1', icon:'🌑', en:{name:'the shadow',quote:'Until you make the unconscious conscious, it will direct your life and you will call it fate.',attr:'Carl Jung · c. 1935',sharper:"what you disown in yourself does not disappear. it goes underground and steers. the parts of you that you cannot look at directly will run the show from the dark.",do:'identify one trait in someone else that you find intensely irritating. ask: where does this live in me, unacknowledged?',dont:"don't project your disowned self onto others. what you cannot see in yourself, you will see everywhere else.",evening:'what emotion today did you call something else?'}, zh:{name:'幽暗',quote:'在你将无意识变为有意识之前，它将指引你的生命，而你将称之为命运。',attr:'卡尔·荣格 · 约1935年',sharper:'你在自身中否认的东西不会消失。它转入地下并驾驭方向。你无法直视的那部分你，将从黑暗中主导全局。',do:'找出他人身上让你极度恼怒的一个特质。问：这在我身上何处存在，未被承认？',dont:'不要将你否认的自我投射到他人身上。你在自身中看不见的，你将在其他所有地方看见。',evening:'你今天将哪种情绪称作了别的什么？'}},
+    { id:'ps2', icon:'🌑', en:{name:'the wound',quote:'The wound is the place where the light enters you.',attr:'Rumi · c. 1250',sharper:"your oldest patterns were once solutions. the wound was not the end of you — it shaped you. the question is whether you are still running the old program in a context where it no longer serves.",do:'identify one pattern that keeps repeating in your life. ask: when did I first develop this? what was it protecting me from?',dont:"don't pathologize your patterns before understanding them. they made sense once.",evening:'what old strategy ran today in a situation that no longer called for it?'}, zh:{name:'伤痕',quote:'伤口是光进入你的地方。',attr:'鲁米 · 约1250年',sharper:'你最古老的模式曾经是解决方案。伤口不是你的终点——它塑造了你。问题在于你是否仍在一个不再需要它的情境中运行旧程序。',do:'找出你生命中一个不断重复的模式。问：我最初是什么时候形成这个的？它在保护我免受什么？',dont:'在理解你的模式之前，不要将它们病理化。它们曾经有意义。',evening:'哪个旧策略今天在一个不再需要它的情境中运行了？'}},
+    { id:'ps3', icon:'🌑', en:{name:'the habit',quote:'We are what we repeatedly do. Excellence, then, is not an act, but a habit.',attr:'Aristotle · Nicomachean Ethics · c. 350 BC',sharper:'your life is not made of dramatic choices — it is made of tiny repeated ones. the gap between who you are and who you want to be is almost entirely a gap in daily behavior.',do:'identify one habit you have been wanting to change. instead of replacing it entirely, identify the smallest possible version of the new behavior and do it today.',dont:"don't wait for motivation to change a habit. the action creates the motivation, not the other way.",evening:'what small behavior did you repeat today that is building a version of yourself you do not want?'}, zh:{name:'习性',quote:'我们是由我们反复所做之事构成的。因此，卓越不是一个行为，而是一种习惯。',attr:'亚里士多德 · 《尼各马可伦理学》· 约公元前350年',sharper:'你的生命不是由戏剧性的选择构成的——它是由微小的、重复的选择构成的。你是谁与你想成为谁之间的差距，几乎完全是每日行为中的差距。',do:'找出一个你一直想改变的习惯。不要完全替换它，而是找出新行为的最小可能版本，今天就去做。',dont:'不要等待动力来改变习惯。行动创造动力，而非相反。',evening:'你今天重复了什么小行为，它正在塑造一个你不想要的自己的版本？'}},
+    { id:'ps4', icon:'🌑', en:{name:'the mirror trap',quote:'We do not see things as they are. We see them as we are.',attr:'Anaïs Nin · Seduction of the Minotaur · 1961',sharper:"you are always the narrator of your own experience. the story you are telling about what's happening is not the same as what is happening. the projection is silent, constant, and invisible unless you look for it.",do:"take a situation that is bothering you. write down what you believe is happening. then write what might be happening if you were not in the story at all.",dont:"don't mistake your interpretation for reality. it is always one of many.",evening:'where today did your assumptions write the script that the other person was then forced to play?'}, zh:{name:'投射',quote:'我们看待事物的方式不是事物本来的样子。我们以自己的样子看待它们。',attr:'阿奈斯·宁 · 《迷宫的诱惑》· 1961年',sharper:'你永远是自己体验的叙述者。你对正在发生之事所讲述的故事，并不等同于正在发生的事。投射是无声的、持续的，且不可见——除非你去寻找它。',do:'取一个让你困扰的情境。写下你相信正在发生的事。然后写下，如果你根本不在这个故事中，可能正在发生什么。',dont:'不要将你的诠释误认为现实。它永远只是众多可能之一。',evening:'今天你的假设在哪里写了剧本，而对方被迫去扮演？'}},
+    { id:'ps5', icon:'🌑', en:{name:'the rut',quote:'Insanity is doing the same thing over and over again and expecting different results.',attr:'commonly attributed to Einstein · origin disputed · c. 1980s',sharper:"the rut doesn't feel like a rut. it feels like the reasonable thing to do. until you can see the pattern from outside the pattern, you cannot change it.",do:'identify one area of your life where you have been getting the same unwanted result. list three different approaches you have never tried.',dont:"don't keep solving new problems with old solutions.",evening:'where did you expect a different result today while doing the same thing?'}, zh:{name:'惯性',quote:'疯狂是一遍又一遍地做同样的事，却期待不同的结果。',attr:'通常归于爱因斯坦 · 来源存疑 · 约1980年代',sharper:'困境感觉不像困境。它感觉像是合理的事情。在你能从模式之外看见模式之前，你无法改变它。',do:'找出你生命中一个持续得到同样不想要的结果的领域。列出三种你从未尝试过的不同方法。',dont:'不要用旧的解决方案持续解决新的问题。',evening:'你今天在哪里做着同样的事，却期待不同的结果？'}},
+    { id:'ps6', icon:'🌑', en:{name:'the tribe pull',quote:'Man is by nature a social animal.',attr:'Aristotle · Politics · c. 350 BC',sharper:"belonging is a deep need — and one of the most powerful forces shaping your behavior without your awareness. you may be making choices to belong that you believe you are making freely.",do:'identify one belief or behavior you hold primarily because of the group you want to belong to. ask: is this actually mine?',dont:"don't mistake the tribe's voice for your own.",evening:'where today did you perform belonging rather than choose it?'}, zh:{name:'归属',quote:'人在本性上是社会性动物。',attr:'亚里士多德 · 《政治学》· 约公元前350年',sharper:'归属是一种深层需求——也是在你不知情的情况下塑造你行为的最强大力量之一。你可能正在做一些你以为是自由选择的、实则为了归属的决定。',do:'找出一个你持有主要因为你想归属的群体而持有的信念或行为。问：这真的是我的吗？',dont:'不要将部落的声音误认为自己的声音。',evening:'你今天在哪里表演了归属，而非选择了它？'}},
+    { id:'ps7', icon:'🌑', en:{name:'the trigger',quote:'Between stimulus and response there is a space. In that space is our power to choose our response.',attr:"Viktor Frankl · Man's Search for Meaning · 1946",sharper:"you are not your reactions. the reaction is fast — but the space between trigger and response is where your character lives. that space can be widened with practice.",do:"identify one stimulus that reliably triggers an unwanted reaction in you. practice naming it the next time it appears, before reacting: 'this is the trigger.'",dont:"don't fuse the trigger with the reaction. they are not the same event.",evening:'where today did you react before you had the chance to respond?'}, zh:{name:'触动',quote:'在刺激与反应之间有一个空间。在那个空间里，存在着我们选择反应的力量。',attr:'维克多·弗兰克尔 · 《活出意义来》· 1946年',sharper:'你不是你的反应。反应是迅速的——但触发与回应之间的空间是你的品格所在。那个空间可以通过练习被拓宽。',do:"找出一个惯常触发你不想要的反应的刺激。练习在下次它出现时，在反应之前将其命名："这是触发点。"",dont:'不要将触发与反应融为一体。它们不是同一个事件。',evening:'你今天在哪里在有机会回应之前就反应了？'}},
+    { id:'ps8', icon:'🌑', en:{name:'the inner child',quote:'The most creative act you will ever undertake is the act of creating yourself.',attr:'Deepak Chopra · c. 2000',sharper:"part of you stopped developing at a certain point. that part still runs some of your most emotional decisions. knowing which part of you is speaking at any given moment is one of the most powerful forms of self-knowledge.",do:'notice one moment today when you felt a disproportionately strong emotional reaction. ask: how old does this feeling feel? who is speaking?',dont:"don't let the youngest part of you make the decisions that require the most mature part.",evening:'what moment today called for the adult and got the child instead?'}, zh:{name:'童心',quote:'你将进行的最具创造性的行为，是创造你自己的行为。',attr:'狄巴克·乔布拉 · 约2000年',sharper:'你的一部分在某个时刻停止了发展。那个部分仍然驱动着你最情绪化的一些决定。知道在任何给定时刻是你的哪个部分在说话，是最有力的自我认知形式之一。',do:'注意今天你感到反应异常强烈的一个时刻。问：这种感觉感觉几岁？谁在说话？',dont:'不要让你最年幼的部分做出需要最成熟部分的决定。',evening:'今天哪个时刻需要成人而得到的却是孩子？'}}
+  ],
+  philosophy: [
+    { id:'ph1', icon:'✦', en:{name:'the known unknown',quote:'I know that I know nothing.',attr:'Socrates · via Plato · c. 399 BC',sharper:"the beginning of wisdom is the recognition of its limit. the person who knows they do not know is closer to truth than the one who has stopped looking.",do:'identify the most important question in your life right now that you genuinely cannot answer. sit with the not-knowing for ten minutes without reaching for a solution.',dont:"don't mistake the absence of doubt for the presence of understanding.",evening:'what were you more certain about this morning than you should have been?'}, zh:{name:'无知之知',quote:'我唯一知道的，是我什么都不知道。',attr:'苏格拉底 · 经柏拉图记录 · 约公元前399年',sharper:'智慧的起点是对其边界的认识。知道自己不知道的人，比已停止寻找的人更接近真相。',do:'找出你生命中此刻最重要的、你真正无法回答的问题。与这种不知道共处十分钟，不要寻求解决方案。',dont:'不要将怀疑的缺席误认为理解的存在。',evening:'今晨你对什么过于确信？'}},
+    { id:'ph2', icon:'✦', en:{name:'the present',quote:'Yesterday is history, tomorrow is a mystery, today is a gift. That is why it is called the present.',attr:'Eleanor Roosevelt · commonly attributed · c. 1940s',sharper:'most suffering happens in a time that is not now. the mind rehearses the future or revisits the past while the actual moment passes unlived. the practice is not optimism — it is attention.',do:'set one alarm today for a random time. when it goes off, notice: where is your attention? is it here?',dont:"don't spend the present solving a problem that does not yet exist.",evening:'how much of today did you actually inhabit?'}, zh:{name:'此刻',quote:'昨天是历史，明天是谜，今天是礼物。这就是为什么它被称为"当下"。',attr:'埃莉诺·罗斯福 · 常见归因 · 约1940年代',sharper:'大多数痛苦发生在非当下的时间里。心灵在排练未来或重访过去，而真实的时刻未被活过地流逝。这种修炼不是乐观——它是注意力。',do:'今天随机设置一个闹钟。当它响起时，注意：你的注意力在哪里？它在这里吗？',dont:'不要将当下花在解决一个尚不存在的问题上。',evening:'今天有多少你真正居住在其中？'}},
+    { id:'ph3', icon:'✦', en:{name:'the examined life',quote:'The unexamined life is not worth living.',attr:'Socrates · via Plato · Apology · 399 BC',sharper:'most people live their lives at the surface. the examined life asks harder questions and tolerates the discomfort of not having answers. this is not a punishment — it is what it means to be fully alive.',do:'take 10 minutes tonight before bed. ask: what did I do today that I am proud of? what do I wish I had done differently? write down both.',dont:"don't let the day pass without asking what it meant.",evening:"what question about your own life are you most avoiding?"}, zh:{name:'省察',quote:'未经省察的人生不值得过。',attr:'苏格拉底 · 经柏拉图记录 · 《申辩》· 公元前399年',sharper:'大多数人在生命的表面生活。被省察的生命提出更难的问题，并容忍没有答案的不适。这不是惩罚——这是充分活着的意思。',do:'今晚睡前花10分钟。问：我今天做了什么让我自豪？我希望我做了什么不同？把两者都写下来。',dont:'不要让这一天在没有追问其意义的情况下流逝。',evening:'关于你自己的生命，你最回避的是什么问题？'}},
+    { id:'ph4', icon:'✦', en:{name:'the river',quote:'You cannot step into the same river twice.',attr:'Heraclitus · Fragment · c. 500 BC',sharper:'the person you were is not the person you are. the situation as it was is not the situation as it is. most suffering comes from treating fixed what is fundamentally fluid.',do:'identify something in your life you have been treating as permanent. ask: what would change if I accepted that this is in motion?',dont:"don't grip so hard that you cannot move when the river does.",evening:'what are you holding onto that has already changed?'}, zh:{name:'流变',quote:'你无法两次踏入同一条河流。',attr:'赫拉克利特 · 残篇 · 约公元前500年',sharper:'你曾经是的那个人，不是你现在是的那个人。曾经的情境，不是现在的情境。大多数痛苦来自于将根本流动的东西视为固定的。',do:'找出你生命中一件你一直视为永久的事。问：如果我接受这是在运动中的，什么会改变？',dont:'不要抓得太紧以至于当河流改变时你无法移动。',evening:'你正在抓住什么，而它已经改变了？'}},
+    { id:'ph5', icon:'✦', en:{name:'the moment of action',quote:'We suffer more in imagination than in reality.',attr:'Seneca · Letters to Lucilius · c. 65 AD',sharper:'the action you are avoiding is rarely as bad as the avoidance. most of the suffering is in the anticipation, not the doing. the move that seems impossible is usually just the first step.',do:'identify the one action you have been putting off the longest. do the smallest possible version of it today — not the full thing, just the start.',dont:"don't let the imagination of difficulty stand in for the actual attempt.",evening:'what did you avoid today that you have also avoided every day this week?'}, zh:{name:'时机',quote:'我们在想象中受苦，远多于在现实中受苦。',attr:'塞内卡 · 《给路西利乌斯的信》· 约公元65年',sharper:'你正在回避的行动，几乎从不像回避本身那么糟糕。大多数痛苦在于预期，而非行动。看似不可能的棋路，通常只是第一步。',do:'找出你拖延最久的那一个行动。今天做它的最小可能版本——不是全部，只是开始。',dont:'不要让对困难的想象代替实际的尝试。',evening:'你今天回避了什么，而你这周每天都在回避它？'}},
+    { id:'ph6', icon:'✦', en:{name:'the coming light',quote:'Even the darkest night will end, and the sun will rise.',attr:'Victor Hugo · Les Misérables · 1862',sharper:'the permanent feeling is rarely permanent. the mind in difficulty cannot see what the mind in clarity can — that this too will move. the practice is to hold on long enough to find out.',do:'identify something in your life that feels permanent and heavy. write down three ways it might look in a year if things shifted.',dont:"don't let the darkness of the moment become the verdict of the future.",evening:'what did you treat as final today that might not be?'}, zh:{name:'见光',quote:'即使是最黑暗的夜晚也会结束，太阳将会升起。',attr:'维克多·雨果 · 《悲惨世界》· 1862年',sharper:'永久的感觉很少是永久的。困难中的心灵无法看见清明中的心灵所能看见的——这也会移动。这种修炼是坚持足够长时间去发现。',do:'找出你生命中感觉永久而沉重的事物。写下三种它在事情改变后一年可能的样子。',dont:'不要让此刻的黑暗成为未来的判决。',evening:'你今天把什么当作了最终，而它可能并非如此？'}},
+    { id:'ph7', icon:'✦', en:{name:'the role',quote:'Act well your part; there all the honor lies.',attr:'Alexander Pope · An Essay on Man · 1734',sharper:"you did not choose the stage — but you can choose how fully you play your part on it. most people play their roles at half-volume, waiting to be assigned something more significant. meaning is made, not found.",do:'identify one role you are currently in — parent, colleague, friend — that you have been performing at half-effort. choose one thing today to do it fully.',dont:"don't wait to be handed the meaningful version of your life. play the role you have, fully.",evening:'where today did you phone it in — and what would it have looked like to be fully present?'}, zh:{name:'入戏',quote:'好好扮演你的角色；所有的荣誉在于此。',attr:'亚历山大·蒲柏 · 《人论》· 1734年',sharper:'你没有选择舞台——但你可以选择在其上多完整地扮演你的角色。大多数人以半音量扮演他们的角色，等待被分配更重要的事情。意义是被创造的，而非被发现的。',do:'找出你当前扮演的一个角色——父母、同事、朋友——你一直以半份力气在履行。今天选择一件事全力去做。',dont:'不要等待意义版本的生命被交到你手中。全力扮演你拥有的角色。',evening:'你今天在哪里敷衍了事——而全力在场会是什么样子？'}},
+    { id:'ph8', icon:'✦', en:{name:'the whole',quote:'The whole is more than the sum of its parts.',attr:'Aristotle · Metaphysics · c. 350 BC',sharper:'the most important things cannot be seen by looking at the parts alone. the pattern only emerges when you step back far enough to see the whole. this applies to your life, your work, and your relationships.',do:'step back from something you have been inside for too long. ask: if I could only see the overall pattern — not the details — what would it tell me?',dont:"don't solve at the level of the part when the problem is at the level of the whole.",evening:'what detail were you so focused on today that you missed the larger pattern?'}, zh:{name:'整体',quote:'整体大于部分之和。',attr:'亚里士多德 · 《形而上学》· 约公元前350年',sharper:'最重要的事情无法仅通过观察部分来看见。只有当你退后足够远以看见整体时，模式才会浮现。这适用于你的生命、你的工作和你的关系。',do:'从你已经深陷其中太久的事物中退后。问：如果我只能看见整体模式——而非细节——它会告诉我什么？',dont:'不要在整体层面存在问题时在部分层面求解。',evening:'你今天专注于什么细节，以至于错过了更大的模式？'}}
+  ]
 };
 
-function saveFavs() {
-  localStorage.setItem('sharper_favs', JSON.stringify([...state.favorites]));
+const DECK_ICONS = { leadership:'⚔', 'critical-thinking':'🔬', communication:'🌊', psychology:'🌑', philosophy:'✦' };
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+const S = {
+  lang: localStorage.getItem('sh_lang') || 'en',
+  archetype: localStorage.getItem('sh_arch') || null,
+  quizAnswers: [],
+  qIdx: 0,
+  deck: null,
+  tableLayout: [],
+  picked: [],
+  favs: JSON.parse(localStorage.getItem('sh_favs') || '[]'),
+  readingOpen: false
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+
+const t = k => {
+  const val = T[S.lang][k];
+  return val !== undefined ? val : T.en[k];
+};
+const tDeck = d => T[S.lang].deckNames[d] || T.en.deckNames[d];
+const cardL = c => c[S.lang];
+
+function cap(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function rand(min, max) { return Math.random() * (max - min) + min; }
+
+function calcArchetype(answers) {
+  const counts = {};
+  answers.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+  let best = null, bestN = 0;
+  for (const [k, n] of Object.entries(counts)) {
+    if (n > bestN) { bestN = n; best = k; }
+  }
+  return (bestN >= 2 && best) ? best : 'wanderer';
 }
 
-function loadArchetype() {
-  const saved = localStorage.getItem('sharper_archetype');
-  if (saved) {
-    try { return JSON.parse(saved); } catch(e) { return null; }
+function saveFavs() { localStorage.setItem('sh_favs', JSON.stringify(S.favs)); }
+
+function getCard(id) {
+  for (const deck of Object.values(CARDS)) {
+    const c = deck.find(c => c.id === id);
+    if (c) return c;
   }
   return null;
 }
 
-function saveArchetype(a) {
-  localStorage.setItem('sharper_archetype', JSON.stringify(a));
+// ── RENDER HELPERS ────────────────────────────────────────────────────────────
+
+function renderCardFace(card) {
+  const cl = cardL(card);
+  const deckKey = Object.keys(CARDS).find(k => CARDS[k].some(c => c.id === card.id));
+  return `
+    <div class="wcard-deck-label">${tDeck(deckKey)}</div>
+    <div class="wcard-icon">${card.icon}</div>
+    <div class="wcard-name">${cl.name}</div>
+    <div class="wcard-quote">${cl.quote}</div>
+    <div class="wcard-attr">${cl.attr}</div>`;
 }
 
-function getTodayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-// ════════════════════════════════════
-//  BOOT
-// ════════════════════════════════════
-
-(function boot() {
-  const saved = loadArchetype();
-  if (saved) {
-    state.archetype = saved;
-  }
-  showLanding();
-})();
-
-function showLanding() {
-  const saved = state.archetype;
-  const welcomeEl = document.getElementById('landing-welcome');
-  const btnEl = document.getElementById('landing-btn');
-  const subLabel = document.getElementById('landing-sub-label');
-
-  if (saved) {
-    welcomeEl.style.display = 'flex';
-    document.getElementById('lw-glyph').textContent = saved.glyph;
-    document.getElementById('lw-name').textContent = saved.name;
-    btnEl.textContent = 'continue →';
-    subLabel.textContent = '40 cards across 5 decks';
-    btnEl.onclick = () => enterApp();
-  } else {
-    welcomeEl.style.display = 'none';
-    btnEl.textContent = 'begin →';
-    subLabel.textContent = 'takes 2 minutes · no account needed';
-    btnEl.onclick = () => { showScreen('quiz'); renderQuestion(); };
-  }
-
-  showScreen('landing');
-}
-
-function showScreen(id) {
-  document.querySelectorAll('.solo-screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('app').classList.remove('active');
-  const landing = document.getElementById('screen-landing');
-  landing.classList.remove('active');
-
-  if (id === 'app') {
-    document.getElementById('app').classList.add('active');
-  } else if (id === 'landing') {
-    landing.classList.add('active');
-  } else {
-    const el = document.getElementById('screen-' + id);
-    if (el) el.classList.add('active');
-  }
-  window.scrollTo(0, 0);
-}
-
-function enterApp() {
-  updateArchPill();
-  initDeckPills();
-  updateFocusBanner();
-  showScreen('app');
-}
-
-// ════════════════════════════════════
-//  QUIZ
-// ════════════════════════════════════
-
-function renderQuestion() {
-  const q = QUIZ[state.currentQ];
-  document.getElementById('quiz-question').textContent = q.q;
-  document.getElementById('quiz-sub').textContent = q.sub;
-  document.getElementById('quiz-counter').textContent = state.currentQ + 1;
-  document.getElementById('quiz-back-btn').style.display = state.currentQ > 0 ? 'inline-block' : 'none';
-  for (let i = 0; i < 5; i++) {
-    document.getElementById('pip-' + i).className = 'quiz-pip' + (i <= state.currentQ ? ' filled' : '');
-  }
-  const opts = document.getElementById('quiz-options');
-  opts.innerHTML = '';
-  q.opts.forEach((opt, idx) => {
-    const div = document.createElement('div');
-    div.className = 'quiz-opt' + (state.quizAnswers[state.currentQ] === opt.arch ? ' selected' : '');
-    div.textContent = opt.text;
-    div.onclick = () => selectAnswer(opt.arch, idx);
-    opts.appendChild(div);
-  });
-}
-
-function selectAnswer(arch, idx) {
-  state.quizAnswers[state.currentQ] = arch;
-  document.querySelectorAll('.quiz-opt').forEach((o, i) => o.classList.toggle('selected', i === idx));
-  setTimeout(() => {
-    if (state.currentQ < QUIZ.length - 1) {
-      state.currentQ++;
-      renderQuestion();
-    } else {
-      resolveArchetype();
-    }
-  }, 270);
-}
-
-function quizBack() {
-  if (state.currentQ > 0) { state.currentQ--; renderQuestion(); }
-}
-
-function resolveArchetype() {
-  const scores = {};
-  Object.values(state.quizAnswers).forEach(a => { scores[a] = (scores[a] || 0) + 1; });
-  const top = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
-  state.archetype = ARCHETYPES[top] || ARCHETYPES.wanderer;
-  saveArchetype(state.archetype);
-
-  const c = document.getElementById('arch-content');
-  c.innerHTML = `
-    <div class="arch-glyph">${state.archetype.glyph}</div>
-    <div class="arch-badge">your archetype</div>
-    <div class="arch-name">${state.archetype.name}</div>
-    <div style="width:36px;height:1px;background:var(--gold-pale);margin:0.3rem auto"></div>
-    <div class="arch-desc">${state.archetype.desc}</div>
-    <div class="arch-traits">${state.archetype.traits.map(t=>`<span class="trait-chip">${t}</span>`).join('')}</div>
-  `;
-  showScreen('archetype');
-}
-
-function reassessPrompt() {
-  if (confirm('retake the archetype quiz? your current archetype will be replaced.')) {
-    localStorage.removeItem('sharper_archetype');
-    state.archetype = null;
-    state.quizAnswers = {};
-    state.currentQ = 0;
-    showScreen('quiz');
-    renderQuestion();
-  }
-}
-
-// ════════════════════════════════════
-//  APP SHELL
-// ════════════════════════════════════
-
-function updateArchPill() {
-  if (!state.archetype) return;
-  document.getElementById('ap-glyph').textContent = state.archetype.glyph;
-  document.getElementById('ap-name').textContent = state.archetype.name;
-}
-
-function updateFocusBanner() {
-  const focus = localStorage.getItem('sharper_focus');
-  const banner = document.getElementById('focus-banner');
-  if (focus) {
-    document.getElementById('focus-banner-text').textContent = focus;
-    banner.classList.remove('hidden');
-  } else {
-    banner.classList.add('hidden');
-  }
-}
-
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-' + id).classList.add('active');
-  if (id === 'saved') renderFavs();
-}
-
-// ════════════════════════════════════
-//  DECK PILLS
-// ════════════════════════════════════
-
-function initDeckPills() {
-  const container = document.getElementById('deck-pills');
-  container.innerHTML = '';
-  const recommended = state.archetype ? state.archetype.recommended : [];
-  DECKS.forEach(deck => {
-    const btn = document.createElement('button');
-    const isRec = recommended.includes(deck.id);
-    btn.className = 'deck-pill' + (state.selectedDecks.has(deck.id) ? ' on' : '');
-    btn.innerHTML = `<span class="di">${deck.icon}</span>${deck.name}${isRec ? ' ·✦' : ''}`;
-    btn.onclick = () => toggleDeckPill(deck.id, btn);
-    container.appendChild(btn);
-  });
-}
-
-function toggleDeckPill(id, btn) {
-  if (state.selectedDecks.has(id)) {
-    state.selectedDecks.delete(id);
-    btn.classList.remove('on');
-  } else {
-    state.selectedDecks.add(id);
-    btn.classList.add('on');
-  }
-  rebuildTable();
-}
-
-// ════════════════════════════════════
-//  CARD TABLE (organic grid)
-// ════════════════════════════════════
-
-function rebuildTable() {
-  const pool = DECKS.filter(d => state.selectedDecks.has(d.id)).flatMap(d => d.cards);
-  const hint = document.getElementById('draw-hint-text');
-
-  if (pool.length === 0) {
-    document.getElementById('grid-section').style.display = 'none';
-    hint.textContent = 'pick one or more decks, then choose your cards below';
-    return;
-  }
-
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  state.tableCards = shuffled.slice(0, 25);
-  state.pickedCards = [];
-  state.readingDone = false;
-
-  document.getElementById('grid-pool-label').textContent = `${state.tableCards.length} cards on the table`;
-  hint.textContent = `${state.tableCards.length} cards spread · pick up to 3`;
-  document.getElementById('grid-section').style.display = 'block';
-  document.getElementById('pulled-section').classList.add('hidden');
-  document.getElementById('reading-wrap').style.display = 'none';
-  document.getElementById('reading-output').innerHTML = '';
-
-  renderGrid();
-}
-
-function rnd(min, max) { return Math.random() * (max - min) + min; }
-
-function renderGrid() {
-  const grid = document.getElementById('card-grid');
-  grid.innerHTML = '';
-
-  state.tableCards.forEach((card, i) => {
-    const el = document.createElement('div');
-    el.className = 'mini-card';
-    el.id = 'mini-' + card.id;
-    const rot = rnd(-7, 7).toFixed(1);
-    const dy = rnd(-4, 4).toFixed(1);
-    el.style.setProperty('--rot', rot + 'deg');
-    el.style.setProperty('--dy', dy + 'px');
-    el.style.setProperty('--glow', '0');
-    el.innerHTML = `<span class="mini-card-inner-glyph">${card.icon}</span>`;
-    el.onclick = () => pickCard(card, el);
-    grid.appendChild(el);
-  });
-
-  setupProximityEffect();
-}
-
-function setupProximityEffect() {
-  const wrap = document.getElementById('card-grid-wrap');
-  const cursor = document.getElementById('grid-cursor');
-  const RADIUS = 110;
-
-  wrap.addEventListener('mousemove', (e) => {
-    const rect = wrap.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-    cursor.style.opacity = '1';
-
-    document.querySelectorAll('.mini-card:not(.taken):not(.exhausted)').forEach(card => {
-      const cr = card.getBoundingClientRect();
-      const cx = cr.left - rect.left + cr.width / 2;
-      const cy = cr.top - rect.top + cr.height / 2;
-      const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
-      const prox = Math.max(0, 1 - dist / RADIUS);
-      const eased = prox * prox;
-      card.style.setProperty('--glow', eased.toFixed(3));
-    });
-  });
-
-  wrap.addEventListener('mouseleave', () => {
-    cursor.style.opacity = '0';
-    document.querySelectorAll('.mini-card').forEach(card => {
-      card.style.setProperty('--glow', '0');
-    });
-  });
-}
-
-// ════════════════════════════════════
-//  PICK INTERACTION
-// ════════════════════════════════════
-
-function pickCard(card, miniEl) {
-  if (state.pickedCards.length >= 3) return;
-  if (state.pickedCards.find(c => c.id === card.id)) return;
-
-  state.pickedCards.push(card);
-  miniEl.classList.add('taken');
-
-  const pulled = document.getElementById('pulled-section');
-  pulled.classList.remove('hidden');
-  document.getElementById('pulled-label').textContent =
-    `${state.pickedCards.length} card${state.pickedCards.length !== 1 ? 's' : ''} drawn · ${3 - state.pickedCards.length} remaining`;
-
-  const spread = document.getElementById('pulled-spread');
-  const cardEl = buildFullCard(card);
-  cardEl.style.opacity = '0';
-  cardEl.style.transform = 'translateY(20px)';
-  spread.appendChild(cardEl);
-
-  requestAnimationFrame(() => {
-    cardEl.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-    cardEl.style.opacity = '1';
-    cardEl.style.transform = 'translateY(0)';
-    setTimeout(() => {
-      cardEl.classList.add('flipped');
-    }, 350);
-  });
-
-  if (state.pickedCards.length >= 3) {
-    document.querySelectorAll('.mini-card:not(.taken)').forEach(m => m.classList.add('exhausted'));
-    document.getElementById('pulled-label').textContent = '3 cards drawn · spread complete';
-    setTimeout(() => {
-      document.getElementById('reading-wrap').style.display = 'block';
-      document.getElementById('reading-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 900);
-  }
-}
-
-// ════════════════════════════════════
-//  FULL CARD (new layout)
-// ════════════════════════════════════
-
-function getDeckName(cardId) {
-  const d = DECKS.find(d => d.cards.some(c => c.id === cardId));
-  return d ? d.name : '';
-}
-
-function buildFullCard(card) {
-  const wrap = document.createElement('div');
-  wrap.className = 'tarot-card';
-  wrap.innerHTML = `
-    <div class="tarot-card-inner">
-      <div class="card-back-face">
-        <div class="cb-inner">
-          <div class="cb-glyph">◈</div>
-          <div class="cb-text">sharper · wisdom</div>
-        </div>
-      </div>
-      <div class="card-face">
-        <div class="cf-deck">${getDeckName(card.id)}</div>
-        <div class="cf-quote">"${card.quote}"</div>
-        <div class="cf-attr">${card.attr}</div>
-        <div class="cf-div"></div>
-        <div class="cf-identity">
-          <div class="cf-icon">${card.icon}</div>
-          <div class="cf-name">${card.name}</div>
-        </div>
-        <div class="cf-sharper">${card.sharper}</div>
-        <div class="cf-footer">
-          <button class="fav-btn ${state.favorites.has(card.id) ? 'on' : ''}"
-            onclick="toggleFav('${card.id}', event)">
-            ${state.favorites.has(card.id) ? '★' : '☆'}
-          </button>
-        </div>
+function renderWcard(card, idx) {
+  return `
+    <div class="wcard-wrap">
+      <div class="wcard" id="wcard-${idx}" data-idx="${idx}">
+        <div class="wcard-back"><span class="wcard-back-text">Sharper · wisdom</span></div>
+        <div class="wcard-face">${renderCardFace(card)}</div>
       </div>
     </div>`;
-  return wrap;
 }
 
-// ════════════════════════════════════
-//  RESET DRAW
-// ════════════════════════════════════
+// ── TABS ──────────────────────────────────────────────────────────────────────
 
-function resetDraw() {
-  rebuildTable();
-  document.getElementById('pulled-spread').innerHTML = '';
-  document.getElementById('pulled-section').classList.add('hidden');
-  document.getElementById('reading-wrap').style.display = 'none';
-  document.getElementById('reading-output').innerHTML = '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function showTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('screen-' + tab).classList.add('on');
+  document.getElementById('nav-' + tab).classList.add('on');
+  if (tab === 'home') renderHome();
+  if (tab === 'deck') renderDeck();
+  if (tab === 'archive') renderArchive();
 }
 
-// ════════════════════════════════════
-//  FAVORITES
-// ════════════════════════════════════
+// ── HOME ──────────────────────────────────────────────────────────────────────
 
-function toggleFav(cardId, event) {
-  event.stopPropagation();
-  const btn = event.currentTarget;
-  if (state.favorites.has(cardId)) {
-    state.favorites.delete(cardId);
-    btn.textContent = '☆';
-    btn.classList.remove('on');
+function renderHome() {
+  // Show correct view
+  const hasArch = !!S.archetype;
+  document.getElementById('view-landing').classList.remove('hidden');
+  document.getElementById('view-quiz').classList.add('hidden');
+  document.getElementById('view-arch-result').classList.add('hidden');
+
+  document.getElementById('landing-title').textContent = t('appName');
+  document.getElementById('landing-sub').textContent = t('appSub');
+
+  const previewWrap = document.getElementById('arch-preview-wrap');
+  const ctaMain = document.getElementById('cta-main');
+  const ctaSec = document.getElementById('cta-secondary');
+
+  if (hasArch) {
+    const arch = ARCHETYPES[S.archetype];
+    const al = arch[S.lang];
+    previewWrap.classList.remove('hidden');
+    document.getElementById('arch-preview').innerHTML = `
+      <div class="arch-glyph">${arch.glyph}</div>
+      <div class="arch-name">${al.name}</div>
+      <div class="arch-traits">${al.traits.join(' · ')}</div>`;
+    ctaMain.textContent = t('enterDeck');
+    ctaMain.onclick = () => showTab('deck');
+    ctaSec.textContent = t('beginQuiz');
+    ctaSec.classList.remove('hidden');
+    ctaSec.onclick = startQuiz;
+    document.getElementById('reassess-btn').classList.remove('hidden');
+    document.getElementById('reassess-btn').textContent = t('reassess');
   } else {
-    state.favorites.add(cardId);
-    btn.textContent = '★';
-    btn.classList.add('on');
+    previewWrap.classList.add('hidden');
+    ctaMain.textContent = t('beginQuiz');
+    ctaMain.onclick = startQuiz;
+    ctaSec.classList.add('hidden');
+    document.getElementById('reassess-btn').classList.add('hidden');
   }
-  saveFavs();
 }
 
-function renderFavs() {
-  const el = document.getElementById('favs-content');
-  if (state.favorites.size === 0) {
-    el.innerHTML = `<div class="favs-empty"><div class="favs-empty-icon">☆</div><div class="t-label">no saved cards yet</div><div style="margin-top:0.4rem;font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--warm-grey)">draw cards and tap ☆ to save them here</div></div>`;
-    return;
-  }
-  const allCards = DECKS.flatMap(d => d.cards);
-  const favCards = allCards.filter(c => state.favorites.has(c.id));
-  el.innerHTML = `<div class="t-label" style="margin-bottom:1rem">${favCards.length} card${favCards.length !== 1 ? 's' : ''} saved</div>`;
-  const grid = document.createElement('div');
-  grid.className = 'favs-grid';
-  favCards.forEach(card => {
-    const w = buildFullCard(card);
-    w.classList.add('flipped');
-    grid.appendChild(w);
+function startQuiz() {
+  S.quizAnswers = [];
+  S.qIdx = 0;
+  document.getElementById('view-landing').classList.add('hidden');
+  document.getElementById('view-quiz').classList.remove('hidden');
+  document.getElementById('view-arch-result').classList.add('hidden');
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = QUIZ[S.qIdx];
+  document.getElementById('quiz-title').textContent = t('quizTitle');
+  document.getElementById('quiz-progress').textContent =
+    S.lang === 'zh' ? `第 ${S.qIdx + 1} 题，共 5 题` : `question ${S.qIdx + 1} of 5`;
+  document.getElementById('quiz-q').textContent = q[S.lang];
+
+  const optsEl = document.getElementById('quiz-opts');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt' + (S.quizAnswers[S.qIdx] === opt.v ? ' sel' : '');
+    btn.textContent = opt[S.lang];
+    btn.onclick = () => {
+      S.quizAnswers[S.qIdx] = opt.v;
+      optsEl.querySelectorAll('.quiz-opt').forEach((b, j) => b.classList.toggle('sel', j === i));
+    };
+    optsEl.appendChild(btn);
   });
-  el.appendChild(grid);
+
+  const backBtn = document.getElementById('quiz-back-btn');
+  const nextBtn = document.getElementById('quiz-next-btn');
+  backBtn.textContent = t('quizBack');
+  nextBtn.textContent = S.qIdx < 4 ? t('quizNext') : (S.lang === 'zh' ? '完成' : 'finish');
+
+  backBtn.style.display = S.qIdx === 0 ? 'none' : '';
+  backBtn.onclick = () => { S.qIdx--; renderQuiz(); };
+  nextBtn.onclick = () => {
+    if (!S.quizAnswers[S.qIdx]) return;
+    if (S.qIdx < 4) { S.qIdx++; renderQuiz(); }
+    else finishQuiz();
+  };
 }
 
-// ════════════════════════════════════
-//  READING
-// ════════════════════════════════════
+function finishQuiz() {
+  const arch = calcArchetype(S.quizAnswers);
+  S.archetype = arch;
+  localStorage.setItem('sh_arch', arch);
+  showArchResult(arch);
+}
 
-function generateReading() {
-  if (state.readingDone) return;
-  state.readingDone = true;
+function showArchResult(arch) {
+  document.getElementById('view-landing').classList.add('hidden');
+  document.getElementById('view-quiz').classList.add('hidden');
+  document.getElementById('view-arch-result').classList.remove('hidden');
 
-  const cards = state.pickedCards;
-  const archName = state.archetype ? state.archetype.name : 'the seeker';
-  const pick = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n);
-  const dos = pick(cards.flatMap(c => c.dos), 3);
-  const donts = pick(cards.flatMap(c => c.donts), 3);
-  const themes = cards.map(c => c.sharper.split('.')[0].trim());
+  const a = ARCHETYPES[arch];
+  const al = a[S.lang];
+  const recNames = a.recommended.map(d => tDeck(d)).join(', ');
+
+  document.getElementById('arch-result-content').innerHTML = `
+    <div class="arch-result-glyph">${a.glyph}</div>
+    <div class="arch-result-label">${t('youAre')}</div>
+    <div class="arch-result-name">${al.name}</div>
+    <div class="arch-result-desc">${al.desc}</div>
+    <div class="arch-result-traits">${al.traits.map(tr => `<span class="arch-trait">${tr}</span>`).join('')}</div>
+    <div style="font-size:0.65rem;color:var(--shadow);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:24px">${t('archRecommends')}: ${recNames}</div>
+    <button class="cta-btn" id="arch-enter-btn">${t('enterDeckNow')}</button>`;
+
+  document.getElementById('arch-enter-btn').onclick = () => showTab('deck');
+  document.getElementById('reassess-btn').classList.remove('hidden');
+}
+
+// ── DECK ──────────────────────────────────────────────────────────────────────
+
+function renderDeck() {
+  const pillsEl = document.getElementById('deck-pills');
+  pillsEl.innerHTML = '';
+  const deckKeys = Object.keys(CARDS);
+  deckKeys.forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'deck-pill' + (S.deck === key ? ' sel' : '');
+    btn.textContent = `${DECK_ICONS[key]} ${tDeck(key)}`;
+    btn.onclick = () => selectDeck(key);
+    pillsEl.appendChild(btn);
+  });
+
+  document.getElementById('shuffle-btn').textContent = t('shuffle');
+  document.getElementById('deck-prompt').textContent = t('pickPrompt');
+
+  if (S.deck) {
+    document.getElementById('deck-table-wrap').classList.remove('hidden');
+    renderTable();
+  } else {
+    document.getElementById('deck-table-wrap').classList.add('hidden');
+  }
+}
+
+function selectDeck(key) {
+  S.deck = key;
+  S.picked = [];
+  S.readingOpen = false;
+  renderDeck();
+}
+
+function buildTableLayout() {
+  const deck = CARDS[S.deck];
+  // 25 cards, cycling through deck cards
+  const layout = [];
+  for (let i = 0; i < 25; i++) {
+    const card = deck[i % deck.length];
+    layout.push({
+      card,
+      rot: rand(-14, 14),
+      dy: rand(-18, 18)
+    });
+  }
+  S.tableLayout = layout;
+}
+
+function renderTable() {
+  if (!S.tableLayout.length || S.tableLayout[0].card.id !== CARDS[S.deck][0].id) {
+    buildTableLayout();
+  }
+  const tableEl = document.getElementById('card-table');
+  tableEl.innerHTML = '';
+  S.tableLayout.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'mc' + (S.picked.some(p => p._tIdx === i) ? ' picked' : '');
+    el.style.setProperty('--rot', item.rot + 'deg');
+    el.style.setProperty('--dy', item.dy + 'px');
+    el.dataset.idx = i;
+    el.onclick = () => pickCard(i, item.card);
+    tableEl.appendChild(el);
+  });
+  renderPickedCards();
+}
+
+function pickCard(tIdx, card) {
+  const alreadyIdx = S.picked.findIndex(p => p._tIdx === tIdx);
+  if (alreadyIdx >= 0) {
+    S.picked.splice(alreadyIdx, 1);
+  } else {
+    if (S.picked.length >= 3) return;
+    S.picked.push({ ...card, _tIdx: tIdx });
+  }
+  S.readingOpen = false;
+  renderTable();
+}
+
+function renderPickedCards() {
+  const row = document.getElementById('picked-row');
+  row.innerHTML = S.picked.map((c, i) => renderWcard(c, i)).join('');
+
+  // Flip cards after a short delay
+  S.picked.forEach((_, i) => {
+    setTimeout(() => {
+      const el = document.getElementById('wcard-' + i);
+      if (el) el.classList.add('flipped');
+    }, 300 + i * 200);
+  });
+
+  const revealBtn = document.getElementById('reveal-btn');
+  const readingWrap = document.getElementById('reading-wrap');
+
+  if (S.picked.length > 0) {
+    revealBtn.classList.remove('hidden');
+    revealBtn.textContent = t('revealReading');
+    revealBtn.onclick = openReading;
+  } else {
+    revealBtn.classList.add('hidden');
+  }
+
+  if (S.readingOpen) {
+    readingWrap.classList.remove('hidden');
+    renderReading();
+  } else {
+    readingWrap.classList.add('hidden');
+  }
+}
+
+function openReading() {
+  S.readingOpen = true;
+  document.getElementById('reveal-btn').classList.add('hidden');
+  document.getElementById('reading-wrap').classList.remove('hidden');
+  renderReading();
+}
+
+function renderReading() {
+  const cards = S.picked;
+  const cl = cards.map(c => cardL(c));
+  const l = S.lang;
 
   let synth;
-  if (cards.length === 1) synth = `one card today. ${themes[0]}. that's enough — sit with it.`;
-  else if (cards.length === 2) synth = `two cards, one thread: ${themes[0]}. and underneath that — ${themes[1]}. they're in conversation.`;
-  else synth = `three cards, one undercurrent: ${themes[0]}. then: ${themes[1]}. the third adds texture — ${themes[2]}. your reading is an invitation, not a verdict.`;
+  if (l === 'zh') {
+    synth = cl.length === 1
+      ? `${cap(cl[0].name)}确立了今日的方向：${cl[0].sharper}`
+      : cl.length === 2
+      ? `${cap(cl[0].name)}确立了方向：${cl[0].sharper} ${cap(cl[1].name)}揭示其下的张力：${cl[1].sharper}`
+      : `${cap(cl[0].name)}确立了方向：${cl[0].sharper} ${cap(cl[1].name)}揭示其下的张力：${cl[1].sharper} ${cap(cl[2].name)}给出了今晚的问题：${cl[2].sharper}`;
+  } else {
+    synth = cl.length === 1
+      ? `${cap(cl[0].name)} sets the ground for today: ${cl[0].sharper}`
+      : cl.length === 2
+      ? `${cap(cl[0].name)} sets the ground: ${cl[0].sharper} ${cap(cl[1].name)} reveals the tension beneath: ${cl[1].sharper}`
+      : `${cap(cl[0].name)} sets the ground: ${cl[0].sharper} ${cap(cl[1].name)} reveals the tension beneath: ${cl[1].sharper} ${cap(cl[2].name)} closes with the question you carry: ${cl[2].sharper}`;
+  }
 
-  // reflection prompt
-  const reflectPrompt = cards.length >= 1
-    ? `what does "${cards[0].sharper.split('.')[0].trim()}" bring up for you right now? write without editing.`
-    : 'what is this draw pointing at for you today? write without editing.';
+  const move = cl[0].do;
+  const dont = (cl[1] || cl[0]).dont;
+  const evening = (cl[2] || cl[1] || cl[0]).evening;
 
-  const dosHtml = dos.map((d, i) => `<li data-focus="${d.replace(/"/g,'&quot;')}" onclick="setFocus(this)">${d}</li>`).join('');
-
-  document.getElementById('reading-output').innerHTML = `
+  document.getElementById('reading-wrap').innerHTML = `
     <div class="reading-panel">
-      <div class="rp-header">
-        <div class="rp-glyph">✦</div>
-        <div>
-          <div class="rp-label">reading of the day · ${archName}</div>
-          <div class="rp-title">what this draw is pointing at</div>
-        </div>
+      <div class="reading-section">
+        <div class="reading-label">${t('conclusionLabel')}</div>
+        <div class="reading-text">${synth}</div>
       </div>
-      <div class="rp-synth">${synth}</div>
-      <div class="rp-cols">
-        <div>
-          <div class="rp-col-label do">three do's <span style="font-size:0.44rem;opacity:0.5;font-weight:400">tap to set focus</span></div>
-          <ul class="rp-list do" id="dos-list">${dosHtml}</ul>
-          <div class="focus-label" id="focus-label">your focus for today: <span id="focus-label-text"></span></div>
-        </div>
-        <div>
-          <div class="rp-col-label dont">three don'ts</div>
-          <ul class="rp-list dont">${donts.map(d=>`<li>${d}</li>`).join('')}</ul>
-        </div>
+      <hr class="reading-divider">
+      <div class="reading-section">
+        <div class="reading-label">${t('makeThisMove')}</div>
+        <div class="reading-action">${move}</div>
       </div>
-      <div class="rp-cards-used">cards drawn · ${cards.map(c=>c.name).join(' · ')}</div>
-
-      <div class="rp-extras">
-        <button class="rp-extra-btn" id="save-all-btn" onclick="saveAllCards(this)">★ save all cards</button>
-
-        <button class="rp-extra-btn" onclick="toggleReflect(this)">✎ reflect</button>
-        <div class="reflect-section" id="reflect-section">
-          <div class="reflect-prompt">${reflectPrompt}</div>
-          <textarea class="reflect-textarea" id="reflect-textarea"
-            placeholder="start writing..."
-            oninput="saveReflection(this.value)"></textarea>
-          <div class="reflect-saved" id="reflect-saved">saved ✓</div>
-        </div>
-
-        <button class="new-draw-btn" onclick="resetDraw()">↺ draw again from the same decks</button>
+      <hr class="reading-divider">
+      <div class="reading-section">
+        <div class="reading-label">${t('doNotFeed')}</div>
+        <div class="reading-action">${dont}</div>
       </div>
+      <hr class="reading-divider">
+      <div class="reading-section">
+        <div class="reading-label">${t('eveningQ')}</div>
+        <div class="reading-action">${evening}</div>
+      </div>
+      <button class="save-all-btn" id="save-all-btn">${t('saveAll')}</button>
     </div>`;
 
-  // restore focus if set
-  const savedFocus = localStorage.getItem('sharper_focus');
-  if (savedFocus) {
-    document.querySelectorAll('#dos-list li').forEach(li => {
-      if (li.dataset.focus === savedFocus) {
-        li.classList.add('focus-selected');
-        document.getElementById('focus-label').classList.add('visible');
-        document.getElementById('focus-label-text').textContent = savedFocus;
-      }
+  document.getElementById('save-all-btn').onclick = () => {
+    S.picked.forEach(c => {
+      if (!S.favs.includes(c.id)) S.favs.push(c.id);
     });
-  }
-
-  // restore journal
-  const savedJournal = localStorage.getItem('sharper_journal_' + getTodayKey());
-  if (savedJournal) {
-    const ta = document.getElementById('reflect-textarea');
-    if (ta) ta.value = savedJournal;
-  }
-
-  setTimeout(() => {
-    document.getElementById('reading-output').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
-
-function setFocus(liEl) {
-  const text = liEl.dataset.focus;
-  // deselect all
-  document.querySelectorAll('#dos-list li').forEach(l => l.classList.remove('focus-selected'));
-  liEl.classList.add('focus-selected');
-  localStorage.setItem('sharper_focus', text);
-  document.getElementById('focus-label').classList.add('visible');
-  document.getElementById('focus-label-text').textContent = text;
-  updateFocusBanner();
-}
-
-function saveAllCards(btn) {
-  state.pickedCards.forEach(card => {
-    state.favorites.add(card.id);
-  });
-  saveFavs();
-  btn.textContent = 'cards saved ★';
-  btn.classList.add('success');
-  // update fav buttons on cards
-  state.pickedCards.forEach(card => {
-    document.querySelectorAll('.fav-btn').forEach(fb => {
-      // find by parent card
-    });
-  });
-  // update all visible fav buttons
-  document.querySelectorAll('.fav-btn').forEach(fb => {
-    const cardId = fb.getAttribute('onclick').match(/'([^']+)'/)?.[1];
-    if (cardId && state.favorites.has(cardId)) {
-      fb.textContent = '★';
-      fb.classList.add('on');
-    }
-  });
-}
-
-let reflectDebounce;
-function saveReflection(text) {
-  clearTimeout(reflectDebounce);
-  reflectDebounce = setTimeout(() => {
-    localStorage.setItem('sharper_journal_' + getTodayKey(), text);
-    const savedEl = document.getElementById('reflect-saved');
-    if (savedEl) {
-      savedEl.classList.add('show');
-      setTimeout(() => savedEl.classList.remove('show'), 1800);
-    }
-  }, 600);
-}
-
-function toggleReflect(btn) {
-  const section = document.getElementById('reflect-section');
-  const isOpen = section.classList.contains('open');
-  if (isOpen) {
-    section.classList.remove('open');
-    btn.textContent = '✎ reflect';
-  } else {
-    section.classList.add('open');
-    btn.textContent = '✎ close reflection';
+    saveFavs();
+    document.getElementById('save-all-btn').textContent = t('saveAllDone');
     setTimeout(() => {
-      const ta = document.getElementById('reflect-textarea');
-      if (ta) ta.focus();
-    }, 100);
+      const btn = document.getElementById('save-all-btn');
+      if (btn) btn.textContent = t('saveAll');
+    }, 2000);
+  };
+}
+
+// ── ARCHIVE ───────────────────────────────────────────────────────────────────
+
+function renderArchive() {
+  document.getElementById('arch-tab-title').textContent = t('archive');
+  document.getElementById('clear-btn').textContent = t('clearArchive');
+  document.getElementById('clear-btn').onclick = () => {
+    S.favs = [];
+    saveFavs();
+    renderArchive();
+  };
+
+  const grid = document.getElementById('archive-grid');
+  if (S.favs.length === 0) {
+    grid.innerHTML = `<div class="archive-empty">${t('emptyArchive')}</div>`;
+    return;
+  }
+
+  grid.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'archive-grid';
+  S.favs.forEach(id => {
+    const card = getCard(id);
+    if (!card) return;
+    const cardWrap = document.createElement('div');
+    cardWrap.className = 'wcard-wrap';
+    cardWrap.innerHTML = `
+      <div class="wcard flipped">
+        <div class="wcard-back"><span class="wcard-back-text">Sharper · wisdom</span></div>
+        <div class="wcard-face">${renderCardFace(card)}</div>
+      </div>`;
+    wrap.appendChild(cardWrap);
+  });
+  grid.appendChild(wrap);
+}
+
+// ── PROXIMITY GLOW ────────────────────────────────────────────────────────────
+
+document.addEventListener('mousemove', e => {
+  const mcs = document.querySelectorAll('.mc');
+  mcs.forEach(mc => {
+    const r = mc.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+    const glow = Math.max(0, 1 - dist / 120);
+    mc.style.setProperty('--glow', (glow * glow).toFixed(3));
+  });
+});
+
+// ── SHUFFLE ───────────────────────────────────────────────────────────────────
+
+document.getElementById('shuffle-btn').onclick = () => {
+  S.picked = [];
+  S.readingOpen = false;
+  buildTableLayout();
+  renderTable();
+};
+
+// ── LANG TOGGLE ───────────────────────────────────────────────────────────────
+
+document.getElementById('lang-btn').onclick = () => {
+  S.lang = S.lang === 'en' ? 'zh' : 'en';
+  localStorage.setItem('sh_lang', S.lang);
+  document.getElementById('lang-btn').textContent = S.lang === 'en' ? '中文' : 'EN';
+  updateNavLabels();
+  const activeTab = document.querySelector('.nav-btn.on')?.dataset.tab || 'home';
+  showTab(activeTab);
+};
+
+function updateNavLabels() {
+  document.getElementById('nav-home').textContent = t('home');
+  document.getElementById('nav-deck').textContent = t('deck');
+  document.getElementById('nav-archive').textContent = t('archive');
+  document.getElementById('lang-btn').textContent = S.lang === 'en' ? '中文' : 'EN';
+  if (S.archetype) {
+    document.getElementById('reassess-btn').textContent = t('reassess');
   }
 }
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.onclick = () => showTab(btn.dataset.tab);
+});
+document.getElementById('logo-btn').onclick = () => showTab('home');
+
+document.getElementById('reassess-btn').onclick = startQuiz;
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+updateNavLabels();
+renderHome();
+
 </script>
 </body>
 </html>
