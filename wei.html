@@ -3,920 +3,374 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wei · Life Balance</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
+  <title>Wei · Daily</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #e8dccb;
-      --paper:      #f8f1e3;
-      --paper2:     #fdf8ef;
-      --ink:        #1a120a;
-      --muted:      #6b5c44;
-      --amber:      #c4913a;
-      --amber-pale: #f0ddb4;
-      --amber-dark: #7a5520;
-      --amber-glow: rgba(196,145,58,.15);
-      --red:        #8a3e2e;
-      --red-pale:   #faeae6;
-      --sage:       #4e6645;
-      --sage-pale:  #e5ede3;
-      --line:       rgba(26,18,10,.8);
-      --line-soft:  rgba(26,18,10,.14);
-      --shadow:     6px 6px 0 rgba(26,18,10,.82);
-      --shadow-sm:  4px 4px 0 rgba(26,18,10,.82);
-      --r:          20px;
-      --r-sm:       12px;
+      --bg:     #f0e6d0;
+      --ink:    #1a1208;
+      --amber:  #c4913a;
+      --muted:  #7a6a52;
+      --soft:   rgba(26,18,8,.08);
     }
 
-    html { scroll-behavior: smooth; }
+    html, body { height: 100%; }
 
     body {
-      min-height: 100vh;
-      background-color: var(--bg);
-      background-image:
-        radial-gradient(ellipse at 12% 8%,  rgba(196,145,58,.14), transparent 38%),
-        radial-gradient(ellipse at 88% 25%, rgba(78,102,69,.09),  transparent 32%),
-        radial-gradient(ellipse at 50% 85%, rgba(196,145,58,.08), transparent 42%);
+      background: var(--bg);
       color: var(--ink);
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.6;
+      font-family: Georgia, serif;
+      transition: background .8s ease, color .8s ease;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    /* Film grain */
+    /* ── ambient glow, moves with time of day ── */
     body::before {
       content: '';
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 9999; opacity: .028;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at var(--gx, 80%) var(--gy, 10%), rgba(196,145,58,.18), transparent),
+        radial-gradient(ellipse 40% 30% at 20% 90%, rgba(196,145,58,.08), transparent);
+      transition: opacity 1s ease;
     }
 
-    /* Grid lines */
+    /* ── film grain ── */
     body::after {
       content: '';
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 0;
-      background-image:
-        linear-gradient(rgba(26,18,10,.022) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(26,18,10,.022) 1px, transparent 1px);
-      background-size: 32px 32px;
-      mask-image: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.1));
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .03;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    .shell {
-      width: min(1200px, calc(100% - 40px));
-      margin: 0 auto;
+    /* night theme */
+    body.night {
+      --bg:    #0e0b07;
+      --ink:   #e8dcc8;
+      --muted: #9a8a72;
+      --soft:  rgba(232,220,200,.07);
+      --gx: 70%; --gy: 15%;
+    }
+    body.night::before {
+      background:
+        radial-gradient(ellipse 55% 45% at 70% 15%, rgba(196,145,58,.2), transparent),
+        radial-gradient(ellipse 30% 25% at 15% 85%, rgba(196,145,58,.07), transparent);
+    }
+
+    /* dusk theme */
+    body.dusk {
+      --bg:    #1e1108;
+      --ink:   #f0e0c4;
+      --muted: #b09878;
+      --soft:  rgba(240,224,196,.07);
+    }
+    body.dusk::before {
+      background: radial-gradient(ellipse 70% 60% at 60% 5%, rgba(196,145,58,.35), transparent);
+    }
+
+    /* ── layout ── */
+    .stage {
       position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: clamp(28px, 5vw, 56px) clamp(28px, 8vw, 100px);
+      gap: 0;
     }
 
-    /* ── NAV ── */
-    .topbar {
-      padding: 20px 0;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1.5px solid var(--line-soft);
+    /* ── header ── */
+    .topline {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding-bottom: 40px;
     }
-    .brand {
+    .date-str {
       font-family: 'JetBrains Mono', monospace;
-      font-weight: 800; font-size: 12px;
-      letter-spacing: .22em; text-transform: uppercase;
-      color: var(--amber-dark);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
     }
-    .topbar-date {
+    .clock-str {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; color: var(--muted);
-      letter-spacing: .07em; text-align: center;
-    }
-    .clock {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px; font-weight: 800;
-      color: var(--ink); letter-spacing: .05em;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .12em; color: var(--muted);
     }
 
-    /* ── SHARED ── */
-    section { padding: 28px 0; }
-
-    .section-header {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 18px; gap: 16px; flex-wrap: wrap;
-    }
-    h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(26px, 4vw, 40px);
-      letter-spacing: -.04em; line-height: 1; font-weight: 900;
-    }
-    .section-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; color: var(--muted); letter-spacing: .07em;
-    }
-    .card-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--muted); font-weight: 800;
+    /* ── quote block (hero) ── */
+    .quote-block {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 20px 0 40px;
+      position: relative;
     }
 
-    /* ── HERO ── */
-    .hero {
-      padding: 44px 0 28px;
-      display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px;
-    }
-
-    .greeting-card {
-      background: var(--ink); color: var(--paper);
-      border-radius: var(--r); padding: clamp(28px,5vw,50px);
-      box-shadow: var(--shadow); border: 1.5px solid var(--ink);
-      position: relative; overflow: hidden;
-      display: flex; flex-direction: column;
-    }
-    .greeting-card::after {
-      content: '';
-      position: absolute; right: -60px; bottom: -80px;
-      width: 280px; height: 280px;
-      border: 1.5px solid rgba(255,255,255,.06); border-radius: 50%;
-    }
-    .greeting-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--amber);
-      font-weight: 800; margin-bottom: 12px;
-    }
-    .greeting-text {
+    .big-mark {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(30px,4.5vw,50px);
-      line-height: 1.06; letter-spacing: -.03em;
-      font-weight: 900; margin-bottom: 14px;
+      font-size: clamp(80px, 14vw, 200px);
+      line-height: .7;
+      color: var(--amber);
+      opacity: .22;
+      margin-bottom: -10px;
+      user-select: none;
+      font-style: italic;
     }
-    .greeting-sub {
-      color: rgba(255,255,255,.5); font-size: 14px; margin-bottom: 24px;
+
+    .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5.5vw, 74px);
+      line-height: 1.12;
+      letter-spacing: -.03em;
+      font-style: italic;
+      font-weight: 400;
+      max-width: 16em;
+      padding-left: clamp(10px, 2vw, 28px);
     }
-    .intention-label {
+
+    .quote-author {
+      margin-top: 22px;
+      padding-left: clamp(10px, 2vw, 28px);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; letter-spacing: .15em;
-      text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 8px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--amber);
     }
+
+    /* ── bottom: intention + whispers ── */
+    .bottom {
+      border-top: 1px solid var(--soft);
+      padding-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .intention-wrap {}
+
+    .field-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px;
+      display: block;
+    }
+
     .intention-input {
       width: 100%;
-      background: rgba(255,255,255,.07);
-      border: 1.5px solid rgba(255,255,255,.16);
-      border-radius: 11px; padding: 12px 16px;
-      color: var(--paper); font-family: Georgia, serif; font-size: 14px;
-      outline: none; transition: border-color .2s; resize: none; min-height: 54px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--soft);
+      padding: 10px 0;
+      color: var(--ink);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(17px, 2.2vw, 24px);
+      font-style: italic;
+      outline: none;
+      transition: border-color .3s;
     }
-    .intention-input::placeholder { color: rgba(255,255,255,.28); }
+    .intention-input::placeholder { color: var(--muted); opacity: .5; }
     .intention-input:focus { border-color: var(--amber); }
 
-    .mood-card {
-      background: var(--paper2); border: 1.5px solid var(--line);
-      border-radius: var(--r); box-shadow: var(--shadow);
-      padding: 26px; display: flex; flex-direction: column; gap: 18px;
-    }
-    .mood-options { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
-    .mood-btn {
-      border: 1.5px solid var(--line-soft); border-radius: 11px;
-      padding: 12px 5px; background: var(--paper); cursor: pointer;
-      text-align: center; transition: all .18s ease;
-      display: flex; flex-direction: column; gap: 5px; align-items: center;
-    }
-    .mood-btn:hover { border-color: var(--amber); background: var(--amber-pale); transform: translateY(-2px); }
-    .mood-btn.active { border-color: var(--amber); background: var(--amber-pale); box-shadow: var(--shadow-sm); }
-    .mood-emoji { font-size: 22px; }
-    .mood-word {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px; font-weight: 800;
-      text-transform: uppercase; letter-spacing: .1em; color: var(--muted);
-    }
-    .mood-history { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-    .mood-day {
-      display: inline-flex; flex-direction: column; align-items: center;
-      gap: 3px; font-size: 10px; color: var(--muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .mood-reminder {
-      background: var(--amber-pale); border: 1.5px solid var(--amber);
-      border-radius: 11px; padding: 11px 13px;
-      font-size: 13px; color: var(--amber-dark); line-height: 1.4;
+    .whispers-wrap {}
+
+    .whispers {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-top: 0;
     }
 
-    /* ── HABITS ── */
-    .habits-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; }
-    .habit-card {
-      background: var(--paper2); border: 1.5px solid var(--line);
-      border-radius: var(--r-sm); box-shadow: var(--shadow-sm);
-      padding: 16px 10px; cursor: pointer; transition: all .18s ease;
-      text-align: center; position: relative; user-select: none;
+    .whisper {
+      font-size: clamp(13px, 1.4vw, 16px);
+      color: var(--muted);
+      line-height: 1.5;
+      display: flex; gap: 10px; align-items: baseline;
     }
-    .habit-card:hover { transform: translateY(-2px); }
-    .habit-card.done {
-      background: var(--sage-pale); border-color: var(--sage);
-      box-shadow: 4px 4px 0 var(--sage);
+    .whisper-arrow {
+      color: var(--amber); font-size: 11px;
+      flex: 0 0 auto; margin-top: 1px;
+      animation: breathe 4s ease-in-out infinite;
     }
-    .habit-icon { font-size: 24px; margin-bottom: 7px; }
-    .habit-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; font-weight: 800;
-      text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 8px;
+    @keyframes breathe {
+      0%,100% { opacity: .4; } 50% { opacity: 1; }
     }
-    .habit-card.done .habit-name { color: var(--sage); }
-    .habit-check {
-      width: 20px; height: 20px;
-      border: 2px solid var(--line-soft); border-radius: 5px;
-      margin: 0 auto; display: flex; align-items: center; justify-content: center;
-      font-size: 11px; transition: all .18s; background: var(--paper);
-    }
-    .habit-card.done .habit-check { background: var(--sage); border-color: var(--sage); color: #fff; }
-    .habit-streak {
-      position: absolute; top: 7px; right: 7px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px; font-weight: 800;
-      color: var(--amber-dark); background: var(--amber-pale);
-      border-radius: 5px; padding: 2px 5px;
-    }
+    .whisper-text { flex: 1; }
 
-    /* ── HEALTH RADAR ── */
-    .health-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
-    .health-card {
-      border: 1.5px solid var(--line); border-radius: var(--r-sm);
-      padding: 16px; background: var(--paper2); box-shadow: var(--shadow-sm);
+    /* ── responsive ── */
+    @media (max-width: 720px) {
+      .bottom { grid-template-columns: 1fr; gap: 28px; }
+      .big-mark { font-size: clamp(60px, 16vw, 100px); }
     }
-    .health-card.urgent { border-color: var(--red); box-shadow: 4px 4px 0 var(--red); background: var(--red-pale); }
-    .health-card.warn   { border-color: var(--amber); box-shadow: 4px 4px 0 var(--amber); background: #fffbf0; }
-    .health-card.ok     { border-color: var(--sage); box-shadow: 4px 4px 0 var(--sage); background: var(--sage-pale); }
-    .health-badge {
-      display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
-      padding: 3px 8px; border-radius: 99px; border: 1.5px solid; margin-bottom: 8px;
-    }
-    .urgent .health-badge { color: var(--red); border-color: var(--red); }
-    .warn   .health-badge { color: var(--amber-dark); border-color: var(--amber); }
-    .ok     .health-badge { color: var(--sage); border-color: var(--sage); }
-    .health-title  { font-size: 15px; font-weight: 700; margin-bottom: 5px; letter-spacing: -.02em; }
-    .health-note   { font-size: 12px; color: var(--muted); margin-bottom: 11px; line-height: 1.4; }
-    .health-action {
-      display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
-      padding: 5px 11px; border-radius: 99px; border: 1.5px solid var(--line);
-      background: var(--paper); cursor: pointer; transition: all .15s;
-    }
-    .health-action:hover { background: var(--amber-pale); border-color: var(--amber); }
-
-    /* ── WISDOM ── */
-    .wisdom-card {
-      background: var(--ink); color: var(--paper);
-      border-radius: var(--r); padding: clamp(36px,6vw,60px);
-      box-shadow: 8px 8px 0 var(--amber); border: 1.5px solid var(--ink);
-      text-align: center; position: relative; overflow: hidden;
-    }
-    .wisdom-card::before {
-      content: '\201C';
-      position: absolute; top: -40px; left: 16px;
-      font-family: 'Playfair Display', serif;
-      font-size: 300px; color: rgba(196,145,58,.06);
-      line-height: 1; font-weight: 900; user-select: none;
-    }
-    .wisdom-text {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(19px,2.8vw,29px);
-      line-height: 1.45; letter-spacing: -.02em;
-      font-style: italic; font-weight: 700;
-      max-width: 800px; margin: 0 auto 18px; position: relative; z-index: 1;
-    }
-    .wisdom-author {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--amber); font-weight: 800;
-    }
-
-    /* ── PILLARS ── */
-    .pillars-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; }
-    .pillar-card {
-      background: var(--paper2); border: 1.5px solid var(--line);
-      border-radius: var(--r-sm); box-shadow: var(--shadow-sm); padding: 18px 14px;
-    }
-    .pillar-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 800; color: var(--amber-dark);
-      letter-spacing: .1em; margin-bottom: 7px;
-    }
-    .pillar-name { font-size: 15px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 13px; }
-    .pillar-dots { display: flex; gap: 5px; }
-    .pdot {
-      width: 14px; height: 14px; border: 1.5px solid var(--line-soft);
-      border-radius: 50%; cursor: pointer; transition: all .15s; background: var(--paper);
-    }
-    .pdot:hover { border-color: var(--amber); background: var(--amber-pale); }
-    .pdot.filled { background: var(--amber); border-color: var(--amber-dark); }
-
-    /* ── LIFE QUEUE ── */
-    .admin-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
-    .admin-card {
-      background: var(--paper2); border: 1.5px solid var(--line);
-      border-radius: var(--r-sm); box-shadow: var(--shadow-sm); padding: 22px;
-    }
-    .admin-card-title {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .15em;
-      color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-    }
-    .admin-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 8px 0; border-bottom: 1px solid var(--line-soft);
-      cursor: pointer; transition: opacity .18s;
-    }
-    .admin-item:last-child { border-bottom: 0; }
-    .admin-item.done { opacity: .38; }
-    .admin-item.done .admin-text { text-decoration: line-through; }
-    .admin-checkbox {
-      width: 18px; height: 18px; flex: 0 0 18px;
-      border: 2px solid var(--line-soft); border-radius: 5px; margin-top: 2px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; transition: all .15s; background: var(--paper);
-    }
-    .admin-item.done .admin-checkbox { background: var(--sage); border-color: var(--sage); color: #fff; }
-    .admin-text { font-size: 13px; line-height: 1.4; }
-    .atag {
-      display: inline-block; font-family: 'JetBrains Mono', monospace;
-      font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
-      padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle;
-    }
-    .tag-now     { background: #fde8e3; color: var(--red); }
-    .tag-soon    { background: var(--amber-pale); color: var(--amber-dark); }
-    .tag-monthly { background: var(--sage-pale); color: var(--sage); }
-
-    /* ── MEMORY + PROJECTS ── */
-    .memory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .mem-card {
-      background: var(--paper2); border: 1.5px solid var(--line);
-      border-radius: var(--r-sm); box-shadow: var(--shadow-sm); padding: 22px;
-    }
-    .mem-input {
-      width: 100%; background: rgba(26,18,10,.04);
-      border: 1.5px solid var(--line-soft); border-radius: 10px;
-      padding: 10px 14px; font-family: Georgia, serif; font-size: 13px;
-      color: var(--ink); outline: none; margin-top: 9px; transition: border-color .2s;
-    }
-    .mem-input:focus { border-color: var(--amber); }
-    .mem-input::placeholder { color: var(--muted); }
-    .people-tags { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 11px; }
-    .people-tag {
-      padding: 5px 13px; border: 1.5px solid var(--line);
-      border-radius: 99px; font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 800; letter-spacing: .05em;
-    }
-
-    /* ── GROWTH ── */
-    .growth-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
-    .growth-card {
-      background: var(--paper2); border: 1.5px solid var(--line);
-      border-radius: var(--r-sm); box-shadow: var(--shadow-sm); padding: 20px;
-    }
-    .growth-tag {
-      display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
-      padding: 3px 9px; border-radius: 99px; border: 1.5px solid var(--amber);
-      color: var(--amber-dark); background: var(--amber-pale); margin-bottom: 10px;
-    }
-    .growth-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 8px;
-    }
-    .growth-hint { font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 10px; }
-
-    /* ── FORMULA ── */
-    .formula-card {
-      background: var(--amber-pale); border: 1.5px solid var(--amber);
-      border-radius: var(--r); padding: clamp(24px,5vw,50px);
-      box-shadow: 8px 8px 0 var(--amber); text-align: center;
-    }
-    .formula-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 800; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--amber-dark); margin-bottom: 12px;
-    }
-    .formula-text {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(17px,2.6vw,26px); font-weight: 700;
-      letter-spacing: -.03em; line-height: 1.35; color: var(--ink);
-    }
-    .formula-sub { font-size: 14px; color: var(--muted); margin-top: 12px; }
-
-    footer {
-      padding: 28px 0 48px; text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; color: var(--muted); letter-spacing: .1em;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      .hero, .admin-grid, .memory-grid { grid-template-columns: 1fr; }
-      .habits-grid, .pillars-grid      { grid-template-columns: repeat(3,1fr); }
-      .health-grid                     { grid-template-columns: repeat(2,1fr); }
-      .growth-grid                     { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 580px) {
-      .habits-grid, .pillars-grid, .health-grid, .growth-grid { grid-template-columns: repeat(2,1fr); }
-      .mood-word { display: none; }
+    @media (max-width: 480px) {
+      .stage { padding: 24px 24px; }
     }
   </style>
 </head>
 <body>
-<div class="shell">
+<div class="stage">
 
-  <!-- NAV -->
-  <nav class="topbar">
-    <div class="brand">Wei · Life Balance</div>
-    <div class="topbar-date" id="topbar-date"></div>
-    <div class="clock" id="clock"></div>
-  </nav>
+  <header class="topline">
+    <span class="date-str" id="date-str"></span>
+    <span class="clock-str" id="clock-str"></span>
+  </header>
 
-  <main>
-
-    <!-- HERO -->
-    <section class="hero">
-      <div class="greeting-card">
-        <div class="greeting-eyebrow">Your daily compass</div>
-        <div class="greeting-text" id="greeting">Good morning, Wei.</div>
-        <p class="greeting-sub">What you do today shapes who you become.</p>
-        <div>
-          <div class="intention-label">Today's one intention</div>
-          <textarea class="intention-input" id="intention" placeholder="What would make today a good day?" rows="2"></textarea>
-        </div>
-      </div>
-
-      <div class="mood-card">
-        <div class="card-label">How are you showing up?</div>
-        <div class="mood-options">
-          <button class="mood-btn" data-mood="stormy"  onclick="setMood(this)"><span class="mood-emoji">⛈</span><span class="mood-word">Stormy</span></button>
-          <button class="mood-btn" data-mood="low"     onclick="setMood(this)"><span class="mood-emoji">🌫</span><span class="mood-word">Low</span></button>
-          <button class="mood-btn" data-mood="okay"    onclick="setMood(this)"><span class="mood-emoji">🌤</span><span class="mood-word">Okay</span></button>
-          <button class="mood-btn" data-mood="good"    onclick="setMood(this)"><span class="mood-emoji">☀️</span><span class="mood-word">Good</span></button>
-          <button class="mood-btn" data-mood="radiant" onclick="setMood(this)"><span class="mood-emoji">✨</span><span class="mood-word">Radiant</span></button>
-        </div>
-        <div>
-          <div class="card-label" style="margin-bottom:10px;">Past 7 days</div>
-          <div class="mood-history" id="mood-history"></div>
-        </div>
-        <div class="mood-reminder">
-          <strong>Remember:</strong> Your mood is data, not direction. Notice it. Don't obey it.
-        </div>
-      </div>
-    </section>
-
-    <!-- DAILY HABITS -->
-    <section>
-      <div class="section-header">
-        <h2>Daily minimums</h2>
-        <span class="section-sub">Tap to mark done · resets at midnight</span>
-      </div>
-      <div class="habits-grid" id="habits-grid"></div>
-    </section>
-
-    <!-- HEALTH RADAR -->
-    <section>
-      <div class="section-header">
-        <h2>Health radar</h2>
-        <span class="section-sub">Things your body and future self need — no skipping</span>
-      </div>
-      <div class="health-grid" id="health-grid"></div>
-    </section>
-
-    <!-- WISDOM -->
-    <section>
-      <div class="wisdom-card">
-        <div class="wisdom-text" id="wisdom-text"></div>
-        <div class="wisdom-author" id="wisdom-author"></div>
-      </div>
-    </section>
-
-    <!-- PILLARS -->
-    <section>
-      <div class="section-header">
-        <h2>Life pillars</h2>
-        <span class="section-sub">Rate this week · 5 = thriving</span>
-      </div>
-      <div class="pillars-grid" id="pillars-grid"></div>
-    </section>
-
-    <!-- LIFE QUEUE -->
-    <section>
-      <div class="section-header">
-        <h2>Life queue</h2>
-        <span class="section-sub">Tap to check off · these don't reset</span>
-      </div>
-      <div class="admin-grid">
-        <div class="admin-card">
-          <div class="admin-card-title">🩺 Health</div>
-          <div id="admin-health"></div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-title">💰 Finance &amp; Life</div>
-          <div id="admin-finance"></div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-title">👨‍👩‍👧 Family &amp; People</div>
-          <div id="admin-family"></div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-title">🌱 Growth &amp; Direction</div>
-          <div id="admin-direction"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MEMORY / PTO -->
-    <section>
-      <div class="section-header">
-        <h2>Memory planning</h2>
-        <span class="section-sub">Your PTO is precious — spend it on people, not just rest</span>
-      </div>
-      <div class="memory-grid">
-        <div class="mem-card">
-          <div class="card-label">Next trip idea</div>
-          <input class="mem-input" id="trip-idea" type="text" placeholder="Where, with whom, when?">
-          <div class="card-label" style="margin-top:14px;">Bring</div>
-          <div class="people-tags">
-            <span class="people-tag">Jun</span>
-            <span class="people-tag">Mom &amp; Dad</span>
-            <span class="people-tag">Brother</span>
-          </div>
-          <div class="card-label" style="margin-top:14px;">PTO days left (approx.)</div>
-          <input class="mem-input" id="pto-days" type="text" placeholder="e.g. 14 days">
-        </div>
-        <div class="mem-card">
-          <div class="card-label">Separate projects &amp; aspirations</div>
-          <div style="background:rgba(26,18,10,.05);border:1.5px dashed var(--line-soft);border-radius:11px;padding:14px;margin-top:9px;font-size:13px;color:var(--muted);line-height:1.6;">
-            Use this space to track your own separate projects and big-picture goals — design, AI, creative work, starting a firm. Keep them distinct and intentional.
-          </div>
-          <div class="card-label" style="margin-top:14px;">This month's one bold move</div>
-          <input class="mem-input" id="bold-move" type="text" placeholder="One concrete step toward your bigger vision...">
-        </div>
-      </div>
-    </section>
-
-    <!-- GROWTH -->
-    <section>
-      <div class="section-header">
-        <h2>What Wei is learning</h2>
-        <span class="section-sub">Curiosity is a discipline, not a mood</span>
-      </div>
-      <div class="growth-grid">
-        <div class="growth-card">
-          <div class="growth-tag">Philosophy</div>
-          <div class="growth-title">This week</div>
-          <input class="mem-input" id="growth-philosophy" placeholder="What are you reading or thinking about?">
-          <div class="growth-hint">Try: Seneca · Stoics · Simone de Beauvoir · Laozi · Eastern philosophy</div>
-        </div>
-        <div class="growth-card">
-          <div class="growth-tag">Psychology</div>
-          <div class="growth-title">This week</div>
-          <input class="mem-input" id="growth-psych" placeholder="What behavior or pattern are you studying?">
-          <div class="growth-hint">Try: Attachment theory · Emotional regulation · Habit loops · CBT basics</div>
-        </div>
-        <div class="growth-card">
-          <div class="growth-tag">AI + Design + Craft</div>
-          <div class="growth-title">This week</div>
-          <input class="mem-input" id="growth-ai" placeholder="What are you building or exploring?">
-          <div class="growth-hint">You're already doing this. Keep going, Wei.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FORMULA -->
-    <section style="padding-bottom:40px;">
-      <div class="formula-card">
-        <div class="formula-eyebrow">The formula</div>
-        <div class="formula-text">Health + useful work + stable money + good relationships + emotional control + direction.</div>
-        <div class="formula-sub">Not perfect. Just better than yesterday.</div>
-      </div>
-    </section>
-
+  <main class="quote-block">
+    <div class="big-mark">"</div>
+    <p class="quote-text" id="quote-text"></p>
+    <div class="quote-author" id="quote-author"></div>
   </main>
 
-  <footer>Wei · Life Balance · Use daily, not perfectly.</footer>
+  <footer class="bottom">
+    <div class="intention-wrap">
+      <span class="field-label">What matters today, Wei?</span>
+      <input class="intention-input" id="intention" type="text" placeholder="One thing…" autocomplete="off">
+    </div>
+    <div class="whispers-wrap">
+      <span class="field-label">Today's whispers</span>
+      <div class="whispers" id="whispers"></div>
+    </div>
+  </footer>
+
 </div>
-
 <script>
-// ═══════════════════════════════
-// DATA
-// ═══════════════════════════════
-
-const HABITS = [
-  { id:'sleep',   icon:'🌙', name:'Sleep' },
-  { id:'move',    icon:'🏃', name:'Move' },
-  { id:'nourish', icon:'🥗', name:'Nourish' },
-  { id:'connect', icon:'💬', name:'Connect' },
-  { id:'reflect', icon:'📓', name:'Reflect' },
-  { id:'learn',   icon:'📚', name:'Learn' },
-];
-
-const HEALTH_ITEMS = [
-  { id:'dentist',  name:'Dentist',            urgency:'urgent', note:'~1 year overdue. Book this week.' },
-  { id:'gi',       name:'GI Specialist',      urgency:'urgent', note:'Ongoing issue. Don\'t ignore your gut.' },
-  { id:'neuroma',  name:'Acoustic Neuroma',   urgency:'warn',   note:'Get screened. Peace of mind is health.' },
-  { id:'contacts', name:'Contact Lens Rx',    urgency:'warn',   note:'Vision check + new prescription.' },
-  { id:'obgyn',    name:'OB/GYN – Preconception', urgency:'warn', note:'Pregnancy prep. Schedule soon.' },
-  { id:'physical', name:'Annual Physical',    urgency:'warn',   note:'Full bloodwork. Know your numbers.' },
-  { id:'prenatal', name:'Prenatal Vitamins',  urgency:'ok',     note:'D3 + Magnesium + Folate. Daily.' },
-  { id:'therapy',  name:'Therapy / Check-in', urgency:'ok',     note:'You don\'t have to wait for crisis.' },
-];
-
-const PILLARS = [
-  { id:'body',      num:'01', name:'Body' },
-  { id:'work',      num:'02', name:'Work' },
-  { id:'money',     num:'03', name:'Money' },
-  { id:'people',    num:'04', name:'People' },
-  { id:'mind',      num:'05', name:'Mind' },
-  { id:'direction', num:'06', name:'Direction' },
-];
-
-const ADMIN = {
-  health: [
-    { id:'h1', text:'Book dentist appointment',         tag:'now' },
-    { id:'h2', text:'Schedule GI specialist',           tag:'now' },
-    { id:'h3', text:'Acoustic neuroma screening',       tag:'soon' },
-    { id:'h4', text:'Renew contact lens prescription',  tag:'soon' },
-    { id:'h5', text:'Preconception OB/GYN visit',       tag:'soon' },
-  ],
-  finance: [
-    { id:'f1', text:'Draft living will / trust',               tag:'soon' },
-    { id:'f2', text:'Set up emergency / disaster fund',        tag:'soon' },
-    { id:'f3', text:'Review investment portfolio',             tag:'soon' },
-    { id:'f4', text:'Monthly expense log update',              tag:'monthly' },
-    { id:'f5', text:"Brother's Self Direction expenses",       tag:'monthly' },
-  ],
-  family: [
-    { id:'fa1', text:'Plan next trip with parents',        tag:'soon' },
-    { id:'fa2', text:'Quality time with brother this month', tag:'monthly' },
-    { id:'fa3', text:'Date with Jun (non-work talk)',      tag:'monthly' },
-    { id:'fa4', text:'Check in on parents',                tag:'monthly' },
-  ],
-  direction: [
-    { id:'g1', text:'Start one philosophy book',                tag:'soon' },
-    { id:'g2', text:'Take one course (AI / design / psych)',    tag:'soon' },
-    { id:'g3', text:'Use remaining PTO intentionally',          tag:'soon' },
-    { id:'g4', text:'Build one thing you\'re proud of this month', tag:'soon' },
-  ],
-};
+// ── quotes ──────────────────────────────────────────────
 
 const QUOTES = [
-  { text:"You have power over your mind, not outside events. Realize this, and you will find strength.", author:"Marcus Aurelius" },
-  { text:"Between stimulus and response there is a space. In that space is our power to choose our response.", author:"Viktor Frankl" },
-  { text:"The impediment to action advances action. What stands in the way becomes the way.", author:"Marcus Aurelius" },
-  { text:"We suffer more in imagination than in reality.", author:"Seneca" },
-  { text:"Who looks outside, dreams; who looks inside, awakes.", author:"Carl Jung" },
-  { text:"Life shrinks or expands in proportion to one's courage.", author:"Anaïs Nin" },
-  { text:"He who has a why to live can bear almost any how.", author:"Viktor Frankl" },
-  { text:"The privilege of a lifetime is to become who you truly are.", author:"Carl Jung" },
-  { text:"Waste no more time arguing what a good person should be. Be one.", author:"Marcus Aurelius" },
-  { text:"The cave you fear to enter holds the treasure you seek.", author:"Joseph Campbell" },
-  { text:"Comparison is the thief of joy.", author:"Theodore Roosevelt" },
-  { text:"Feelings can creep up just like that. I thought I was in control.", author:"Wong Kar Wai — In the Mood for Love" },
-  { text:"Do not go where the path may lead. Go instead where there is no path and leave a trail.", author:"Ralph Waldo Emerson" },
-  { text:"Almost everything will work again if you unplug it for a few minutes. Including you.", author:"Anne Lamott" },
-  { text:"Vulnerability is not winning or losing. It's having the courage to show up.", author:"Brené Brown" },
-  { text:"Begin at once to live, and count each separate day as a separate life.", author:"Seneca" },
-  { text:"Your task is not to seek for love, but merely to seek and find all the barriers within yourself that you have built against it.", author:"Rumi" },
-  { text:"Knowing others is wisdom. Knowing yourself is enlightenment.", author:"Laozi" },
-  { text:"Happiness is not something readymade. It comes from your own actions.", author:"Dalai Lama" },
-  { text:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author:"Aristotle" },
-  { text:"She remembered who she was, and the game changed.", author:"Lalah Delia" },
-  { text:"In three words I can sum up everything I've learned about life: it goes on.", author:"Robert Frost" },
-  { text:"The most difficult thing is the decision to act. The rest is merely tenacity.", author:"Amelia Earhart" },
-  { text:"You can't go back and change the beginning, but you can start where you are and change the ending.", author:"C.S. Lewis" },
-  { text:"Not all those who wander are lost.", author:"J.R.R. Tolkien" },
-  { text:"The unexamined life is not worth living.", author:"Socrates" },
-  { text:"It is not the mountain we conquer, but ourselves.", author:"Edmund Hillary" },
-  { text:"Dwell on the beauty of life. Watch the stars, and see yourself running with them.", author:"Marcus Aurelius" },
+  { text: "We suffer more in imagination than in reality.", author: "Seneca" },
+  { text: "Who looks outside, dreams. Who looks inside, awakes.", author: "Carl Jung" },
+  { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
+  { text: "Between stimulus and response there is a space. In that space is our power.", author: "Viktor Frankl" },
+  { text: "Feelings can creep up just like that. I thought I was in control.", author: "Wong Kar Wai" },
+  { text: "Life shrinks or expands in proportion to one's courage.", author: "Anaïs Nin" },
+  { text: "Begin at once to live, and count each separate day as a separate life.", author: "Seneca" },
+  { text: "She remembered who she was, and the game changed.", author: "Lalah Delia" },
+  { text: "The privilege of a lifetime is to become who you truly are.", author: "Carl Jung" },
+  { text: "Waste no more time arguing what a good person should be. Be one.", author: "Marcus Aurelius" },
+  { text: "Not all those who wander are lost.", author: "J.R.R. Tolkien" },
+  { text: "Your task is not to seek for love — but to find every barrier you've built against it.", author: "Rumi" },
+  { text: "Do not go where the path may lead. Go instead where there is no path and leave a trail.", author: "Emerson" },
+  { text: "Knowing others is wisdom. Knowing yourself is enlightenment.", author: "Laozi" },
+  { text: "Almost everything will work again if you unplug it for a few minutes. Including you.", author: "Anne Lamott" },
+  { text: "Dwell on the beauty of life. Watch the stars, and see yourself running with them.", author: "Marcus Aurelius" },
+  { text: "The unexamined life is not worth living.", author: "Socrates" },
+  { text: "He who has a why to live can bear almost any how.", author: "Viktor Frankl" },
+  { text: "We are what we repeatedly do. Excellence is not an act, but a habit.", author: "Aristotle" },
+  { text: "The cave you fear to enter holds the treasure you seek.", author: "Joseph Campbell" },
+  { text: "It is not the mountain we conquer, but ourselves.", author: "Edmund Hillary" },
+  { text: "Vulnerability is not winning or losing. It's having the courage to show up.", author: "Brené Brown" },
+  { text: "In three words I can sum up everything I've learned about life: it goes on.", author: "Robert Frost" },
+  { text: "Comparison is the thief of joy.", author: "Theodore Roosevelt" },
+  { text: "Rest is not a reward. It is infrastructure.", author: "" },
+  { text: "You are not behind. You are on your own timeline.", author: "" },
+  { text: "The most difficult thing is the decision to act. The rest is merely tenacity.", author: "Amelia Earhart" },
+  { text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", author: "Emerson" },
 ];
 
-// ═══════════════════════════════
-// HELPERS
-// ═══════════════════════════════
+// ── whispers ──────────────────────────────────────────────
 
-const todayKey = () => new Date().toISOString().slice(0, 10);
+const WHISPERS = [
+  "Your dentist hasn't seen you in over a year. That appointment won't book itself.",
+  "Talk to Jun today about something that has nothing to do with work.",
+  "Your gut has been asking for attention. Schedule the GI visit this week.",
+  "Prenatal vitamins: folate, D3, magnesium. Every day matters.",
+  "Call your parents. Not because something happened — just because.",
+  "Your brother needs your consistency more than your perfection. Show up.",
+  "The acoustic neuroma screening exists for a reason. Schedule the peace of mind.",
+  "One page of philosophy today is one degree of clarity tomorrow.",
+  "PTO exists to be used. Plan the trip before the year ends.",
+  "Your living will doesn't exist yet. Small step: research one attorney.",
+  "Check your brother's Self Direction expenses — don't let them slip.",
+  "What would you invest in today if fear wasn't a factor?",
+  "Send someone a message that says you're thinking of them. That's it.",
+  "Rest is productive. The version of you that sleeps well is better at everything.",
+  "Your contact lens prescription is out of date. Book the eye appointment.",
+  "Read something that has nothing to do with work for 15 minutes.",
+  "The firm you're dreaming of starts with one concrete action. What is it today?",
+  "You don't have to wait for crisis to talk to someone. Therapy is maintenance, not rescue.",
+  "Write down one thing you're grateful for before this day ends.",
+  "Your mood visited you today. It doesn't have to drive the car.",
+  "The version of you that handles this gracefully — what would she do?",
+  "Every month you delay the dentist, your future self pays more. Go.",
+  "What are you curious about right now? Follow that thread for 20 minutes.",
+  "The best time to make a memory with your parents was yesterday. Today is second best.",
+  "Spend less than you earn. Save something small. Repeat forever.",
+  "What did you learn this week that you didn't know last Monday?",
+  "Emotion noted. Breath taken. Next small action: what is it?",
+  "You are allowed to not know the answer yet. Clarity is not required before beginning.",
+];
 
-function getLS(key, fallback) {
-  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-  catch { return fallback; }
-}
-function setLS(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+// ── helpers ───────────────────────────────────────────────
 
-// ═══════════════════════════════
-// CLOCK + GREETING
-// ═══════════════════════════════
-
-function updateClock() {
+function dayOfYear() {
   const now = new Date();
-  document.getElementById('clock').textContent =
-    now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
-  document.getElementById('topbar-date').textContent =
-    now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-  const h = now.getHours();
-  document.getElementById('greeting').textContent =
-    h < 12 ? 'Good morning, Wei.' : h < 17 ? 'Good afternoon, Wei.' : 'Good evening, Wei.';
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// ═══════════════════════════════
-// INTENTION
-// ═══════════════════════════════
-
-const intentionEl = document.getElementById('intention');
-intentionEl.value = getLS('intention_' + todayKey(), '');
-intentionEl.addEventListener('input', () => setLS('intention_' + todayKey(), intentionEl.value));
-
-// ═══════════════════════════════
-// MOOD
-// ═══════════════════════════════
-
-const MOOD_EMOJI = { stormy:'⛈', low:'🌫', okay:'🌤', good:'☀️', radiant:'✨' };
-
-function setMood(btn) {
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  setLS('mood_' + todayKey(), btn.dataset.mood);
-  renderMoodHistory();
+  return Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
 }
 
-function renderMoodHistory() {
-  const el = document.getElementById('mood-history');
-  let html = '';
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const k = d.toISOString().slice(0, 10);
-    const mood = getLS('mood_' + k, null);
-    const label = d.toLocaleDateString('en-US', { weekday:'short' }).slice(0, 1);
-    html += `<span class="mood-day">${mood ? MOOD_EMOJI[mood] : '·'}<span style="font-size:9px;">${label}</span></span>`;
-  }
-  el.innerHTML = html;
+function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+function getLS(k, fb) {
+  try { return JSON.parse(localStorage.getItem(k)) ?? fb; } catch { return fb; }
+}
+function setLS(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+
+// ── clock + theme ─────────────────────────────────────────
+
+function tick() {
+  const now  = new Date();
+  const h    = now.getHours();
+  const min  = String(now.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12  = ((h % 12) || 12);
+
+  document.getElementById('clock-str').textContent = `${h12}:${min} ${ampm}`;
+
+  const dateStr = now.toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+  }).toUpperCase();
+  document.getElementById('date-str').textContent = dateStr;
+
+  const body = document.body;
+  body.classList.remove('night', 'dusk');
+  if (h >= 20 || h < 6)  body.classList.add('night');
+  else if (h >= 17)       body.classList.add('dusk');
 }
 
-const savedMood = getLS('mood_' + todayKey(), null);
-if (savedMood) document.querySelector(`.mood-btn[data-mood="${savedMood}"]`)?.classList.add('active');
-renderMoodHistory();
+setInterval(tick, 1000);
+tick();
 
-// ═══════════════════════════════
-// HABITS
-// ═══════════════════════════════
+// ── quote ─────────────────────────────────────────────────
 
-function renderHabits() {
-  const today = todayKey();
-  const done    = getLS('habits_' + today, {});
-  const streaks = getLS('habit_streaks', {});
-  document.getElementById('habits-grid').innerHTML = HABITS.map(h => {
-    const isDone  = !!done[h.id];
-    const streak  = streaks[h.id] || 0;
-    return `<div class="habit-card${isDone ? ' done' : ''}" onclick="toggleHabit('${h.id}')">
-      ${streak > 1 ? `<div class="habit-streak">${streak}🔥</div>` : ''}
-      <div class="habit-icon">${h.icon}</div>
-      <div class="habit-name">${h.name}</div>
-      <div class="habit-check">${isDone ? '✓' : ''}</div>
-    </div>`;
-  }).join('');
-}
-
-function toggleHabit(id) {
-  const today   = todayKey();
-  const done    = getLS('habits_' + today, {});
-  const wasDone = !!done[id];
-  done[id] = !wasDone;
-
-  const streaks  = getLS('habit_streaks', {});
-  const yest     = new Date(); yest.setDate(yest.getDate() - 1);
-  const yKey     = yest.toISOString().slice(0, 10);
-  const yDone    = getLS('habits_' + yKey, {});
-
-  if (!wasDone) {
-    streaks[id] = (yDone[id] ? (streaks[id] || 1) : 0) + 1;
-  } else {
-    streaks[id] = Math.max(0, (streaks[id] || 1) - 1);
-  }
-
-  setLS('habits_' + today, done);
-  setLS('habit_streaks', streaks);
-  renderHabits();
-}
-
-renderHabits();
-
-// ═══════════════════════════════
-// HEALTH RADAR
-// ═══════════════════════════════
-
-function renderHealth() {
-  const statusMap = getLS('health_status', {});
-  document.getElementById('health-grid').innerHTML = HEALTH_ITEMS.map(item => {
-    const overridden = statusMap[item.id];
-    const cls        = overridden === 'ok' ? 'ok' : item.urgency;
-    const badge      = cls === 'urgent' ? 'Overdue' : cls === 'warn' ? 'Schedule' : 'On track';
-    const btnLabel   = overridden === 'ok' ? '✓ Handled' : 'Mark scheduled →';
-    return `<div class="health-card ${cls}">
-      <div class="health-badge">${badge}</div>
-      <div class="health-title">${item.name}</div>
-      <div class="health-note">${item.note}</div>
-      <button class="health-action" onclick="toggleHealth('${item.id}')">${btnLabel}</button>
-    </div>`;
-  }).join('');
-}
-
-function toggleHealth(id) {
-  const statusMap  = getLS('health_status', {});
-  const orig       = HEALTH_ITEMS.find(h => h.id === id).urgency;
-  statusMap[id]    = statusMap[id] === 'ok' ? orig : 'ok';
-  setLS('health_status', statusMap);
-  renderHealth();
-}
-
-renderHealth();
-
-// ═══════════════════════════════
-// WISDOM QUOTE
-// ═══════════════════════════════
-
-(function renderWisdom() {
-  const now = new Date();
-  const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-  const q   = QUOTES[doy % QUOTES.length];
-  document.getElementById('wisdom-text').textContent   = q.text;
-  document.getElementById('wisdom-author').textContent = '— ' + q.author;
+(function() {
+  const q = QUOTES[dayOfYear() % QUOTES.length];
+  document.getElementById('quote-text').textContent = q.text;
+  document.getElementById('quote-author').textContent =
+    q.author ? '— ' + q.author : '';
 })();
 
-// ═══════════════════════════════
-// PILLARS
-// ═══════════════════════════════
+// ── whispers (3 per day, rotating set) ────────────────────
 
-function renderPillars() {
-  const ratings = getLS('pillar_ratings', {});
-  document.getElementById('pillars-grid').innerHTML = PILLARS.map(p => {
-    const r    = ratings[p.id] || 0;
-    const dots = Array.from({ length: 5 }, (_, i) =>
-      `<div class="pdot${i < r ? ' filled' : ''}" onclick="setPillar('${p.id}',${i+1})"></div>`
-    ).join('');
-    return `<div class="pillar-card">
-      <div class="pillar-num">${p.num}</div>
-      <div class="pillar-name">${p.name}</div>
-      <div class="pillar-dots">${dots}</div>
-    </div>`;
-  }).join('');
-}
+(function() {
+  const base = dayOfYear();
+  const picks = [
+    WHISPERS[base       % WHISPERS.length],
+    WHISPERS[(base + 9) % WHISPERS.length],
+    WHISPERS[(base + 17) % WHISPERS.length],
+  ];
+  const container = document.getElementById('whispers');
+  picks.forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'whisper';
+    el.innerHTML = `<span class="whisper-arrow">→</span><span class="whisper-text">${w}</span>`;
+    container.appendChild(el);
+  });
+})();
 
-function setPillar(id, rating) {
-  const ratings = getLS('pillar_ratings', {});
-  ratings[id]   = rating;
-  setLS('pillar_ratings', ratings);
-  renderPillars();
-}
+// ── intention ─────────────────────────────────────────────
 
-renderPillars();
-
-// ═══════════════════════════════
-// LIFE QUEUE (ADMIN CHECKLIST)
-// ═══════════════════════════════
-
-function renderAdmin() {
-  renderAdminSection('admin-health',    ADMIN.health,     'done_health');
-  renderAdminSection('admin-finance',   ADMIN.finance,    'done_finance');
-  renderAdminSection('admin-family',    ADMIN.family,     'done_family');
-  renderAdminSection('admin-direction', ADMIN.direction,  'done_direction');
-}
-
-function renderAdminSection(containerId, items, key) {
-  const done = getLS(key, {});
-  document.getElementById(containerId).innerHTML = items.map(item => {
-    const isDone = !!done[item.id];
-    return `<div class="admin-item${isDone ? ' done' : ''}" onclick="toggleAdmin('${key}','${item.id}')">
-      <div class="admin-checkbox">${isDone ? '✓' : ''}</div>
-      <span class="admin-text">${item.text}<span class="atag tag-${item.tag}">${item.tag}</span></span>
-    </div>`;
-  }).join('');
-}
-
-function toggleAdmin(key, id) {
-  const done = getLS(key, {});
-  done[id]   = !done[id];
-  setLS(key, done);
-  renderAdmin();
-}
-
-renderAdmin();
-
-// ═══════════════════════════════
-// PERSISTENT INPUTS
-// ═══════════════════════════════
-
-['trip-idea','pto-days','bold-move','growth-philosophy','growth-psych','growth-ai'].forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.value = getLS('input_' + id, '');
-  el.addEventListener('input', () => setLS('input_' + id, el.value));
-});
+const intentionEl = document.getElementById('intention');
+intentionEl.value = getLS('wei_intention_' + todayKey(), '');
+intentionEl.addEventListener('input', () =>
+  setLS('wei_intention_' + todayKey(), intentionEl.value)
+);
 </script>
 </body>
 </html>
