@@ -3,374 +3,437 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wei · Daily</title>
+  <title>A Guide for Wei</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg:     #f0e6d0;
-      --ink:    #1a1208;
-      --amber:  #c4913a;
-      --muted:  #7a6a52;
-      --soft:   rgba(26,18,8,.08);
-    }
-
-    html, body { height: 100%; }
+    html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
-      color: var(--ink);
       font-family: Georgia, serif;
-      transition: background .8s ease, color .8s ease;
-      min-height: 100vh;
-      position: relative;
+      background: #f0e6d0;
+      color: #1a120a;
+      line-height: 1.6;
       overflow-x: hidden;
     }
 
-    /* ── ambient glow, moves with time of day ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at var(--gx, 80%) var(--gy, 10%), rgba(196,145,58,.18), transparent),
-        radial-gradient(ellipse 40% 30% at 20% 90%, rgba(196,145,58,.08), transparent);
-      transition: opacity 1s ease;
-    }
-
-    /* ── film grain ── */
+    /* film grain on everything */
     body::after {
       content: '';
-      position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .03;
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none; opacity: .025;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* night theme */
-    body.night {
-      --bg:    #0e0b07;
-      --ink:   #e8dcc8;
-      --muted: #9a8a72;
-      --soft:  rgba(232,220,200,.07);
-      --gx: 70%; --gy: 15%;
-    }
-    body.night::before {
-      background:
-        radial-gradient(ellipse 55% 45% at 70% 15%, rgba(196,145,58,.2), transparent),
-        radial-gradient(ellipse 30% 25% at 15% 85%, rgba(196,145,58,.07), transparent);
-    }
-
-    /* dusk theme */
-    body.dusk {
-      --bg:    #1e1108;
-      --ink:   #f0e0c4;
-      --muted: #b09878;
-      --soft:  rgba(240,224,196,.07);
-    }
-    body.dusk::before {
-      background: radial-gradient(ellipse 70% 60% at 60% 5%, rgba(196,145,58,.35), transparent);
-    }
-
-    /* ── layout ── */
-    .stage {
-      position: relative; z-index: 1;
+    /* ── slide system ── */
+    .slide {
       min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding: clamp(28px, 5vw, 56px) clamp(28px, 8vw, 100px);
-      gap: 0;
-    }
-
-    /* ── header ── */
-    .topline {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding-bottom: 40px;
-    }
-    .date-str {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
-    }
-    .clock-str {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: .12em; color: var(--muted);
-    }
-
-    /* ── quote block (hero) ── */
-    .quote-block {
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 20px 0 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(48px, 8vw, 100px) clamp(32px, 8vw, 120px);
       position: relative;
+      overflow: hidden;
     }
 
-    .big-mark {
+    /* watermark number */
+    .slide::before {
+      content: attr(data-n);
+      position: absolute;
+      right: clamp(20px, 5vw, 60px);
+      bottom: clamp(20px, 4vw, 50px);
       font-family: 'Playfair Display', serif;
-      font-size: clamp(80px, 14vw, 200px);
-      line-height: .7;
-      color: var(--amber);
-      opacity: .22;
-      margin-bottom: -10px;
+      font-size: clamp(120px, 22vw, 280px);
+      font-weight: 900;
+      line-height: 1;
+      color: currentColor;
+      opacity: .04;
       user-select: none;
-      font-style: italic;
+      pointer-events: none;
     }
 
-    .quote-text {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(32px, 5.5vw, 74px);
-      line-height: 1.12;
-      letter-spacing: -.03em;
-      font-style: italic;
-      font-weight: 400;
-      max-width: 16em;
-      padding-left: clamp(10px, 2vw, 28px);
-    }
+    /* ── color themes ── */
+    .dark  { background: #0f0a05; color: #f0e6d0; }
+    .warm  { background: #f7f0e2; color: #1a120a; }
+    .amber { background: #c4913a; color: #0f0a05; }
+    .deep  { background: #1e1208; color: #f0e6d0; }
+    .sage  { background: #2e3d29; color: #e8f0e4; }
+    .blush { background: #f5e8e0; color: #1a120a; }
 
-    .quote-author {
-      margin-top: 22px;
-      padding-left: clamp(10px, 2vw, 28px);
+    /* ── typography ── */
+    .eyebrow {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: .18em; text-transform: uppercase;
-      color: var(--amber);
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .25em; text-transform: uppercase;
+      opacity: .55; margin-bottom: 20px;
     }
 
-    /* ── bottom: intention + whispers ── */
-    .bottom {
-      border-top: 1px solid var(--soft);
-      padding-top: 32px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: start;
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 9vw, 120px);
+      line-height: .95; letter-spacing: -.04em; font-weight: 900;
+      margin-bottom: 28px;
     }
 
-    .intention-wrap {}
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 6vw, 76px);
+      line-height: 1.0; letter-spacing: -.04em; font-weight: 900;
+      margin-bottom: 24px;
+    }
 
-    .field-label {
+    .body-text {
+      font-size: clamp(16px, 1.8vw, 21px);
+      line-height: 1.65;
+      max-width: 620px;
+      opacity: .88;
+    }
+
+    .body-text p + p { margin-top: 16px; }
+
+    /* ── truth callout ── */
+    .truth {
+      margin-top: 40px;
+      border-left: 4px solid currentColor;
+      padding: 18px 24px;
+      max-width: 580px;
+      opacity: .9;
+    }
+    .truth-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase;
+      opacity: .5; margin-bottom: 8px;
+    }
+    .truth-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 2.2vw, 26px);
+      line-height: 1.35; font-style: italic; font-weight: 700;
+    }
+
+    /* ── list style ── */
+    .clean-list {
+      list-style: none;
+      margin-top: 24px;
+      display: flex; flex-direction: column; gap: 12px;
+      max-width: 580px;
+    }
+    .clean-list li {
+      font-size: clamp(15px, 1.6vw, 19px);
+      display: flex; gap: 14px; align-items: baseline;
+    }
+    .clean-list li::before {
+      content: '→';
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; opacity: .5; flex: 0 0 auto;
+    }
+
+    /* ── cover specific ── */
+    .cover-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(64px, 12vw, 160px);
+      line-height: .88; letter-spacing: -.05em; font-weight: 900;
+      margin-bottom: 32px;
+    }
+    .cover-sub {
+      font-size: clamp(17px, 2vw, 24px);
+      max-width: 480px;
+      line-height: 1.5;
+      opacity: .7;
+    }
+    .cover-scroll {
+      position: absolute; bottom: 40px; left: clamp(32px,8vw,120px);
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px; font-weight: 700;
       letter-spacing: .2em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 14px;
-      display: block;
+      opacity: .35;
+      animation: fade 2.5s ease-in-out infinite;
     }
+    @keyframes fade { 0%,100%{opacity:.2} 50%{opacity:.5} }
 
-    .intention-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--soft);
-      padding: 10px 0;
-      color: var(--ink);
+    /* ── closing ── */
+    .closing-list {
+      display: flex; flex-direction: column; gap: 6px;
+      margin-top: 28px; max-width: 700px;
+    }
+    .closing-item {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(17px, 2.2vw, 24px);
+      font-size: clamp(20px, 3vw, 36px);
       font-style: italic;
-      outline: none;
-      transition: border-color .3s;
+      line-height: 1.25;
+      opacity: .85;
     }
-    .intention-input::placeholder { color: var(--muted); opacity: .5; }
-    .intention-input:focus { border-color: var(--amber); }
-
-    .whispers-wrap {}
-
-    .whispers {
-      display: flex; flex-direction: column; gap: 12px;
-      margin-top: 0;
+    .closing-item::before {
+      content: '· ';
+      opacity: .4;
     }
 
-    .whisper {
-      font-size: clamp(13px, 1.4vw, 16px);
-      color: var(--muted);
-      line-height: 1.5;
-      display: flex; gap: 10px; align-items: baseline;
+    /* ── two-col layout ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
     }
-    .whisper-arrow {
-      color: var(--amber); font-size: 11px;
-      flex: 0 0 auto; margin-top: 1px;
-      animation: breathe 4s ease-in-out infinite;
-    }
-    @keyframes breathe {
-      0%,100% { opacity: .4; } 50% { opacity: 1; }
-    }
-    .whisper-text { flex: 1; }
 
-    /* ── responsive ── */
+    /* ── highlight text ── */
+    .hl { color: #c4913a; }
+    .dark .hl { color: #e8c07a; }
+    .deep .hl { color: #e8c07a; }
+    .sage .hl { color: #a8d4a0; }
+
+    /* ── divider ── */
+    .divider {
+      width: 48px; height: 2px;
+      background: currentColor; opacity: .2;
+      margin: 32px 0;
+    }
+
+    /* ── nav dots ── */
+    .nav-dots {
+      position: fixed; right: 24px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 8px;
+      z-index: 100;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #c4913a; opacity: .25;
+      cursor: pointer; transition: opacity .3s, transform .3s;
+    }
+    .dot.active { opacity: .9; transform: scale(1.4); }
+
     @media (max-width: 720px) {
-      .bottom { grid-template-columns: 1fr; gap: 28px; }
-      .big-mark { font-size: clamp(60px, 16vw, 100px); }
+      .two-col { grid-template-columns: 1fr; gap: 32px; }
+      .slide { padding: 56px 28px; }
     }
     @media (max-width: 480px) {
-      .stage { padding: 24px 24px; }
+      .slide { padding: 44px 20px; min-height: auto; padding-bottom: 80px; }
     }
   </style>
 </head>
 <body>
-<div class="stage">
 
-  <header class="topline">
-    <span class="date-str" id="date-str"></span>
-    <span class="clock-str" id="clock-str"></span>
-  </header>
+<!-- Nav dots -->
+<nav class="nav-dots" id="nav-dots"></nav>
 
-  <main class="quote-block">
-    <div class="big-mark">"</div>
-    <p class="quote-text" id="quote-text"></p>
-    <div class="quote-author" id="quote-author"></div>
-  </main>
+<!-- ═══════════════════════════════════ COVER -->
+<section class="slide dark" id="s0" data-n="">
+  <div class="eyebrow">A guide for Wei · 2026</div>
+  <h1 class="cover-title">This<br>season.<br>This life.</h1>
+  <p class="cover-sub">You are in the middle of something. This is what it looks like from the outside — and what to do with it.</p>
+  <div class="cover-scroll">Scroll to begin ↓</div>
+</section>
 
-  <footer class="bottom">
-    <div class="intention-wrap">
-      <span class="field-label">What matters today, Wei?</span>
-      <input class="intention-input" id="intention" type="text" placeholder="One thing…" autocomplete="off">
-    </div>
-    <div class="whispers-wrap">
-      <span class="field-label">Today's whispers</span>
-      <div class="whispers" id="whispers"></div>
-    </div>
-  </footer>
+<!-- ═══════════════════════════════════ 01 THE SEASON -->
+<section class="slide warm" id="s1" data-n="01">
+  <div class="eyebrow">Part one</div>
+  <h2>You are carrying<br>a lot right now.</h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>New project at work. A body you need to take better care of. A brother who depends on your consistency. Finances that need to grow up. A marriage worth tending. A dream firm that's not yet real but is becoming real. Philosophy you haven't read yet. A self you are still becoming.</p>
+    <p>That's not chaos. That's a <em>season</em>. And in a season, the most important thing is not to do everything — it's to not drop the <span class="hl">load-bearing things.</span></p>
+    <p>This guide names those things. Clearly. Without shame. With direction.</p>
+  </div>
+  <div class="truth">
+    <div class="truth-label">The frame</div>
+    <div class="truth-text">"A season is not forever. But how you move through it shapes who you become on the other side."</div>
+  </div>
+</section>
 
-</div>
+<!-- ═══════════════════════════════════ 02 THE BODY -->
+<section class="slide deep" id="s2" data-n="02">
+  <div class="eyebrow">Part two</div>
+  <h2>Your body is<br>the infrastructure.<br><span class="hl">Tend it first.</span></h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>Everything you want — the firm, the family, the growth, the clarity — runs on the substrate of your physical health. And right now, your body is sending signals you've been delaying answering.</p>
+    <p>This is not judgment. It's physics. You cannot build from a foundation that's quietly cracking.</p>
+  </div>
+  <ul class="clean-list">
+    <li>The dentist. It's been over a year. This week, not next month.</li>
+    <li>The GI issue. Your gut has been asking. Listen.</li>
+    <li>The acoustic neuroma screening. Book it for the peace of mind alone.</li>
+    <li>The OB/GYN preconception visit. If you're preparing for pregnancy, start now.</li>
+    <li>Prenatal vitamins: folate, D3, magnesium. Every single day.</li>
+    <li>Contact lens prescription. Your eyes deserve clarity too.</li>
+  </ul>
+  <div class="truth">
+    <div class="truth-label">The truth</div>
+    <div class="truth-text">"Health is not a checkbox. It is the price of admission for everything else you want."</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 03 THE MOOD -->
+<section class="slide blush" id="s3" data-n="03">
+  <div class="eyebrow">Part three</div>
+  <h2>Your mood is<br>a weather system,<br>not a verdict.</h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>You said you want to stop letting your mood govern you. That's one of the most mature things a person can want. Here's what emotional maturity actually looks like — it's not feeling good all the time. It's the gap between stimulus and response.</p>
+    <p>Viktor Frankl, who survived a Nazi concentration camp, said: <em>"Between stimulus and response there is a space. In that space is our power to choose our response."</em></p>
+    <p>Stormy days are not character flaws. Low energy is not failure. The goal is to notice what's happening, name it without judgment, and make one small wise choice anyway.</p>
+  </div>
+  <div class="truth">
+    <div class="truth-label">The practice</div>
+    <div class="truth-text">Feel it. Name it. Don't obey it. Then choose the smallest next right action.</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 04 THE PEOPLE -->
+<section class="slide dark" id="s4" data-n="04">
+  <div class="eyebrow">Part four</div>
+  <h2>A small number<br>of people matter<br><span class="hl">enormously.</span></h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>Jun. Your parents. Your brother. A few true friends. These are load-bearing relationships. They hold the structure of your life. They don't make noise to get your attention — which means they're easy to neglect without meaning to.</p>
+    <p>Your brother especially. He depends on your consistency — not your grand gestures. Show up regularly, manage his expenses on time, be predictable for him. That <em>is</em> the love.</p>
+    <p>And Jun — make space for conversations that have nothing to do with work, deadlines, or logistics. The marriage lives in the margin, not the schedule.</p>
+  </div>
+  <ul class="clean-list">
+    <li>Check in before you need something from someone.</li>
+    <li>Apologize when wrong. Quickly.</li>
+    <li>Plan the trip. Don't just dream it — pick a date.</li>
+    <li>Your brother's Self Direction expenses: don't let them slip.</li>
+  </ul>
+  <div class="truth">
+    <div class="truth-label">The truth</div>
+    <div class="truth-text">"You don't need many people. You need the right few — tended well."</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 05 THE MONEY -->
+<section class="slide warm" id="s5" data-n="05">
+  <div class="eyebrow">Part five</div>
+  <h2>Money is not<br>the point — but it<br>makes a point.</h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>You already track your expenses monthly. That alone puts you ahead of most people. The next tier is simple: protect what you have, grow it quietly, and remove the sources of financial anxiety one by one.</p>
+    <p>Financial panic is one of the loudest voices that makes you make bad decisions in every other area of life. The goal isn't wealth. It's the quiet confidence of not choosing from fear.</p>
+  </div>
+  <ul class="clean-list">
+    <li>Living will and trust. This is not morbid — it's mature. Research one attorney.</li>
+    <li>Emergency fund. Three to six months of expenses, untouched.</li>
+    <li>Investments. One decision made is better than ten perfect ones imagined.</li>
+    <li>Mortgage: continue, consistently. It is wealth-building in slow motion.</li>
+    <li>Disaster prep. A small fund, a plan. You live in a world that warrants it.</li>
+  </ul>
+  <div class="truth">
+    <div class="truth-label">The principle</div>
+    <div class="truth-text">"Stability is not having more. It's needing less to feel okay."</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 06 THE DIRECTION -->
+<section class="slide sage" id="s6" data-n="06">
+  <div class="eyebrow">Part six</div>
+  <h2>You don't need<br>the full answer.<br><span class="hl">You need a direction.</span></h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>AI. Design. Architecture. Psychology. Philosophy. Liberal arts. These are not scattered interests. They are a coherent intellectual identity forming in real time. You are becoming someone who thinks across disciplines — and that is rare, and valuable, and yours.</p>
+    <p>The firm you dream of is not a business plan yet. It doesn't need to be. It's a north star. Keep it lit. Every book you read, every tool you learn, every conversation you have with Jun about building something together — that is the firm being built in the dark.</p>
+    <p>MIT-Wei is not a fantasy. She's just a few years of intentional curiosity ahead of you.</p>
+  </div>
+  <div class="truth">
+    <div class="truth-label">The truth</div>
+    <div class="truth-text">"The direction you're heading matters far more than the speed you're going."</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 07 THE SYSTEM -->
+<section class="slide amber" id="s7" data-n="07">
+  <div class="eyebrow">Part seven</div>
+  <h2>Not a tracker.<br>A rhythm.</h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>You don't need more structure. You need fewer, deeper anchors. Things so simple they actually happen. A system is not what you set up on a Sunday and abandon by Thursday. It's the handful of things you do so reliably they become invisible infrastructure.</p>
+  </div>
+  <ul class="clean-list">
+    <li><strong>Morning:</strong> one intention. What would make today a good day?</li>
+    <li><strong>Body:</strong> sleep at a regular time. Move. Take the vitamins.</li>
+    <li><strong>Work:</strong> ask what good looks like here. Become easier to trust.</li>
+    <li><strong>Evening:</strong> one thing you did well. One thing to improve. Done.</li>
+    <li><strong>Weekly:</strong> look at each pillar. Which one is falling? Repair it before it damages the others.</li>
+    <li><strong>Monthly:</strong> expenses, brother's Self Direction, one financial action, one family memory planned.</li>
+  </ul>
+  <div class="truth">
+    <div class="truth-label">The rule</div>
+    <div class="truth-text">"Consistency in small things beats perfection in large ones. Every time."</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 08 WHAT WISE WOMEN KNOW -->
+<section class="slide dark" id="s8" data-n="08">
+  <div class="eyebrow">Part eight</div>
+  <h2>What wise women<br>eventually learn<br>to stop fighting.</h2>
+  <div class="divider"></div>
+  <div class="body-text">
+    <p>Some things take longer to learn than they should. Here they are, without the waiting.</p>
+  </div>
+  <ul class="clean-list">
+    <li>Rest is not a reward. It is infrastructure.</li>
+    <li>Comparison steals from a future that isn't built yet.</li>
+    <li>The people who need you most are often the quietest ones.</li>
+    <li>Motivation is unreliable. Routine is not.</li>
+    <li>A bad day is not a bad life. Restart quickly.</li>
+    <li>You don't have to wait for crisis to ask for help.</li>
+    <li>The version of you that handles this gracefully — she exists. Act like her first.</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════ CLOSING -->
+<section class="slide warm" id="s9" data-n="">
+  <div class="eyebrow">In closing</div>
+  <h2>This is who<br>you're becoming.</h2>
+  <div class="divider"></div>
+  <div class="closing-list">
+    <div class="closing-item">Reliable.</div>
+    <div class="closing-item">Healthy.</div>
+    <div class="closing-item">Useful at work, and building toward something more.</div>
+    <div class="closing-item">A woman who reads philosophy and builds things with her hands.</div>
+    <div class="closing-item">A GC who thinks like a designer and a designer who thinks like an architect.</div>
+    <div class="closing-item">A sister who shows up consistently for her brother.</div>
+    <div class="closing-item">A daughter who calls before something happens.</div>
+    <div class="closing-item">A partner who makes space for the marriage inside the work.</div>
+    <div class="closing-item">A future mother who took care of herself first.</div>
+  </div>
+  <div class="truth" style="margin-top:48px;">
+    <div class="truth-label">The only standard</div>
+    <div class="truth-text">Not perfect. Just better than yesterday.</div>
+  </div>
+  <div style="margin-top:48px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.3;">
+    Wei · Life Balance · 2026
+  </div>
+</section>
+
 <script>
-// ── quotes ──────────────────────────────────────────────
+  const slides = document.querySelectorAll('.slide[id]');
+  const navDots = document.getElementById('nav-dots');
 
-const QUOTES = [
-  { text: "We suffer more in imagination than in reality.", author: "Seneca" },
-  { text: "Who looks outside, dreams. Who looks inside, awakes.", author: "Carl Jung" },
-  { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
-  { text: "Between stimulus and response there is a space. In that space is our power.", author: "Viktor Frankl" },
-  { text: "Feelings can creep up just like that. I thought I was in control.", author: "Wong Kar Wai" },
-  { text: "Life shrinks or expands in proportion to one's courage.", author: "Anaïs Nin" },
-  { text: "Begin at once to live, and count each separate day as a separate life.", author: "Seneca" },
-  { text: "She remembered who she was, and the game changed.", author: "Lalah Delia" },
-  { text: "The privilege of a lifetime is to become who you truly are.", author: "Carl Jung" },
-  { text: "Waste no more time arguing what a good person should be. Be one.", author: "Marcus Aurelius" },
-  { text: "Not all those who wander are lost.", author: "J.R.R. Tolkien" },
-  { text: "Your task is not to seek for love — but to find every barrier you've built against it.", author: "Rumi" },
-  { text: "Do not go where the path may lead. Go instead where there is no path and leave a trail.", author: "Emerson" },
-  { text: "Knowing others is wisdom. Knowing yourself is enlightenment.", author: "Laozi" },
-  { text: "Almost everything will work again if you unplug it for a few minutes. Including you.", author: "Anne Lamott" },
-  { text: "Dwell on the beauty of life. Watch the stars, and see yourself running with them.", author: "Marcus Aurelius" },
-  { text: "The unexamined life is not worth living.", author: "Socrates" },
-  { text: "He who has a why to live can bear almost any how.", author: "Viktor Frankl" },
-  { text: "We are what we repeatedly do. Excellence is not an act, but a habit.", author: "Aristotle" },
-  { text: "The cave you fear to enter holds the treasure you seek.", author: "Joseph Campbell" },
-  { text: "It is not the mountain we conquer, but ourselves.", author: "Edmund Hillary" },
-  { text: "Vulnerability is not winning or losing. It's having the courage to show up.", author: "Brené Brown" },
-  { text: "In three words I can sum up everything I've learned about life: it goes on.", author: "Robert Frost" },
-  { text: "Comparison is the thief of joy.", author: "Theodore Roosevelt" },
-  { text: "Rest is not a reward. It is infrastructure.", author: "" },
-  { text: "You are not behind. You are on your own timeline.", author: "" },
-  { text: "The most difficult thing is the decision to act. The rest is merely tenacity.", author: "Amelia Earhart" },
-  { text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", author: "Emerson" },
-];
-
-// ── whispers ──────────────────────────────────────────────
-
-const WHISPERS = [
-  "Your dentist hasn't seen you in over a year. That appointment won't book itself.",
-  "Talk to Jun today about something that has nothing to do with work.",
-  "Your gut has been asking for attention. Schedule the GI visit this week.",
-  "Prenatal vitamins: folate, D3, magnesium. Every day matters.",
-  "Call your parents. Not because something happened — just because.",
-  "Your brother needs your consistency more than your perfection. Show up.",
-  "The acoustic neuroma screening exists for a reason. Schedule the peace of mind.",
-  "One page of philosophy today is one degree of clarity tomorrow.",
-  "PTO exists to be used. Plan the trip before the year ends.",
-  "Your living will doesn't exist yet. Small step: research one attorney.",
-  "Check your brother's Self Direction expenses — don't let them slip.",
-  "What would you invest in today if fear wasn't a factor?",
-  "Send someone a message that says you're thinking of them. That's it.",
-  "Rest is productive. The version of you that sleeps well is better at everything.",
-  "Your contact lens prescription is out of date. Book the eye appointment.",
-  "Read something that has nothing to do with work for 15 minutes.",
-  "The firm you're dreaming of starts with one concrete action. What is it today?",
-  "You don't have to wait for crisis to talk to someone. Therapy is maintenance, not rescue.",
-  "Write down one thing you're grateful for before this day ends.",
-  "Your mood visited you today. It doesn't have to drive the car.",
-  "The version of you that handles this gracefully — what would she do?",
-  "Every month you delay the dentist, your future self pays more. Go.",
-  "What are you curious about right now? Follow that thread for 20 minutes.",
-  "The best time to make a memory with your parents was yesterday. Today is second best.",
-  "Spend less than you earn. Save something small. Repeat forever.",
-  "What did you learn this week that you didn't know last Monday?",
-  "Emotion noted. Breath taken. Next small action: what is it?",
-  "You are allowed to not know the answer yet. Clarity is not required before beginning.",
-];
-
-// ── helpers ───────────────────────────────────────────────
-
-function dayOfYear() {
-  const now = new Date();
-  return Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-}
-
-function todayKey() { return new Date().toISOString().slice(0, 10); }
-
-function getLS(k, fb) {
-  try { return JSON.parse(localStorage.getItem(k)) ?? fb; } catch { return fb; }
-}
-function setLS(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
-
-// ── clock + theme ─────────────────────────────────────────
-
-function tick() {
-  const now  = new Date();
-  const h    = now.getHours();
-  const min  = String(now.getMinutes()).padStart(2, '0');
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  const h12  = ((h % 12) || 12);
-
-  document.getElementById('clock-str').textContent = `${h12}:${min} ${ampm}`;
-
-  const dateStr = now.toLocaleDateString('en-US', {
-    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-  }).toUpperCase();
-  document.getElementById('date-str').textContent = dateStr;
-
-  const body = document.body;
-  body.classList.remove('night', 'dusk');
-  if (h >= 20 || h < 6)  body.classList.add('night');
-  else if (h >= 17)       body.classList.add('dusk');
-}
-
-setInterval(tick, 1000);
-tick();
-
-// ── quote ─────────────────────────────────────────────────
-
-(function() {
-  const q = QUOTES[dayOfYear() % QUOTES.length];
-  document.getElementById('quote-text').textContent = q.text;
-  document.getElementById('quote-author').textContent =
-    q.author ? '— ' + q.author : '';
-})();
-
-// ── whispers (3 per day, rotating set) ────────────────────
-
-(function() {
-  const base = dayOfYear();
-  const picks = [
-    WHISPERS[base       % WHISPERS.length],
-    WHISPERS[(base + 9) % WHISPERS.length],
-    WHISPERS[(base + 17) % WHISPERS.length],
-  ];
-  const container = document.getElementById('whispers');
-  picks.forEach(w => {
-    const el = document.createElement('div');
-    el.className = 'whisper';
-    el.innerHTML = `<span class="whisper-arrow">→</span><span class="whisper-text">${w}</span>`;
-    container.appendChild(el);
+  // build dots
+  slides.forEach((slide, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.onclick = () => slide.scrollIntoView({ behavior: 'smooth' });
+    navDots.appendChild(dot);
   });
-})();
 
-// ── intention ─────────────────────────────────────────────
+  const dots = navDots.querySelectorAll('.dot');
 
-const intentionEl = document.getElementById('intention');
-intentionEl.value = getLS('wei_intention_' + todayKey(), '');
-intentionEl.addEventListener('input', () =>
-  setLS('wei_intention_' + todayKey(), intentionEl.value)
-);
+  // highlight active dot
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
+        const idx = Array.from(slides).indexOf(entry.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slides.forEach(s => observer.observe(s));
 </script>
 </body>
 </html>
